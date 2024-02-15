@@ -22,6 +22,6 @@ public class User {
     private String username;
     private String password;
     @OneToMany
-    @JoinColumn(name = "ads_id")
+    @JoinColumn(name = "user_id")
     private Set<Ad> user_ads;
 }

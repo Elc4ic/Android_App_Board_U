@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package service;
+
+//Id
+message Id{
+    uint64 id = 1;
+}
+//Entity
+message Ad {
+    uint64 id = 1;
+    string title = 2;
+    int32 file = 3;
+    int32 price = 4;
+    string description = 5;
+    uint64 category = 6;
+    uint64 ownUser = 7;
+}
+message User {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+}
+message Category {
+    uint64 id = 1;
+    string name = 2;
+}
+//Lists
+message ListAd {
+    repeated Ad ads = 1;
+}
+message ListCategory {
+    repeated Category categories = 1;
+}
+message ListUser {
+    repeated User users = 1;
+}
+//Empty
+message Empty{
+}
+//Services +CRUD
+service AdService{
+    rpc CreateAd(Ad) returns (Ad);
+    rpc GetAd(Id) returns (Ad);
+    rpc GetAllAd(Empty) returns (ListAd);
+    rpc UpdateAd(Ad) returns (Empty);
+    rpc DeleteAd(Id) returns (Empty);
+}
+service UserService{
+    rpc CreateUser(User) returns (Empty);
+    rpc GetUser(Id) returns (User);
+    rpc GetAllUser(Empty) returns (ListUser);
+    rpc UpdateAd(User) returns (Empty);
+    rpc DeleteAd(Id) returns (Empty);
+}
+service CategoryService{
+    rpc GetAllCategory(Empty) returns (ListCategory);
+}

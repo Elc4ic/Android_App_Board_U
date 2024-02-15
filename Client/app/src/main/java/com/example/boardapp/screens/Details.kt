@@ -1,4 +1,4 @@
-package com.example.boardapp.view
+package com.example.boardapp.screens
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background

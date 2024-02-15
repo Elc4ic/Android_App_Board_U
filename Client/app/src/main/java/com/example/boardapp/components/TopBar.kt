@@ -48,7 +48,7 @@ fun TopBar(darkTheme:Boolean,
                 text = "Main view",
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.surface
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -57,7 +57,7 @@ fun TopBar(darkTheme:Boolean,
                 text = "Buy something!!!",
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.surface
             )
         }
         Row(

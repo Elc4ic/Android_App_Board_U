@@ -9,4 +9,5 @@ public class AdDTO {
     private Integer price;
     private String description;
     private Long categoryId;
+    private Long userId;
 }

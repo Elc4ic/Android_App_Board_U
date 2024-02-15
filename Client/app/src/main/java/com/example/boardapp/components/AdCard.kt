@@ -1,6 +1,5 @@
 package com.example.boardapp.components
 
-import Service.AdGrpcService
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -26,9 +25,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import service.Board
 
 @Composable
-fun AdCard(ad: AdGrpcService.Ad, onItemClicked: (ad: AdGrpcService.Ad) -> Unit) {
+fun AdCard(ad: Board.Ad, onItemClicked: (ad: Board.Ad) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

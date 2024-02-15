@@ -1,6 +1,5 @@
 package com.example.boardapp.components
 
-import Service.AdGrpcService
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,10 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import service.Board
 
 @Composable
 fun AdScreen(
-    ad: AdGrpcService.Ad, onRoomExit: () -> Unit,
+    ad: Board.Ad, onRoomExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var typedMessage by rememberSaveable {

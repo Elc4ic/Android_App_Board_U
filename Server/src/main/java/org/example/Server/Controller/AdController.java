@@ -17,15 +17,6 @@ public class AdController {
 
     private final AdService adService;
 
-/*    @GetMapping(value = "/start_ads", produces = "application/json")
-    public AdListResponse index() {
-        Ad firstRoom = new Ad(0L, "First ad", "hhhty", 1500, "best thing for your1",new Category(0L,"dwf"));
-        Ad secondRoom = new Ad(1L, "Second ad", "45ty", 1600, "best thing for your2",new Category(1L,"deff"));
-        Ad thirdRoom = new Ad(2L, "Third ad", "hhgdy", 300, "best thing for your3",new Category(2L,"dewf"));
-
-        return new AdListResponse(List.of(firstRoom, secondRoom, thirdRoom));
-    }*/
-
     @PostMapping
     public ResponseEntity<Ad> create(@RequestBody AdDTO dto) {
         return mappingResponseAd(adService.create(dto));
