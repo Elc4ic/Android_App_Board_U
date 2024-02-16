@@ -1,5 +1,9 @@
 package org.example.Server.Service;
 
+import org.example.Server.Entity.Category;
+import org.example.Server.Entity.User;
+import org.example.Server.Repository.CategoryRepository;
+import org.example.Server.Repository.UserRepository;
 import service.Board;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
@@ -16,6 +20,28 @@ import java.util.Optional;
 public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
 
     private final AdRepository adRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository userRepository;
+
+
+    @Override
+    public void createAd(Board.Ad request, StreamObserver<Board.Empty> responseObserver) {
+        Optional<User> user = userRepository.findById(request.getOwnUser());
+        Optional<Category> category = categoryRepository.findById(request.getCategory());
+
+        adRepository.save(Ad.builder()
+                .title(request.getTitle())
+                .file(request.getFile())
+                .price(request.getPrice())
+                .description(request.getDescription())
+                .category(category.get())
+                .user(user.get())
+                .build());
+
+        responseObserver.onNext(Board.Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
 
     @Override
     public void getAd(Board.Id request, StreamObserver<Board.Ad> responseObserver) {
@@ -28,8 +54,34 @@ public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
         List<Ad> ads = adRepository.findAll();
         responseObserver.onNext(Board.ListAd.newBuilder().build());
         for (Ad ad : ads) {
-            responseObserver.onNext(Board.ListAd.newBuilder().addAds(next(ad.getId())).build());
+            responseObserver.onNext(Board.ListAd.newBuilder().addAds(next(ad)).build());
         }
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void updateAd(Board.Ad request, StreamObserver<Board.Empty> responseObserver) {
+        Optional<User> user = userRepository.findById(request.getOwnUser());
+        Optional<Category> category = categoryRepository.findById(request.getCategory());
+
+        adRepository.save(Ad.builder()
+                .id(request.getId())
+                .title(request.getTitle())
+                .file(request.getFile())
+                .price(request.getPrice())
+                .description(request.getDescription())
+                .category(category.get())
+                .user(user.get())
+                .build());
+
+        responseObserver.onNext(Board.Empty.newBuilder().build());
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void deleteAd(Board.Id request, StreamObserver<Board.Empty> responseObserver) {
+        adRepository.deleteById(request.getId());
+        responseObserver.onNext(Board.Empty.newBuilder().build());
         responseObserver.onCompleted();
     }
 
@@ -42,6 +94,17 @@ public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
                 .setPrice(ad.get().getPrice())
                 .setDescription(ad.get().getDescription())
                 .setCategory(ad.get().getCategory().getId())
+                .build();
+    }
+
+    private Board.Ad next(Ad ad) {
+        return Board.Ad.newBuilder()
+                .setId(ad.getId())
+                .setTitle(ad.getTitle())
+                .setFile(ad.getFile())
+                .setPrice(ad.getPrice())
+                .setDescription(ad.getDescription())
+                .setCategory(ad.getCategory().getId())
                 .build();
     }
 }

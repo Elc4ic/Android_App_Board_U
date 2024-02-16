@@ -22,7 +22,7 @@ public class AdService {
                 .file(dto.getFile())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
-                .category(categoryService.readById(dto.getCategoryId()))
+                .category(dto.getCategory())
                 .build());
     }
 

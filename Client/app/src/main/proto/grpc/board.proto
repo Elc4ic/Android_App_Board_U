@@ -14,7 +14,7 @@ message Ad {
   int32 price = 4;
   string description = 5;
   uint64 category = 6;
-  uint64 ownUser = 7;
+  uint64 own_user = 7;
 }
 message User {
   uint64 id = 1;
@@ -40,7 +40,7 @@ message Empty{
 }
 //Services +CRUD
 service AdService{
-  rpc CreateAd(Ad) returns (Ad);
+  rpc CreateAd(Ad) returns (Empty);
   rpc GetAd(Id) returns (Ad);
   rpc GetAllAd(Empty) returns (ListAd);
   rpc UpdateAd(Ad) returns (Empty);
@@ -50,8 +50,8 @@ service UserService{
   rpc CreateUser(User) returns (Empty);
   rpc GetUser(Id) returns (User);
   rpc GetAllUser(Empty) returns (ListUser);
-  rpc UpdateAd(User) returns (Empty);
-  rpc DeleteAd(Id) returns (Empty);
+  rpc UpdateUser(User) returns (Empty);
+  rpc DeleteUser(Id) returns (Empty);
 }
 service CategoryService{
   rpc GetAllCategory(Empty) returns (ListCategory);

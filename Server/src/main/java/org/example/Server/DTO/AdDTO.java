@@ -1,6 +1,8 @@
 package org.example.Server.DTO;
 
 import lombok.Data;
+import org.example.Server.Entity.Category;
+import org.example.Server.Entity.User;
 
 @Data
 public class AdDTO {
@@ -8,6 +10,6 @@ public class AdDTO {
     private Integer file;
     private Integer price;
     private String description;
-    private Long categoryId;
-    private Long userId;
+    private Category category;
+    private User user;
 }

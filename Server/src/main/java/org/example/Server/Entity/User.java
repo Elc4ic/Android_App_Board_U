@@ -21,7 +21,14 @@ public class User {
     private Long id;
     private String username;
     private String password;
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    private Set<Ad> user_ads;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Ad> ads;
+
+    public void setAds(Set<Ad> ads) {
+        this.ads = ads;
+
+        for(Ad a : ads) {
+            a.setUser(this);
+        }
+    }
 }

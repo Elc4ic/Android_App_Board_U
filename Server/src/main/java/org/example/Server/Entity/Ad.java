@@ -21,7 +21,10 @@ public class Ad {
     private Integer file;
     private Integer price;
     private String description;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "categories_id")
     private Category category;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "users_id")
+    private User user;
 }

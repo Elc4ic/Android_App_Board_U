@@ -19,7 +19,6 @@ public class UserService {
         return userRepository.save(User.builder()
                 .username(dto.getUsername())
                 .password(dto.getPassword())
-                .user_ads(dto.getUser_ads())
                 .build());
     }
 
