@@ -3,5 +3,7 @@
     <string name="text_home">Home</string>
     <string name="text_details">Details</string>
     <string name="text_login">Login</string>
+    <string name="text_chats">Chats</string>
+    <string name="text_account">Account</string>
 
 </resources>

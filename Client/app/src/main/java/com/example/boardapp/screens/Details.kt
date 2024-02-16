@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.boardapp.R
-import com.example.boardapp.components.CategoryCard
-import com.example.boardapp.components.InfoCard
+import com.example.boardapp.components.card.CategoryCard
+import com.example.boardapp.components.card.InfoCard
 import com.example.boardapp.netWork.GrpcViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

@@ -1,4 +1,4 @@
-package com.example.boardapp.components
+package com.example.boardapp.components.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.example.boardapp.components.AdCard
 import com.example.boardapp.components.TopBar
+import com.example.boardapp.components.card.AdCard
 import com.example.boardapp.netWork.GrpcViewModel
 
 @Composable
