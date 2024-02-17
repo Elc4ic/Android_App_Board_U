@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import com.example.boardapp.netWork.GrpcViewModel
 
 @Composable
-fun Account(
+fun Profile(
     navController: NavHostController,
     grpcViewModel: GrpcViewModel = viewModel()
 ) {

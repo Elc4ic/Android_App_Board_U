@@ -22,9 +22,9 @@ public class Ad {
     private Integer price;
     private String description;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "categories_id")
+    @JoinColumn(name = "category")
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "users_id")
-    private User user;
+    @JoinColumn(name = "own_user")
+    private User own_user;
 }

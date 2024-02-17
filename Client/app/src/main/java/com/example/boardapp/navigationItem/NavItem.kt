@@ -1,6 +1,7 @@
 package com.example.boardapp.navigationItem
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -14,6 +15,7 @@ sealed class NavItem(val route: String, val ladel: String, val icon: ImageVector
     object Chats : NavItem("chats", "Chats", Icons.Filled.Email)
     object Profile : NavItem("profile", "Profile", Icons.Filled.Person)
     object Settings : NavItem("settings", "Settings", Icons.Filled.Settings)
+    object AddAd : NavItem("add", "Add", Icons.Filled.Add)
 
 
     fun prepareNavigationBarItems(): List<NavItem> {
@@ -21,6 +23,7 @@ sealed class NavItem(val route: String, val ladel: String, val icon: ImageVector
 
         navigationBarItemsList.add(Home)
         navigationBarItemsList.add(Chats)
+        navigationBarItemsList.add(AddAd)
         navigationBarItemsList.add(Profile)
         navigationBarItemsList.add(Settings)
 

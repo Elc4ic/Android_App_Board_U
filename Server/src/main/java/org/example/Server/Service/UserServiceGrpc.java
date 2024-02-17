@@ -3,23 +3,18 @@ package org.example.Server.Service;
 import io.grpc.stub.StreamObserver;
 import lombok.AllArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.example.Server.DTO.UserDTO;
-import org.example.Server.Entity.Ad;
-import org.example.Server.Entity.Category;
 import org.example.Server.Entity.User;
 import org.example.Server.Repository.AdRepository;
 import org.example.Server.Repository.UserRepository;
 import service.Board;
 
 import java.util.Optional;
-import java.util.Set;
 
 @GrpcService
 @AllArgsConstructor
 public class UserServiceGrpc extends service.UserServiceGrpc.UserServiceImplBase {
 
     private final UserRepository userRepository;
-    private final AdRepository adRepository;
 
     @Override
     public void createUser(Board.User request, StreamObserver<Board.Empty> responseObserver) {

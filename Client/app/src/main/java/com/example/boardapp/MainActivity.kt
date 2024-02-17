@@ -29,11 +29,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.boardapp.components.NavBar
-import com.example.boardapp.screens.LandingScreen
 import com.example.boardapp.navigationItem.NavItem
+import com.example.boardapp.screens.AdsScreen
+import com.example.boardapp.screens.Chats
 import com.example.boardapp.screens.Details
 import com.example.boardapp.screens.Home
+import com.example.boardapp.screens.LandingScreen
 import com.example.boardapp.screens.Login
+import com.example.boardapp.screens.Profile
 import com.example.boardapp.ui.theme.MyTheme
 
 
@@ -81,7 +84,7 @@ class MainActivity : ComponentActivity() {
                 showLandingScreen = false;
             })
         } else {
-            BuildScreen(darkTheme, toggleTheme,navController)
+            BuildScreen(darkTheme, toggleTheme, navController)
         }
     }
 
@@ -165,6 +168,78 @@ class MainActivity : ComponentActivity() {
                 arguments = listOf(navArgument("id") { type = NavType.IntType })
             ) {
                 Login(navController)
+            }
+            composable(
+                NavItem.AddAd.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) {
+                AdsScreen(navController)
+            }
+            composable(
+                NavItem.Chats.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) {
+                Chats(navController)
+            }
+            composable(
+                NavItem.Profile.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) {
+                Profile(navController)
             }
         }
     }

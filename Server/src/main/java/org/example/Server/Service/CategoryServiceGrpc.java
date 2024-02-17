@@ -11,9 +11,10 @@ import java.util.List;
 
 @GrpcService
 @AllArgsConstructor
-public class CategoryServiceGrpc extends service.CategoryServiceGrpc.CategoryServiceImplBase{
+public class CategoryServiceGrpc extends service.CategoryServiceGrpc.CategoryServiceImplBase {
 
     private final CategoryRepository categoryRepository;
+
     @Override
     public void getAllCategory(Board.Empty request, StreamObserver<Board.ListCategory> responseObserver) {
         List<Category> categories = categoryRepository.findAll();
@@ -23,6 +24,7 @@ public class CategoryServiceGrpc extends service.CategoryServiceGrpc.CategorySer
         }
         responseObserver.onCompleted();
     }
+
     private Board.Category next(Category category) {
         return Board.Category.newBuilder()
                 .setId(category.getId())

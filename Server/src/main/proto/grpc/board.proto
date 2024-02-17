@@ -2,8 +2,10 @@ syntax = "proto3";
 
 package service;
 
+import "google/protobuf/timestamp.proto";
+
 //Id
-message Id{
+message Id {
     uint64 id = 1;
 }
 //Entity
@@ -13,13 +15,39 @@ message Ad {
     int32 file = 3;
     int32 price = 4;
     string description = 5;
-    uint64 category = 6;
-    uint64 own_user = 7;
+    google.protobuf.Timestamp date = 6;
+    uint64 category = 7;
+    uint64 own_user = 8;
 }
 message User {
     uint64 id = 1;
     string username = 2;
     string password = 3;
+    string address = 4;
+    ListAd own_ad = 5;
+    ListAd fav_ad = 6;
+    string phone = 7;
+    float rating = 9;
+    repeated Comment comments = 10;
+}
+message Chat {
+    uint64 id = 1;
+    uint64 id_me = 2;
+    uint64 id_other = 3;
+    repeated Message messages = 4;
+}
+message Message {
+    uint64 id = 1;
+    uint64 id_owner = 2;
+    string text = 3;
+    google.protobuf.Timestamp date = 4;
+    bool viewed = 5;
+}
+message Comment {
+    uint64 id = 1;
+    int32 rate = 2;
+    string str = 3;
+    google.protobuf.Timestamp date = 4;
 }
 message Category {
     uint64 id = 1;
@@ -32,27 +60,48 @@ message ListAd {
 message ListCategory {
     repeated Category categories = 1;
 }
+message ListChat {
+    repeated Chat chats = 1;
+}
 message ListUser {
     repeated User users = 1;
 }
 //Empty
-message Empty{
+message Empty {
 }
+message String {
+    string str = 1;
+}
+
 //Services +CRUD
-service AdService{
-    rpc CreateAd(Ad) returns (Empty);
-    rpc GetAd(Id) returns (Ad);
-    rpc GetAllAd(Empty) returns (ListAd);
-    rpc UpdateAd(Ad) returns (Empty);
-    rpc DeleteAd(Id) returns (Empty);
+service AdService {
+    rpc CreateAd (Ad) returns (Empty);
+    rpc GetAd (Id) returns (Ad);
+    rpc GetAllAd (Empty) returns (ListAd);
+    rpc UpdateAd (Ad) returns (Empty);
+    rpc DeleteAd (Id) returns (Empty);
+
+    rpc GetAdByCategory (Category) returns (ListAd);
+    rpc GetAdSearch (String) returns (ListAd);
 }
-service UserService{
-    rpc CreateUser(User) returns (Empty);
-    rpc GetUser(Id) returns (User);
-    rpc GetAllUser(Empty) returns (ListUser);
-    rpc UpdateUser(User) returns (Empty);
-    rpc DeleteUser(Id) returns (Empty);
+service UserService {
+    rpc CreateUser (User) returns (Empty);
+    rpc GetUser (Id) returns (User);
+    rpc GetAllUser (Empty) returns (ListUser);
+    rpc UpdateUser (User) returns (Empty);
+    rpc DeleteUser (Id) returns (Empty);
+
+    rpc CreateCommentOnUser (Comment) returns (Empty);
+    rpc GetAdByUser (User) returns (ListAd);
 }
-service CategoryService{
-    rpc GetAllCategory(Empty) returns (ListCategory);
+service CategoryService {
+    rpc GetAllCategory (Empty) returns (ListCategory);
+}
+service ChatService {
+    rpc CreateChat (Message) returns (Chat);
+    rpc GetAllChat (Empty) returns (ListChat);
+    rpc DeleteChat (Id) returns (Empty);
+
+    rpc SendMessage (Message) returns (Message);
+    rpc ViewedMessage (Empty) returns (Empty);
 }
