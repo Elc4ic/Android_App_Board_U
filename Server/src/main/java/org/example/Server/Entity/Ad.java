@@ -21,10 +21,11 @@ public class Ad {
     private Integer file;
     private Integer price;
     private String description;
+    private String date;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category")
+    @JoinColumn(name = "category_id")
     private Category category;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "own_user")
-    private User own_user;
+    @JoinColumn(name = "own_user_id")
+    private User ownUser;
 }

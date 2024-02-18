@@ -9,7 +9,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -30,13 +31,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.boardapp.components.NavBar
 import com.example.boardapp.navigationItem.NavItem
-import com.example.boardapp.screens.AdsScreen
+import com.example.boardapp.screens.AddAd
 import com.example.boardapp.screens.Chats
 import com.example.boardapp.screens.Details
 import com.example.boardapp.screens.Home
 import com.example.boardapp.screens.LandingScreen
 import com.example.boardapp.screens.Login
+import com.example.boardapp.screens.MyAd
 import com.example.boardapp.screens.Profile
+import com.example.boardapp.screens.Settings
 import com.example.boardapp.ui.theme.MyTheme
 
 
@@ -95,9 +98,8 @@ class MainActivity : ComponentActivity() {
         toggleTheme: () -> Unit,
         navController: NavHostController
     ) {
-        val logIn by remember { mutableStateOf(NavItem.Login.route) }
 
-        NavHost(navController, startDestination = logIn) {
+        NavHost(navController, startDestination = NavItem.Home.route) {
             composable(
                 NavItem.Home.route,
                 exitTransition = {
@@ -117,7 +119,7 @@ class MainActivity : ComponentActivity() {
                             easing = FastOutSlowInEasing
                         )
                     ) + fadeIn(animationSpec = tween(300))
-                },
+                }
             ) {
                 Home(navController, darkTheme, toggleTheme)
             }
@@ -164,13 +166,12 @@ class MainActivity : ComponentActivity() {
                             easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                },
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+                }
             ) {
                 Login(navController)
             }
             composable(
-                NavItem.AddAd.route,
+                NavItem.MyAd.route,
                 enterTransition = {
                     slideInHorizontally(
                         initialOffsetX = { 300 },
@@ -188,10 +189,9 @@ class MainActivity : ComponentActivity() {
                             easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                },
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+                }
             ) {
-                AdsScreen(navController)
+                MyAd(navController)
             }
             composable(
                 NavItem.Chats.route,
@@ -212,8 +212,7 @@ class MainActivity : ComponentActivity() {
                             easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                },
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+                }
             ) {
                 Chats(navController)
             }
@@ -236,10 +235,55 @@ class MainActivity : ComponentActivity() {
                             easing = FastOutSlowInEasing
                         )
                     ) + fadeOut(animationSpec = tween(300))
-                },
-                arguments = listOf(navArgument("id") { type = NavType.IntType })
+                }
             ) {
                 Profile(navController)
+            }
+            composable(
+                NavItem.AddAd.route,
+                enterTransition = {
+                    slideInVertically(
+                        initialOffsetY = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutVertically(
+                        targetOffsetY = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                AddAd(navController)
+            }
+            composable(
+                NavItem.Settings.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                Settings(navController)
             }
         }
     }

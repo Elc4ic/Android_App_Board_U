@@ -35,7 +35,7 @@ public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .category(category.get())
-                .user(user.get())
+                .ownUser(user.get())
                 .build());
 
         responseObserver.onNext(Board.Empty.newBuilder().build());
@@ -71,7 +71,7 @@ public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
                 .price(request.getPrice())
                 .description(request.getDescription())
                 .category(category.get())
-                .user(user.get())
+                .ownUser(user.get())
                 .build());
 
         responseObserver.onNext(Board.Empty.newBuilder().build());

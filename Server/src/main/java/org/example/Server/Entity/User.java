@@ -24,29 +24,10 @@ public class User {
     private String address;
     private String phone;
     private Float rating;
-    @OneToMany(mappedBy = "own_user", cascade = CascadeType.ALL)
-    private Set<Ad> own_ads;
+    @OneToMany(mappedBy = "ownUser", cascade = CascadeType.ALL)
+    private Set<Ad> ownAds;
     @OneToMany(cascade = CascadeType.ALL)
-    private Set<Ad> fav_ads;
+    private Set<Ad> favAds;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<Comment> comments;
-
-    public void setOwnAds(Set<Ad> ads) {
-        this.own_ads = ads;
-
-        for(Ad a : ads) {
-        }
-    }
-    public void setFavAds(Set<Ad> ads) {
-        this.fav_ads = ads;
-
-        for(Ad a : ads) {
-        }
-    }
-    public void setComments(Set<Comment> comments) {
-        this.comments = comments;
-
-        for(Comment c : comments) {
-        }
-    }
 }

@@ -18,15 +18,8 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long id_me;
-    private Long id_other;
+    private Long idMe;
+    private Long idOther;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private Set<Message> messages;
-
-    public void setMessages(Set<Message> messages) {
-        this.messages = messages;
-
-        for(Message m : messages) {
-        }
-    }
 }

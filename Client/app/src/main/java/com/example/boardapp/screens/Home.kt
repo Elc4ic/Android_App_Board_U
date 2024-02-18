@@ -22,23 +22,23 @@ fun Home(
     grpcViewModel: GrpcViewModel = viewModel()
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
-            val ads = grpcViewModel.ads
-            item {
-                TopBar(
-                    darkTheme = darkTheme,
-                    onToggle = toggleTheme
+        val ads = grpcViewModel.ads
+        item {
+            TopBar(
+                darkTheme = darkTheme,
+                onToggle = toggleTheme
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+        items(ads) {
+            ads.forEach {
+                AdCard(
+                    it,
+                    onItemClicked = { ad ->
+                        navController.navigate("details/${ad.id}/${ad.title}")
+                    }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
             }
-            items(ads) {
-                ads.forEach {
-                    AdCard(
-                        it,
-                        onItemClicked = { ad ->
-                            navController.navigate("details/${ad.id}/${ad.title}")
-                        }
-                    )
-                }
-            }
+        }
     }
 }

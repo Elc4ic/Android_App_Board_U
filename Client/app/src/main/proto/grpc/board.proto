@@ -66,6 +66,9 @@ message ListChat {
 message ListUser {
   repeated User users = 1;
 }
+message ListComment {
+  repeated User users = 1;
+}
 //Empty
 message Empty {
 }
@@ -98,9 +101,16 @@ service CategoryService {
   rpc GetAllCategory (Empty) returns (ListCategory);
 }
 service ChatService {
-  rpc SendMessage (Message) returns (Message);
   rpc CreateChat (Message) returns (Chat);
   rpc GetAllChat (Empty) returns (ListChat);
   rpc DeleteChat (Id) returns (Empty);
+
+  rpc SendMessage (Message) returns (Message);
   rpc ViewedMessage (Empty) returns (Empty);
+}
+service CommentService {
+  rpc CreateComment (Comment) returns (Empty);
+  rpc GetUserComments (User) returns (ListComment);
+  rpc DeleteComment (Id) returns (Empty);
+  rpc UpdateComment (Comment) returns (Empty);
 }
