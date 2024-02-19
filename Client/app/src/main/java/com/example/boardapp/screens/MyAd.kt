@@ -40,24 +40,24 @@ fun MyAd(
         },
         content = { padding ->
             LazyColumn(
-                Modifier
-                    .padding(padding)
-            ) {
-                val ad1 = Ad.newBuilder().setTitle("STR1").setPrice(1000).build()
-                val ad2 = Ad.newBuilder().setTitle("STR2").setPrice(2000).build()
-                val ad4 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad5 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad6 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad7 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad8 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad9 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad10 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad11 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad12 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ad13 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
-                val ads = listOf<Ad>(ad1, ad2, ad4, ad5, ad6, ad7, ad8, ad9, ad10, ad11, ad12)
-                runBlocking {
-                    items(ads) {
+                        Modifier
+                            .padding(padding)
+                    ) {
+                        val ad1 = Ad.newBuilder().setTitle("STR1").setPrice(1000).build()
+                        val ad2 = Ad.newBuilder().setTitle("STR2").setPrice(2000).build()
+                        val ad4 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad5 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad6 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad7 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad8 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad9 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad10 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad11 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad12 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ad13 = Ad.newBuilder().setTitle("STR3").setPrice(3000).build()
+                        val ads = listOf<Ad>(ad1, ad2, ad4, ad5, ad6, ad7, ad8, ad9, ad10, ad11, ad12)
+                        runBlocking {
+                            items(ads) {
                         AdCard(
                             it,
                             onItemClicked = { ad ->

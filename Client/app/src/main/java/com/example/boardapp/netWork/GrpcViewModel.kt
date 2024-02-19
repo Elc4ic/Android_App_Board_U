@@ -8,11 +8,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import service.Board.Ad
 import service.Board.Category
+import service.Board.Chat
+import service.Board.Message
 
 class GrpcViewModel : ViewModel() {
 
-
     private var _ads: List<Ad> = emptyList<Ad>().toMutableStateList()
+    private var _chats: List<Chat> = emptyList<Chat>().toMutableStateList()
+    private var _messages: List<Message> = emptyList<Message>().toMutableStateList()
     private var _categories: List<Category> = emptyList<Category>().toMutableStateList()
     private val client = GrpcClient()
 
@@ -114,8 +117,39 @@ class GrpcViewModel : ViewModel() {
         }
     }
 
+    //Chat
+    suspend fun getAllChat() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                _chats = client.getAllChat().chatsList
+            }
+        }
+    }
+
+    suspend fun getChat(id: Long): Chat {
+        var chat = Chat.newBuilder().build()
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                chat = client.getChat(id)
+            }
+        }
+        return chat
+    }
+
+    suspend fun getAllMessage(chat: Chat) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                _messages = client.getAllMessage(chat).messagesList
+            }
+        }
+    }
+
     //getters
     val ads: List<Ad> get() = _ads
+
+    val chats: List<Chat> get() = _chats
+
+    val message: List<Message> get() = _messages
 
     val categories: List<Category> get() = _categories
 

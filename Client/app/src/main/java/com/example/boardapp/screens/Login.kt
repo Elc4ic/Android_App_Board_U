@@ -83,12 +83,10 @@ fun Login(
                     onValueChange = { username = it },
                     label = { NormalText(text = "example@gmail.com", modifier = Modifier) },
                     shape = RoundedCornerShape(10.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
+                    colors = TextFieldDefaults.textFieldColors(
                         unfocusedLabelColor = MaterialTheme.colorScheme.surface,
                         focusedLabelColor = MaterialTheme.colorScheme.surface,
-                        textColor = MaterialTheme.colorScheme.surface,
+                        focusedTextColor = MaterialTheme.colorScheme.surface,
                         containerColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier
@@ -106,12 +104,10 @@ fun Login(
                     onValueChange = { password = it },
                     label = { NormalText(text = "Enter your password", modifier = Modifier) },
                     shape = RoundedCornerShape(10.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
+                    colors = TextFieldDefaults.textFieldColors(
                         unfocusedLabelColor = MaterialTheme.colorScheme.surface,
                         focusedLabelColor = MaterialTheme.colorScheme.surface,
-                        textColor = MaterialTheme.colorScheme.surface,
+                        focusedTextColor = MaterialTheme.colorScheme.surface,
                         containerColor = MaterialTheme.colorScheme.onSurface
                     ),
                     modifier = Modifier

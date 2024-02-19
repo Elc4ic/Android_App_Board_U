@@ -15,7 +15,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +31,7 @@ import androidx.navigation.navArgument
 import com.example.boardapp.components.NavBar
 import com.example.boardapp.navigationItem.NavItem
 import com.example.boardapp.screens.AddAd
+import com.example.boardapp.screens.Chat
 import com.example.boardapp.screens.Chats
 import com.example.boardapp.screens.Details
 import com.example.boardapp.screens.Home
@@ -39,12 +39,12 @@ import com.example.boardapp.screens.LandingScreen
 import com.example.boardapp.screens.Login
 import com.example.boardapp.screens.MyAd
 import com.example.boardapp.screens.Profile
+import com.example.boardapp.screens.Search
 import com.example.boardapp.screens.Settings
 import com.example.boardapp.ui.theme.MyTheme
 
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
         navController: NavHostController
     ) {
 
-        NavHost(navController, startDestination = NavItem.Home.route) {
+        NavHost(navController, startDestination = NavItem.Search.route) {
             composable(
                 NavItem.Home.route,
                 exitTransition = {
@@ -217,6 +217,30 @@ class MainActivity : ComponentActivity() {
                 Chats(navController)
             }
             composable(
+                "${NavItem.Chat.route}/{id}",
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                },
+                arguments = listOf(navArgument("id") { type = NavType.LongType })
+            ) {
+                Chat(navController, it.arguments?.getLong("id") ?: 0)
+            }
+            composable(
                 NavItem.Profile.route,
                 enterTransition = {
                     slideInHorizontally(
@@ -284,6 +308,29 @@ class MainActivity : ComponentActivity() {
                 }
             ) {
                 Settings(navController)
+            }
+            composable(
+                NavItem.Search.route,
+                enterTransition = {
+                    slideInHorizontally(
+                        initialOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeIn(animationSpec = tween(300))
+                },
+                exitTransition = {
+                    slideOutHorizontally(
+                        targetOffsetX = { 300 },
+                        animationSpec = tween(
+                            durationMillis = 300,
+                            easing = FastOutSlowInEasing
+                        )
+                    ) + fadeOut(animationSpec = tween(300))
+                }
+            ) {
+                Search(navController)
             }
         }
     }

@@ -6,17 +6,19 @@ import service.Board
 import service.Board.Ad
 import service.Board.User
 import service.CategoryServiceGrpcKt
+import service.ChatServiceGrpcKt
 import service.UserServiceGrpcKt
 
 
 class GrpcClient {
-
+    //"192.168.0.11" ipconfig
     private val port = 9090
     private val channel =
-        ManagedChannelBuilder.forAddress("192.168.0.11", port).usePlaintext().build()
+        ManagedChannelBuilder.forAddress("10.193.128.225", port).usePlaintext().build()
     private val adStub = AdServiceGrpcKt.AdServiceCoroutineStub(channel)
     private val userStub = UserServiceGrpcKt.UserServiceCoroutineStub(channel)
     private val categoryStub = CategoryServiceGrpcKt.CategoryServiceCoroutineStub(channel)
+    private val chatStub = ChatServiceGrpcKt.ChatServiceCoroutineStub(channel)
 
 
     //UserClient
@@ -118,4 +120,20 @@ class GrpcClient {
         val request = Board.Empty.newBuilder().build()
         return categoryStub.getAllCategory(request)
     }
+
+    //Chat
+    suspend fun getAllChat(): Board.ListChat {
+        val request = Board.Empty.newBuilder().build()
+        return chatStub.getAllChat(request)
+    }
+
+    suspend fun getChat(id: Long): Board.Chat {
+        val request = Board.Id.newBuilder().setId(id).build()
+        return chatStub.getChat(request)
+    }
+    suspend fun getAllMessage(chat: Board.Chat): Board.ListMessage{
+        return chatStub.getAllMessage(chat)
+    }
+
+
 }

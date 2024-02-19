@@ -27,10 +27,10 @@ sealed class NavItem(val route: String, val ladel: String, val icon: ImageVector
         val navigationBarItemsList = arrayListOf<NavItem>()
 
         navigationBarItemsList.add(Home)
-        navigationBarItemsList.add(Chats)
+        navigationBarItemsList.add(Search)
         navigationBarItemsList.add(MyAd)
+        navigationBarItemsList.add(Chats)
         navigationBarItemsList.add(Profile)
-        navigationBarItemsList.add(Settings)
 
         return navigationBarItemsList
     }

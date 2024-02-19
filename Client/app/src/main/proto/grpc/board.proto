@@ -34,7 +34,8 @@ message Chat {
   uint64 id = 1;
   uint64 id_me = 2;
   uint64 id_other = 3;
-  repeated Message messages = 4;
+  string username_other = 4;
+  repeated Message messages = 5;
 }
 message Message {
   uint64 id = 1;
@@ -63,11 +64,14 @@ message ListCategory {
 message ListChat {
   repeated Chat chats = 1;
 }
+message ListMessage {
+  repeated Message messages = 1;
+}
 message ListUser {
   repeated User users = 1;
 }
 message ListComment {
-  repeated User users = 1;
+  repeated Comment comment = 1;
 }
 //Empty
 message Empty {
@@ -103,9 +107,11 @@ service CategoryService {
 service ChatService {
   rpc CreateChat (Message) returns (Chat);
   rpc GetAllChat (Empty) returns (ListChat);
+  rpc GetChat (Id) returns (Chat);
   rpc DeleteChat (Id) returns (Empty);
 
   rpc SendMessage (Message) returns (Message);
+  rpc GetAllMessage (Chat) returns (ListMessage);
   rpc ViewedMessage (Empty) returns (Empty);
 }
 service CommentService {

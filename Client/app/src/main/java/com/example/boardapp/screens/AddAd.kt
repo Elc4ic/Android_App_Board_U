@@ -1,5 +1,6 @@
 package com.example.boardapp.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -52,12 +54,11 @@ fun AddAd(
             value = title,
             onValueChange = { title = it },
             shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+            colors = TextFieldDefaults.textFieldColors(
                 unfocusedLabelColor = MaterialTheme.colorScheme.surface,
                 focusedLabelColor = MaterialTheme.colorScheme.surface,
-                textColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                unfocusedTextColor = MaterialTheme.colorScheme.surface,
                 containerColor = MaterialTheme.colorScheme.onSurface
             ),
             modifier = Modifier
@@ -74,12 +75,11 @@ fun AddAd(
             value = if (price == 0) "" else price.toString(),
             onValueChange = { price = it.toInt() },
             shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+            colors = TextFieldDefaults.textFieldColors(
                 unfocusedLabelColor = MaterialTheme.colorScheme.surface,
                 focusedLabelColor = MaterialTheme.colorScheme.surface,
-                textColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                unfocusedTextColor = MaterialTheme.colorScheme.surface,
                 containerColor = MaterialTheme.colorScheme.onSurface
             ),
             modifier = Modifier
@@ -96,12 +96,11 @@ fun AddAd(
             value = description,
             onValueChange = { description = it },
             shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+            colors = TextFieldDefaults.textFieldColors(
                 unfocusedLabelColor = MaterialTheme.colorScheme.surface,
                 focusedLabelColor = MaterialTheme.colorScheme.surface,
-                textColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.surface,
+                unfocusedTextColor = MaterialTheme.colorScheme.surface,
                 containerColor = MaterialTheme.colorScheme.onSurface
             ),
             modifier = Modifier
@@ -111,6 +110,7 @@ fun AddAd(
         )
         var category by mutableStateOf(0L)
         var user by mutableStateOf(0L)
+        val contextForToast = LocalContext.current.applicationContext
 
         Spacer(modifier = Modifier.height(30.dp))
         NormalButton(
@@ -126,6 +126,7 @@ fun AddAd(
                         user
                     )
                     navController.navigate("home")
+                    Toast.makeText(contextForToast, "Your advertisement published", Toast.LENGTH_SHORT).show()
                 }
             },
             modifier = Modifier
