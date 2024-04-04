@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0dc27c90-ffab-45e3-be73-910c94a1c53d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/kotlinc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/src/main/kotlin/org/example/boardserver/entity/Ad.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BoardServer/src/main/kotlin/org/example/boardserver/entity/BaseEntity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Entity/Role.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Repository/RoleRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/AuthServiceGrpc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/TokenService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Utils/GrpcBuilder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Utils/KeyGeneratorUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Utils/RSAKeyProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/.idea/kotlinc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.idea/kotlinc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/MainActivity.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/NavBar.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/SearchRow.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/TopBar.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/card/AdCard.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/card/CategoryCard.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/card/ChatCard.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/card/InfoCard.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/card/MessageCard.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/common/NormalButton.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/common/NormalText.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/components/common/TitleText.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/navigationItem/NavItem.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/netWork/GrpcClient.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/netWork/GrpcViewModel.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/AddAd.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Chat.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Chats.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Details.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Home.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/LanchingScreen.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Login.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/MyAd.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Profile.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Search.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/screens/Settings.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/ui/theme/Color.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/ui/theme/Shape.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/ui/theme/Theme.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/java/com/example/boardapp/ui/theme/Type.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/proto/grpc/board.proto" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/res/drawable/background_page.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/gradle.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Entity/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Repository/AdRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Repository/AdRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/ServerApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/ServerApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/AdServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/AdServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/CategoryServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/CategoryServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/ChatServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/ChatServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/CommentServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/CommentServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/UserServiceGrpc.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/java/org/example/Server/Service/UserServiceGrpc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Server/src/main/proto/grpc/board.proto" beforeDir="false" afterPath="$PROJECT_DIR$/../Server/src/main/proto/grpc/board.proto" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ProjectId" id="2ecGqbLnSOoa8W3S8GMlIADSsW1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "dart.analysis.tool.window.visible": "false"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0dc27c90-ffab-45e3-be73-910c94a1c53d" name="Changes" comment="" />
+      <created>1712196647821</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1712196647821</updated>
+    </task>
+    <servers />
+  </component>
+</project>
