@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package AdProto.v1;
+package adProto;
 
 import "google/protobuf/empty.proto";
 
