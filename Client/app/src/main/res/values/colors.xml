@@ -10,7 +10,7 @@
     <!--text color-->
     <color name="text">#1E3054</color>
     <!--backgrounds-->
-    <color name="bg">#F4F7FD</color>
+    <color name="bg">#FFFFFF</color>
     <color name="background">#FFFFFF</color>
 
     <color name="red">#EB5757</color>

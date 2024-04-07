@@ -3,6 +3,7 @@ syntax = "proto3";
 package service;
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 //Id
 message Id {
@@ -28,7 +29,8 @@ message User {
     ListAd fav_ad = 6;
     string phone = 7;
     float rating = 9;
-    repeated Comment comments = 10;
+    ListComment comments = 10;
+    ListRole authorities = 11;
 }
 message Chat {
     uint64 id = 1;
@@ -54,9 +56,29 @@ message Category {
     uint64 id = 1;
     string name = 2;
 }
+message Role {
+    int32 id = 1;
+    string authorities = 2;
+}
+
+message LoginRequest {
+    string username = 1;
+    string password = 2;
+}
+message RegisterRequest {
+    string username = 1;
+    string password = 2;
+}
+message LoginRespond {
+    User user = 1;
+    string token = 2;
+}
 //Lists
 message ListAd {
     repeated Ad ads = 1;
+}
+message ListRole {
+    repeated Role roles = 1;
 }
 message ListCategory {
     repeated Category categories = 1;
@@ -76,9 +98,6 @@ message ListComment {
 //Empty
 message Empty {
 }
-message String {
-    string str = 1;
-}
 
 //Services +CRUD
 service AdService {
@@ -89,12 +108,15 @@ service AdService {
     rpc DeleteAd (Id) returns (Empty);
 
     rpc GetAdByCategory (Category) returns (ListAd);
-    rpc GetAdSearch (String) returns (ListAd);
+    rpc GetAdSearch (google.protobuf.StringValue) returns (ListAd);
+}
+service AuthService {
+    rpc Login (LoginRequest) returns (LoginRespond);
+    rpc Registrate (RegisterRequest) returns (User);
+
 }
 service UserService {
-    rpc CreateUser (User) returns (Empty);
     rpc GetUser (Id) returns (User);
-    rpc GetAllUser (Empty) returns (ListUser);
     rpc UpdateUser (User) returns (Empty);
     rpc DeleteUser (Id) returns (Empty);
 

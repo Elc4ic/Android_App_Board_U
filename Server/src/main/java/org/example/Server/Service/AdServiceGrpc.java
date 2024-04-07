@@ -1,5 +1,6 @@
 package org.example.Server.Service;
 
+import com.google.protobuf.StringValue;
 import org.example.Server.Entity.Category;
 import org.example.Server.Entity.User;
 import org.example.Server.Repository.CategoryRepository;
@@ -83,6 +84,16 @@ public class AdServiceGrpc extends service.AdServiceGrpc.AdServiceImplBase {
         adRepository.deleteById(request.getId());
         responseObserver.onNext(Board.Empty.newBuilder().build());
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public void getAdByCategory(Board.Category request, StreamObserver<Board.ListAd> responseObserver) {
+        super.getAdByCategory(request, responseObserver);
+    }
+
+    @Override
+    public void getAdSearch(StringValue request, StreamObserver<Board.ListAd> responseObserver) {
+        super.getAdSearch(request, responseObserver);
     }
 
     private Board.Ad next(Long id) {

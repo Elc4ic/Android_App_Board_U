@@ -20,6 +20,7 @@ public class CategoryServiceGrpc extends service.CategoryServiceGrpc.CategorySer
         List<Category> categories = categoryRepository.findAll();
         responseObserver.onNext(Board.ListCategory.newBuilder().build());
         for (Category category : categories) {
+
             responseObserver.onNext(Board.ListCategory.newBuilder().addCategories(next(category)).build());
         }
         responseObserver.onCompleted();

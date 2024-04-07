@@ -24,4 +24,6 @@ public class CommentServiceGrpc extends service.CommentServiceGrpc.CommentServic
     public void updateComment(Board.Comment request, StreamObserver<Board.Empty> responseObserver) {
         super.updateComment(request, responseObserver);
     }
+
+
 }

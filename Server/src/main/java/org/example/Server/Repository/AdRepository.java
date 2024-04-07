@@ -13,4 +13,6 @@ public interface AdRepository extends JpaRepository<Ad,Long> {
 
     List<Ad> findByOwnUser(User user);
 
+
+
 }

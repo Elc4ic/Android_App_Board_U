@@ -29,4 +29,14 @@ public class ChatServiceGrpc extends service.ChatServiceGrpc.ChatServiceImplBase
     public void viewedMessage(Board.Empty request, StreamObserver<Board.Empty> responseObserver) {
         super.viewedMessage(request, responseObserver);
     }
+
+    @Override
+    public void getChat(Board.Id request, StreamObserver<Board.Chat> responseObserver) {
+        super.getChat(request, responseObserver);
+    }
+
+    @Override
+    public void getAllMessage(Board.Chat request, StreamObserver<Board.ListMessage> responseObserver) {
+        super.getAllMessage(request, responseObserver);
+    }
 }
