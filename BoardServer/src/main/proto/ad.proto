@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package adProto;
 
-import "google/protobuf/empty.proto";
+import "src/google/protobuf/empty.proto";
 
 service AdAPI {
     rpc GetManyAd (GetManyAdRequest) returns (PaginatedAd) {}

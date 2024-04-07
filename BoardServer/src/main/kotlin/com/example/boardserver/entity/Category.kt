@@ -1,13 +1,13 @@
-package org.example.boardserver.entity
+package com.example.boardserver.entity
 
 import jakarta.persistence.*
 
 @Entity
 @Table(name = "category")
 class Category(
-
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    val id: Long,
     val name: String,
-
     @OneToMany(
         mappedBy = "category",
         fetch = FetchType.LAZY,
@@ -15,13 +15,12 @@ class Category(
         cascade = [CascadeType.ALL]
     )
     val ads: MutableList<Ad> = mutableListOf()
-) : BaseAuditEntity<Long>() {
-
-    fun addEmployee(block: Category.() -> Ad) {
+){
+    fun addAds(block: Category.() -> Ad) {
         ads.add(block())
     }
 
-    fun setEmployees(block: Category.() -> MutableSet<Ad>) {
+    fun setAds(block: Category.() -> MutableSet<Ad>) {
         ads.clear()
         ads.addAll(block())
     }
