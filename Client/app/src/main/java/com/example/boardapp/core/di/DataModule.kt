@@ -1,6 +1,6 @@
 package com.example.boardapp.core.di
 
-import AdProto.v1.AdAPIGrpcKt
+import adProto.v1.AdAPIGrpcKt
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
@@ -24,6 +24,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.grpc.Grpc
+import io.grpc.ManagedChannelBuilder
 import io.grpc.TlsChannelCredentials
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +46,8 @@ object DataModule {
     @Singleton
     fun provideAdAPI(): AdAPIGrpcKt.AdAPICoroutineStub {
         return AdAPIGrpcKt.AdAPICoroutineStub(
-            Grpc.newChannelBuilder("localhost:9090", TlsChannelCredentials.create())
+            ManagedChannelBuilder.forAddress("localhost", 9090)
+                .usePlaintext()
                 .executor(Dispatchers.IO.asExecutor())
                 .build()
         )
@@ -55,7 +57,7 @@ object DataModule {
     @Singleton
     fun provideAuthAPI(): AuthAPIGrpcKt.AuthAPICoroutineStub {
         return AuthAPIGrpcKt.AuthAPICoroutineStub(
-            Grpc.newChannelBuilder("localhost:9090", TlsChannelCredentials.create())
+            Grpc.newChannelBuilder("192.168.0.11:9090", TlsChannelCredentials.create())
                 .executor(Dispatchers.IO.asExecutor())
                 .build()
         )
@@ -94,6 +96,7 @@ object DataModule {
                     HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
                 OkHttpClient.Builder().addInterceptor(interceptor).build()
             }
+
             else -> OkHttpClient()
         }
     }

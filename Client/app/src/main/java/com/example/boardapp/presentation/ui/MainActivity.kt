@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        File("/data/data/com.example.boardapp/code_cache/.overlay/base.apk/classes12.dex").setReadOnly()
         File("/data/data/com.example.boardapp/code_cache/.overlay/base.apk/classes11.dex").setReadOnly()
 
         /*intent.data?.getQueryParameter("code")?.let { code -> loginOAuth(code) }*/

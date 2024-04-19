@@ -1,7 +1,7 @@
 package com.example.boardapp.data.repository
 
-import AdProto.v1.AdAPIGrpcKt
-import AdProto.v1.getManyAdRequest
+import adProto.v1.AdAPIGrpcKt
+import adProto.v1.getManyAdRequest
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -15,6 +15,7 @@ import com.example.boardapp.domain.entities.Ad
 import com.example.boardapp.domain.entities.fromGrpc
 import io.grpc.StatusException
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
@@ -59,6 +60,7 @@ class AdRemoteMediator(
             }
 
         return try {
+            Timber.w("try load")
             val jwt = jwtDataStore.data.first()
             val resp =
                 adAPI.getManyAd(

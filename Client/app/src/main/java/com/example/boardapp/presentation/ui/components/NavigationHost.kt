@@ -26,7 +26,7 @@ fun NavigationHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = NavItem.Login.route,
+        startDestination = NavItem.AdList.route,
         modifier = modifier,
     ) {
         composable(NavItem.Login.route) {

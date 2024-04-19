@@ -2,16 +2,16 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "403830eeeb5baa02ae354e1e56cf9d1f",
+    "identityHash": "5b36e6d0ec66d1e409d7edfcb04faa38",
     "entities": [
       {
         "tableName": "ads",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `is_favorite` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `price` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `is_favorite` INTEGER NOT NULL, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `price` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -84,7 +84,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '403830eeeb5baa02ae354e1e56cf9d1f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5b36e6d0ec66d1e409d7edfcb04faa38')"
     ]
   }
 }

@@ -1,8 +1,8 @@
 package com.example.boardapp.data.repository
 
-import AdProto.v1.AdAPIGrpcKt
-import AdProto.v1.getOneAdRequest
-import AdProto.v1.setFavoriteOneAdRequest
+import adProto.v1.AdAPIGrpcKt
+import adProto.v1.getOneAdRequest
+import adProto.v1.setFavoriteOneAdRequest
 import androidx.datastore.core.DataStore
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager

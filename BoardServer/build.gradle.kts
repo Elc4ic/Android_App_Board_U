@@ -11,11 +11,18 @@ plugins {
     application
 }
 
-group = "org.example"
-version = "1.0-SNAPSHOT"
+group = "org.example.boardserver"
+version = "0.0.1"
 
 repositories {
     mavenCentral()
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+    }
+    enabled = true
 }
 
 val protobuf = "3.25.3"
@@ -41,7 +48,6 @@ dependencies {
     implementation("com.google.protobuf:protoc:${protobuf}")
     implementation("com.google.protobuf:protobuf-kotlin:${protobuf}")
     implementation("net.devh:grpc-server-spring-boot-starter:${grpcServerVersion}")
-
     //annotation
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     //database
@@ -79,7 +85,11 @@ protobuf {
 }
 
 application {
-    mainClass.set("com/example/boardserver/ServerApplicationKt")
+    mainClass.set("com.example.boardserver.ServerApplicationKt")
+}
+
+springBoot {
+    mainClass.set("com.example.boardserver.ServerApplicationKt")
 }
 
 tasks.test {

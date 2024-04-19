@@ -1,6 +1,6 @@
 package com.example.boardapp.domain.entities
 
-import adProto.AdOuterClass
+import adProto.v1.AdOuterClass
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -11,7 +11,7 @@ data class Ad(
     @ColumnInfo(name = "is_favorite") val isFavorite: Boolean = false,
     val title: String = "",
     val description: String = "",
-    val price: Int = 0
+    val price: Long = 0
 
 )
 

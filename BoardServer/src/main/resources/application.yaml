@@ -1,13 +1,16 @@
 spring:
   application:
-    name: Board server
+    name: boardserver
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: postgres
+    url: ${DB_URL}
+    username: ${PG_USER}
+    password: ${PG_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   server:
     port: 8080
   grpc:

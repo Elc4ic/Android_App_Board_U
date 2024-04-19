@@ -19,7 +19,8 @@ class AdService(
         request: AdOuterClass.GetManyAdRequest?,
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
-        val adPage = adRepository.findAll(PageRequest.of(request!!.page.toInt(), request.page.toInt()))
+        val adPage = adRepository.findAll(PageRequest.of(request!!.page.toInt(), request.limit.toInt()))
+        println("something do")
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
         responseObserver?.onNext(

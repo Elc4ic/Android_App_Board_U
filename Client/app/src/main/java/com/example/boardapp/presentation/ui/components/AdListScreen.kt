@@ -40,7 +40,7 @@ fun AdListScreen(
     viewModel: AdListViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val stations = viewModel.pages.collectAsLazyPagingItems()
+    val ads = viewModel.pages.collectAsLazyPagingItems()
     val search by viewModel.search.collectAsState()
     val lazyListState = rememberLazyListState()
 
@@ -71,11 +71,11 @@ fun AdListScreen(
             modifier = Modifier.fillMaxSize(),
         ) {
             items(
-                count = stations.itemCount,
-                key = stations.itemKey { it.id },
-                contentType = stations.itemContentType { "station" },
+                count = ads.itemCount,
+                key = ads.itemKey { it.id },
+                contentType = ads.itemContentType { "ad" },
             ) { idx ->
-                val item = stations[idx]!!
+                val item = ads[idx]!!
                 Column {
                     AdCard(
                         ad = item,
