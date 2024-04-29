@@ -21,8 +21,8 @@ sealed class NavItem(val route: String, val ladel: String, val icon: ImageVector
     fun prepareNavigationBarItems(): List<NavItem> {
         val navigationBarItemsList = arrayListOf<NavItem>()
 
-        navigationBarItemsList.add(Home)
         navigationBarItemsList.add(AdList)
+        navigationBarItemsList.add(AddAd)
         navigationBarItemsList.add(Profile)
 
         return navigationBarItemsList

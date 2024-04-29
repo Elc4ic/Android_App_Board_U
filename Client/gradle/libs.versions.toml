@@ -1,5 +1,5 @@
 [versions]
-agp = "7.4.1"
+agp = "7.4.2"
 kotlin = "1.9.22"
 spotless = "6.25.0"
 ksp = "1.9.23-1.0.19"
@@ -32,7 +32,6 @@ espresso-core = "3.5.1"
 browser = "1.8.0"
 appcompat = "1.6.1"
 material = "1.11.0"
-google-services = "4.4.1"
 
 [libraries]
 # Coroutines
@@ -67,7 +66,6 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 
 # Datastore
 datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
-
 
 # Lifecycle
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
@@ -131,6 +129,5 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 hiltAndroid = { id = 'com.google.dagger.hilt.android', version.ref = "hilt" }
 protobuf = { id = 'com.google.protobuf', version.ref = "protobuf-plugin" }
 ksp = { id = 'com.google.devtools.ksp', version.ref = "ksp" }
-google-services = { id = 'com.google.gms.google-services', version.ref = "google-services" }
 
 [bundles]

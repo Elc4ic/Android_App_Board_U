@@ -1,6 +1,6 @@
 package com.example.boardserver.dto
 
-import adProto.AdOuterClass
+import adProto.v1.AdOuterClass
 import com.example.boardserver.entity.Ad
 import org.springframework.data.domain.Page
 
@@ -23,7 +23,7 @@ object AdUtils {
             .build()
     }
 
-    fun toPaginatedAdGrpc(adPage: Page<Ad>, page: Long, total: Long, pageCount: Long): AdOuterClass.PaginatedAd {
+    fun toPaginatedAdGrpc(adPage: List<Ad>, page: Long, total: Long, pageCount: Long): AdOuterClass.PaginatedAd {
         val ads = mutableListOf<AdOuterClass.Ad>()
         adPage.forEach { ad -> ads.add(toAdGrpc(ad)) }
         return AdOuterClass.PaginatedAd.newBuilder()

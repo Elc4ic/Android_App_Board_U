@@ -10,4 +10,6 @@ interface AdRepository {
     fun watchOne(id: String): Flow<Ad>
 
     suspend fun makeFavoriteOne(id: String, value: Boolean): Ad
+
+    suspend fun addAd(ad: Ad)
 }

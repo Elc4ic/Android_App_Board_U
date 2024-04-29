@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "3.2.2"
+    id("war")
     id("io.spring.dependency-management") version "1.1.4"
     id("com.google.protobuf") version "0.9.4"
     kotlin("jvm") version "1.9.23"
@@ -16,6 +17,13 @@ version = "0.0.1"
 
 repositories {
     mavenCentral()
+}
+
+tasks.war {
+    manifest {
+        attributes["Main-Class"] = application.mainClass
+    }
+    enabled = true
 }
 
 tasks.jar {

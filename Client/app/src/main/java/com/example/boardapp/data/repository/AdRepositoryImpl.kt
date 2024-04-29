@@ -11,6 +11,7 @@ import androidx.paging.PagingData
 import com.example.boardapp.data.database.Database
 import com.example.boardapp.data.datastore.Session
 import com.example.boardapp.domain.entities.Ad
+import com.example.boardapp.domain.entities.asGrpcModel
 import com.example.boardapp.domain.entities.fromGrpc
 import com.example.boardapp.domain.repositories.AdRepository
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +30,7 @@ constructor(
     private val jwtDataStore: DataStore<Session.Jwt>,
 ) : AdRepository {
     companion object {
-        private const val NETWORK_PAGE_SIZE = 50
+        private const val NETWORK_PAGE_SIZE = 20
     }
 
     @OptIn(ExperimentalPagingApi::class)
@@ -56,11 +57,9 @@ constructor(
             .flowOn(Dispatchers.Default)
     }
 
-    /** Observe one Ad in the cache or the api. */
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun watchOne(id: String): Flow<Ad> =
         jwtDataStore.data.flatMapLatest { jwt ->
-            // Try to insert in database
             val ad =
                 adAPI.getOneAd(
                     getOneAdRequest {
@@ -98,5 +97,9 @@ constructor(
             database.AdDao().insert(entity)
             entity
         }
+    }
+
+    override suspend fun addAd(ad: Ad) {
+        adAPI.addAd(asGrpcModel(ad))
     }
 }

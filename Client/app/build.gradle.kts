@@ -1,4 +1,3 @@
-
 import com.google.protobuf.gradle.id
 import java.io.FileInputStream
 import java.util.*
@@ -9,7 +8,6 @@ plugins {
     alias(libs.plugins.kotlinKapt)
     alias(libs.plugins.kotlinParcelize)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.spotless)
     alias(libs.plugins.hiltAndroid)
     alias(libs.plugins.protobuf)
     alias(libs.plugins.ksp)
@@ -36,6 +34,7 @@ android {
         resValue("string", "yandex_client_secret", (secureProps.getProperty("YANDEX_CLIENT_SECRET") ?: ""))
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -86,11 +85,11 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
         freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
     }
 
@@ -98,27 +97,27 @@ android {
     packagingOptions { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
 }
 
-protobuf{
-    protoc{
+protobuf {
+    protoc {
         artifact = "com.google.protobuf:protoc:3.21.12"
     }
-    plugins{
-        id("grpc"){
+    plugins {
+        id("grpc") {
             artifact = "io.grpc:protoc-gen-grpc-java:1.52.1"
         }
-        id("grpckt"){
+        id("grpckt") {
             artifact = "io.grpc:protoc-gen-grpc-kotlin:1.3.0:jdk8@jar"
         }
     }
-    generateProtoTasks{
-        all().forEach{
-            it.plugins{
-                id("grpc"){ option("lite") }
-                id("grpckt"){ option("lite") }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                id("grpc") { option("lite") }
+                id("grpckt") { option("lite") }
             }
             it.builtins {
-                id("kotlin"){ option("lite") }
-                id("java"){ option("lite") }
+                id("kotlin") { option("lite") }
+                id("java") { option("lite") }
             }
         }
     }

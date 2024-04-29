@@ -1,10 +1,6 @@
 package com.example.boardapp.presentation.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,37 +34,14 @@ fun AboutScreen(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Justify,
             modifier = Modifier.fillMaxWidth()
         )
-        Text(
-            stringResource(R.string.about_api_url, stringResource(R.string.api_url)),
-            textAlign = TextAlign.Justify,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Text(
-            buildAnnotatedString {
-                append(stringResource(R.string.data_description_1))
-                append("\n")
-                append(stringResource(R.string.data_description_2))
-            },
-            textAlign = TextAlign.Justify,
-            modifier = Modifier.fillMaxWidth()
-        )
         Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth(),
         ) {
             ElevatedButton(
                 onClick = { uriHandler.openUri(context.getString(R.string.project_url)) }
             ) {
                 Text(stringResource(R.string.source_code))
-            }
-            ElevatedButton(
-                onClick = {
-                    uriHandler.openUri(
-                        "https://github.com/Darkness4/train-station/blob/main/protos/trainstationapis/trainstation/v1alpha1/station.proto"
-                    )
-                }
-            ) {
-                Text(stringResource(R.string.api_specs))
             }
         }
     }

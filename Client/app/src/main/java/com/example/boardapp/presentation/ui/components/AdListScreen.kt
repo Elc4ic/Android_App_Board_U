@@ -74,8 +74,8 @@ fun AdListScreen(
                 count = ads.itemCount,
                 key = ads.itemKey { it.id },
                 contentType = ads.itemContentType { "ad" },
-            ) { idx ->
-                val item = ads[idx]!!
+            ) { index ->
+                val item = ads[index]!!
                 Column {
                     AdCard(
                         ad = item,

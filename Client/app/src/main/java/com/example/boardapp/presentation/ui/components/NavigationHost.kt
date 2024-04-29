@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.boardapp.presentation.ui.components.common.NavBar
 import com.example.boardapp.presentation.viewmodel.AdListViewModel
+import com.example.boardapp.presentation.viewmodel.AddAdViewModel
 import com.example.boardapp.presentation.viewmodel.DetailViewModel
 import com.example.boardapp.presentation.viewmodel.DetailViewModel.Companion.provideFactory
 import com.example.boardapp.presentation.viewmodel.LoginViewModel
@@ -50,6 +51,18 @@ fun NavigationHost(
                 bottomBar = { NavBar(navController) },
                 content = { padding ->
                     AboutScreen(modifier = Modifier.padding(padding))
+                }
+            )
+        }
+        composable(NavItem.AddAd.route) {
+            Scaffold(
+                bottomBar = { NavBar(navController) },
+                content = { padding ->
+                    AddAdScreen(
+                        modifier = Modifier.padding(padding),
+                        navController = navController,
+                        viewModel = hiltViewModel<AddAdViewModel>()
+                    )
                 }
             )
         }

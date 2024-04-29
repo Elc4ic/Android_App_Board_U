@@ -46,8 +46,7 @@ object DataModule {
     @Singleton
     fun provideAdAPI(): AdAPIGrpcKt.AdAPICoroutineStub {
         return AdAPIGrpcKt.AdAPICoroutineStub(
-            ManagedChannelBuilder.forAddress("localhost", 9090)
-                .usePlaintext()
+            ManagedChannelBuilder.forAddress("192.168.1.35", 9090).usePlaintext()
                 .executor(Dispatchers.IO.asExecutor())
                 .build()
         )

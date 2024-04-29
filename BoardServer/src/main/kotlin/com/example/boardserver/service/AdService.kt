@@ -1,28 +1,28 @@
 package com.example.boardserver.service
 
-import adProto.AdOuterClass
+import adProto.v1.AdOuterClass
 import com.example.boardserver.dto.AdUtils
 import com.example.boardserver.repository.AdRepository
 import com.example.boardserver.repository.CategoryRepository
 import com.google.protobuf.Empty
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 
 @GrpcService
 class AdService(
     private val adRepository: AdRepository,
     private val categoryRepository: CategoryRepository
-) : adProto.AdAPIGrpc.AdAPIImplBase() {
+) : adProto.v1.AdAPIGrpc.AdAPIImplBase() {
 
     override fun getManyAd(
         request: AdOuterClass.GetManyAdRequest?,
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
-        val adPage = adRepository.findAll(PageRequest.of(request!!.page.toInt(), request.limit.toInt()))
-        println("something do")
+        val adPage = adRepository.findAll()
         val total = adRepository.count()
-        val pageCount = total / request.limit + 1
+        val pageCount = total / request!!.limit + 1
         responseObserver?.onNext(
             AdUtils.toPaginatedAdGrpc(adPage, request.page, total, pageCount)
         )

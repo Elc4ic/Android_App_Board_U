@@ -56,8 +56,7 @@ fun LoginScreen(
                 .appendQueryParameter("response_type","code")
                 .appendQueryParameter("client_id", context.getString(R.string.yandex_client_id))
 /*                .appendQueryParameter("scope", "login:email login:info login:birthday")
-                .appendQueryParameter("state", UUID.randomUUID().toString())
-                .appendQueryParameter("redirect_uri", "https://train.mnguyen.fr/oauth2")*/
+                .appendQueryParameter("state", UUID.randomUUID().toString())*/
                 .build()
 
         val customTabsIntent = CustomTabsIntent.Builder().build()

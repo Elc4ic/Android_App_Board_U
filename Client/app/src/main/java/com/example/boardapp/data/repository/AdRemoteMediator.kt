@@ -43,6 +43,7 @@ class AdRemoteMediator(
                     val remoteKeys = getRemoteKeyClosestToCurrentPosition(state)
                     remoteKeys?.nextKey?.minus(1) ?: STARTING_PAGE_INDEX
                 }
+
                 LoadType.PREPEND -> {
                     val remoteKeys = getRemoteKeyForFirstItem(state)
                     remoteKeys?.prevKey
@@ -50,6 +51,7 @@ class AdRemoteMediator(
                             endOfPaginationReached = remoteKeys != null
                         )
                 }
+
                 LoadType.APPEND -> {
                     val remoteKeys = getRemoteKeyForLastItem(state)
                     remoteKeys?.nextKey
@@ -60,8 +62,9 @@ class AdRemoteMediator(
             }
 
         return try {
-            Timber.w("try load")
+
             val jwt = jwtDataStore.data.first()
+            Timber.w(jwt.token+" token")
             val resp =
                 adAPI.getManyAd(
                     getManyAdRequest {
@@ -74,7 +77,6 @@ class AdRemoteMediator(
             val items = resp.dataList
             val endOfPaginationReached = items.isEmpty()
             database.withTransaction {
-                // clear all tables in the database
                 if (loadType == LoadType.REFRESH) {
                     database.remoteKeysDao().clear()
                     database.AdDao().clear()
@@ -88,8 +90,11 @@ class AdRemoteMediator(
             }
             MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (exception: IOException) {
+            Timber.w(exception.message)
             MediatorResult.Error(exception)
         } catch (exception: StatusException) {
+            Timber.w(exception.message)
+            Timber.w(exception.cause)
             MediatorResult.Error(exception)
         }
     }
@@ -110,7 +115,6 @@ class AdRemoteMediator(
             ?.data
             ?.firstOrNull()
             ?.let { item ->
-                // Get the remote keys of the first items retrieved
                 database.remoteKeysDao().findById(item.id)
             }
     }
@@ -121,7 +125,6 @@ class AdRemoteMediator(
             ?.data
             ?.lastOrNull()
             ?.let { item ->
-                // Get the remote keys of the last item retrieved
                 database.remoteKeysDao().findById(item.id)
             }
     }

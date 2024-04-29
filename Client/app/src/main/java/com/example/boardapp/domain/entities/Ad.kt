@@ -12,8 +12,16 @@ data class Ad(
     val title: String = "",
     val description: String = "",
     val price: Long = 0
-
 )
+
+fun asGrpcModel(ad: Ad): AdOuterClass.Ad =
+    AdOuterClass.Ad.newBuilder()
+        .setId(ad.id)
+        .setIsFavorite(ad.isFavorite)
+        .setTitle(ad.title)
+        .setDescription(ad.description)
+        .setPrice(ad.price)
+        .build()
 
 fun fromGrpc(model: AdOuterClass.Ad) =
     Ad(
@@ -25,11 +33,4 @@ fun fromGrpc(model: AdOuterClass.Ad) =
     )
 
 
-/*    fun asGrpcModel(): AdOuterClass.Ad =
-        AdOuterClass.Ad.newBuilder()
-            .setId(id)
-            .setIsFavorite(isFavorite)
-            .setTitle(title)
-            .setDescription(description)
-            .setPrice(price!!)
-            .build()*/
+
