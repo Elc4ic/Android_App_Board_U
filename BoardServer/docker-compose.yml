@@ -12,7 +12,7 @@ services:
         PG_USER: ${PG_USER}
         PG_PASSWORD: ${PG_PASSWORD}
     ports:
-      - "8080:8080"
+      - "9090:9090"
     depends_on:
       - db
     environment:

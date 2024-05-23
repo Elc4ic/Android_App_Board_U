@@ -1,53 +1,108 @@
 package com.example.boardserver.service
 
-import adProto.v1.AdOuterClass
-import com.example.boardserver.dto.AdUtils
+import board.AdOuterClass
+import board.UserOuterClass
 import com.example.boardserver.repository.AdRepository
 import com.example.boardserver.repository.CategoryRepository
-import com.google.protobuf.Empty
+import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.utils.AdUtils
+import com.example.boardserver.utils.JwtProvider
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
-import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+
 
 @GrpcService
 class AdService(
     private val adRepository: AdRepository,
-    private val categoryRepository: CategoryRepository
-) : adProto.v1.AdAPIGrpc.AdAPIImplBase() {
+    private val userRepository: UserRepository,
+    private val categoryRepository: CategoryRepository,
+    private val jwtProvider: JwtProvider,
+) : board.AdAPIGrpc.AdAPIImplBase() {
 
     override fun getManyAd(
         request: AdOuterClass.GetManyAdRequest?,
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
-        val adPage = adRepository.findAll()
+        val pagingSort: Pageable = PageRequest.of(request!!.page.toInt(), request.limit.toInt())
+        val adPage = adRepository.findAll(pagingSort)
         val total = adRepository.count()
-        val pageCount = total / request!!.limit + 1
+        val pageCount = total / request.limit + 1
+
         responseObserver?.onNext(
-            AdUtils.toPaginatedAdGrpc(adPage, request.page, total, pageCount)
+            AdUtils.toPaginatedAdGrpc(adPage.content, request.page, total, pageCount)
         )
         responseObserver?.onCompleted()
     }
 
-    override fun getOneAd(request: AdOuterClass.GetOneAdRequest?, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
-        val ad = request?.let { adRepository.findById(it.id) }
-        responseObserver?.onNext(ad?.let { AdUtils.toAdGrpc(it.get()) })
+    override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
+        val ad = request.let { adRepository.findById(it.id) }
+        responseObserver?.onNext(ad.let { AdUtils.toAdGrpc(it.get()) })
         responseObserver?.onCompleted()
     }
 
     override fun setFavoriteAd(
-        request: AdOuterClass.SetFavoriteOneAdRequest?,
-        responseObserver: StreamObserver<Empty>?
+        request: AdOuterClass.SetFavoriteRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        val ad = request?.let { adRepository.findById(it.id) }
-        ad.let { AdUtils.ChangeAdFav(it!!.get()) }.let { adRepository.save(it) }
-        responseObserver?.onNext(Empty.newBuilder().build())
+        val user = userRepository.findByToken(request!!.token).get()
+        val ad = adRepository.findById(request.id).get()
+        if (user.fav_ads.contains(ad)) {
+            user.deleteFavAd { ad }
+        } else {
+            user.addFavAd { ad }
+        }
+        responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         responseObserver?.onCompleted()
     }
 
-    override fun addAd(request: AdOuterClass.Ad?, responseObserver: StreamObserver<Empty>?) {
-        request.let { AdUtils.fromAdGrpc(it!!) }.let { adRepository.save(it) }
-        responseObserver?.onNext(Empty.newBuilder().build())
+    override fun addAd(
+        request: AdOuterClass.ChangeAdRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+    ) {
+        if (request!!.token == null) {
+            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(false).build())
+        } else {
+            adRepository.save(AdUtils.fromAdGrpc(request.ad))
+            val user = userRepository.findByToken(request.token).get()
+            user.addMyAd { AdUtils.fromAdGrpc(request.ad) }
+            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
+        }
         responseObserver?.onCompleted()
     }
+
+    override fun deleteAd(
+        request: AdOuterClass.ChangeAdRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+    ) {
+        adRepository.delete(AdUtils.fromAdGrpc(request!!.ad))
+    }
+
+    override fun muteAd(
+        request: AdOuterClass.ChangeAdRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+    ) {
+        adRepository.save(AdUtils.fromAdGrpcMute(request!!.ad))
+    }
+
+    override fun getFavoriteAds(
+        request: UserOuterClass.TokenProto?,
+        responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
+    ) {
+        val user = userRepository.findByToken(request!!.token).get()
+        responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.fav_ads))
+        responseObserver.onCompleted()
+    }
+
+    override fun getMyAds(
+        request: UserOuterClass.TokenProto?,
+        responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
+    ) {
+        val user = userRepository.findByToken(request!!.token).get()
+        responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.my_ads))
+        responseObserver.onCompleted()
+    }
+
+
 }

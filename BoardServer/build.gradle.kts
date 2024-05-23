@@ -58,8 +58,12 @@ dependencies {
     implementation("net.devh:grpc-server-spring-boot-starter:${grpcServerVersion}")
     //annotation
     implementation("javax.annotation:javax.annotation-api:1.3.2")
+    //jwt
+    implementation("io.jsonwebtoken:jjwt:0.12.1")
     //database
     runtimeOnly("org.postgresql:postgresql")
+    //bcrypt
+    implementation("at.favre.lib:bcrypt:0.10.2")
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation(platform("org.junit:junit-bom:5.9.1"))

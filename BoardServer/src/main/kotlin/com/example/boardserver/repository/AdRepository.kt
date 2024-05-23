@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface AdRepository : JpaRepository<Ad, String> {
-    override fun findById(id: String): Optional<Ad>
+interface AdRepository : JpaRepository<Ad, Long> {
+    override fun findAll(pageable: Pageable): Page<Ad>
+    override fun findById(id: Long): Optional<Ad>
 }

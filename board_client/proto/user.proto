@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package board;
+
+service UserAPI {
+    rpc SignUp (SignupRequestMessage) returns (SignupResponseMessage) {};
+    rpc Login (LoginRequestMessage) returns (LoginResponseMessage) {};
+    rpc ChangeUserData (SetUser) returns (IsSuccess);
+    rpc DeleteUser (TokenProto) returns (IsSuccess);
+}
+
+message IsSuccess {
+    bool login = 1;
+}
+
+message LoginRequestMessage {
+    string username = 1;
+    string password = 2;
+}
+
+message LoginResponseMessage {
+    User user = 1;
+    string access_token = 2;
+}
+
+message SignupRequestMessage {
+    string username = 1;
+    string password = 2;
+    string phone = 3;
+}
+
+message SignupResponseMessage {
+    User user = 1;
+}
+
+message SetUser {
+    User user = 1;
+    string token = 2;
+}
+
+message TokenProto {
+    string token = 1;
+}
+
+message User {
+    uint64 id = 1;
+    string username = 2;
+    string password = 3;
+    string email = 4;
+    string token = 5;
+    string address = 6;
+    string avatar = 7;
+}

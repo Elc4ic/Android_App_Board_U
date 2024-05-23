@@ -5,9 +5,11 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "category")
 class Category(
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
     val name: String,
+    val path: String,
     @OneToMany(
         mappedBy = "category",
         fetch = FetchType.LAZY,
@@ -15,7 +17,7 @@ class Category(
         cascade = [CascadeType.ALL]
     )
     val ads: MutableList<Ad> = mutableListOf()
-){
+) {
     fun addAds(block: Category.() -> Ad) {
         ads.add(block())
     }
