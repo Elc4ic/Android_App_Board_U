@@ -21,21 +21,25 @@ export 'user.pb.dart';
 
 @$pb.GrpcServiceName('board.UserAPI')
 class UserAPIClient extends $grpc.Client {
-  static final _$signUp = $grpc.ClientMethod<$0.SignupRequestMessage, $0.SignupResponseMessage>(
-      '/board.UserAPI/SignUp',
-      ($0.SignupRequestMessage value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.SignupResponseMessage.fromBuffer(value));
-  static final _$login = $grpc.ClientMethod<$0.LoginRequestMessage, $0.LoginResponseMessage>(
-      '/board.UserAPI/Login',
-      ($0.LoginRequestMessage value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $0.LoginResponseMessage.fromBuffer(value));
+  static final _$getSignUp = $grpc.ClientMethod<$0.SignupRequest, $0.IsSuccess>(
+      '/board.UserAPI/GetSignUp',
+      ($0.SignupRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
+  static final _$getLogin = $grpc.ClientMethod<$0.LoginRequest, $0.LoginResponse>(
+      '/board.UserAPI/GetLogin',
+      ($0.LoginRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.LoginResponse.fromBuffer(value));
+  static final _$getUserData = $grpc.ClientMethod<$0.JwtProto, $0.UserResponse>(
+      '/board.UserAPI/GetUserData',
+      ($0.JwtProto value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.UserResponse.fromBuffer(value));
   static final _$changeUserData = $grpc.ClientMethod<$0.SetUser, $0.IsSuccess>(
       '/board.UserAPI/ChangeUserData',
       ($0.SetUser value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
-  static final _$deleteUser = $grpc.ClientMethod<$0.TokenProto, $0.IsSuccess>(
+  static final _$deleteUser = $grpc.ClientMethod<$0.JwtProto, $0.IsSuccess>(
       '/board.UserAPI/DeleteUser',
-      ($0.TokenProto value) => value.writeToBuffer(),
+      ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
 
   UserAPIClient($grpc.ClientChannel channel,
@@ -44,19 +48,23 @@ class UserAPIClient extends $grpc.Client {
       : super(channel, options: options,
         interceptors: interceptors);
 
-  $grpc.ResponseFuture<$0.SignupResponseMessage> signUp($0.SignupRequestMessage request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$signUp, request, options: options);
+  $grpc.ResponseFuture<$0.IsSuccess> getSignUp($0.SignupRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getSignUp, request, options: options);
   }
 
-  $grpc.ResponseFuture<$0.LoginResponseMessage> login($0.LoginRequestMessage request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$login, request, options: options);
+  $grpc.ResponseFuture<$0.LoginResponse> getLogin($0.LoginRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getLogin, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.UserResponse> getUserData($0.JwtProto request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getUserData, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.IsSuccess> changeUserData($0.SetUser request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$changeUserData, request, options: options);
   }
 
-  $grpc.ResponseFuture<$0.IsSuccess> deleteUser($0.TokenProto request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$0.IsSuccess> deleteUser($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$deleteUser, request, options: options);
   }
 }
@@ -66,20 +74,27 @@ abstract class UserAPIServiceBase extends $grpc.Service {
   $core.String get $name => 'board.UserAPI';
 
   UserAPIServiceBase() {
-    $addMethod($grpc.ServiceMethod<$0.SignupRequestMessage, $0.SignupResponseMessage>(
-        'SignUp',
-        signUp_Pre,
+    $addMethod($grpc.ServiceMethod<$0.SignupRequest, $0.IsSuccess>(
+        'GetSignUp',
+        getSignUp_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.SignupRequestMessage.fromBuffer(value),
-        ($0.SignupResponseMessage value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.LoginRequestMessage, $0.LoginResponseMessage>(
-        'Login',
-        login_Pre,
+        ($core.List<$core.int> value) => $0.SignupRequest.fromBuffer(value),
+        ($0.IsSuccess value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.LoginRequest, $0.LoginResponse>(
+        'GetLogin',
+        getLogin_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.LoginRequestMessage.fromBuffer(value),
-        ($0.LoginResponseMessage value) => value.writeToBuffer()));
+        ($core.List<$core.int> value) => $0.LoginRequest.fromBuffer(value),
+        ($0.LoginResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.JwtProto, $0.UserResponse>(
+        'GetUserData',
+        getUserData_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
+        ($0.UserResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.SetUser, $0.IsSuccess>(
         'ChangeUserData',
         changeUserData_Pre,
@@ -87,33 +102,38 @@ abstract class UserAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.SetUser.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.TokenProto, $0.IsSuccess>(
+    $addMethod($grpc.ServiceMethod<$0.JwtProto, $0.IsSuccess>(
         'DeleteUser',
         deleteUser_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.TokenProto.fromBuffer(value),
+        ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
   }
 
-  $async.Future<$0.SignupResponseMessage> signUp_Pre($grpc.ServiceCall call, $async.Future<$0.SignupRequestMessage> request) async {
-    return signUp(call, await request);
+  $async.Future<$0.IsSuccess> getSignUp_Pre($grpc.ServiceCall call, $async.Future<$0.SignupRequest> request) async {
+    return getSignUp(call, await request);
   }
 
-  $async.Future<$0.LoginResponseMessage> login_Pre($grpc.ServiceCall call, $async.Future<$0.LoginRequestMessage> request) async {
-    return login(call, await request);
+  $async.Future<$0.LoginResponse> getLogin_Pre($grpc.ServiceCall call, $async.Future<$0.LoginRequest> request) async {
+    return getLogin(call, await request);
+  }
+
+  $async.Future<$0.UserResponse> getUserData_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
+    return getUserData(call, await request);
   }
 
   $async.Future<$0.IsSuccess> changeUserData_Pre($grpc.ServiceCall call, $async.Future<$0.SetUser> request) async {
     return changeUserData(call, await request);
   }
 
-  $async.Future<$0.IsSuccess> deleteUser_Pre($grpc.ServiceCall call, $async.Future<$0.TokenProto> request) async {
+  $async.Future<$0.IsSuccess> deleteUser_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
     return deleteUser(call, await request);
   }
 
-  $async.Future<$0.SignupResponseMessage> signUp($grpc.ServiceCall call, $0.SignupRequestMessage request);
-  $async.Future<$0.LoginResponseMessage> login($grpc.ServiceCall call, $0.LoginRequestMessage request);
+  $async.Future<$0.IsSuccess> getSignUp($grpc.ServiceCall call, $0.SignupRequest request);
+  $async.Future<$0.LoginResponse> getLogin($grpc.ServiceCall call, $0.LoginRequest request);
+  $async.Future<$0.UserResponse> getUserData($grpc.ServiceCall call, $0.JwtProto request);
   $async.Future<$0.IsSuccess> changeUserData($grpc.ServiceCall call, $0.SetUser request);
-  $async.Future<$0.IsSuccess> deleteUser($grpc.ServiceCall call, $0.TokenProto request);
+  $async.Future<$0.IsSuccess> deleteUser($grpc.ServiceCall call, $0.JwtProto request);
 }

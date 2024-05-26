@@ -2,10 +2,13 @@ import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/repository/ad_repository.dart';
+import '../../data/repository/category_repository.dart';
+import '../../data/repository/user_repository.dart';
 
 class AddAdForm extends StatefulWidget {
   const AddAdForm({super.key});
@@ -16,81 +19,32 @@ class AddAdForm extends StatefulWidget {
 
 class _AddAdFormState extends State<AddAdForm> {
   final adRepository = GetIt.I<AdRepository>();
+  final userRepository = GetIt.I<UserRepository>();
+  final categoryRepository = GetIt.I<CategoryRepository>();
+
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
-  String _titleErrorText = '';
-  String _priceErrorText = '';
-  String _descErrorText = '';
-
-  void _validateText(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        _titleErrorText = SC.REQUARIED;
-      });
-    } else {
-      setState(() {
-        _titleErrorText = '';
-      });
-    }
-  }
-
-  void _validateDesc(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        _descErrorText = SC.REQUARIED;
-      });
-    } else {
-      setState(() {
-        _descErrorText = '';
-      });
-    }
-  }
-
-  void _validatePrice(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        _priceErrorText = SC.REQUARIED;
-      });
-    } else if (!isPriceValid(value)) {
-      setState(() {
-        _priceErrorText = SC.VALID;
-      });
-    } else {
-      setState(() {
-        _priceErrorText = '';
-      });
-    }
-  }
-
-  bool isPriceValid(String s) {
-    if (s == null) {
-      return false;
-    }
-    try {
-      double.parse(s);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
+  Category? category;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       await adRepository.addAd(
-        Ad(
-          title: _titleController.text,
-          price: fnum.Int64(_priceController.text as int),
-          description: _descController.text,
-        ),
-      );
+          Ad(
+            title: _titleController.text,
+            price: fnum.Int64(_priceController.text as int),
+            description: _descController.text,
+            category: category,
+          ),
+          userRepository.getToken());
       context.pushReplacement(SC.AD_PAGE);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Category>? categories = categoryRepository.getCategories();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -101,34 +55,70 @@ class _AddAdFormState extends State<AddAdForm> {
             TextFormField(
               controller: _titleController,
               keyboardType: TextInputType.text,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: SC.TITLE,
-                errorText: _titleErrorText,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9.0),
+                  ),
+                ),
               ),
-              validator: (value) => _titleErrorText,
-              onChanged: _validateText,
+              validator:
+                  RequiredValidator(errorText: 'Please enter title').call,
             ),
             Markup.dividerH10,
             TextFormField(
               controller: _priceController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: SC.PRICE,
-                errorText: _priceErrorText,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9.0),
+                  ),
+                ),
               ),
-              validator: (value) => _priceErrorText,
-              onChanged: _validatePrice,
+              validator:
+                  RequiredValidator(errorText: 'Please enter price').call,
             ),
             Markup.dividerH10,
             TextFormField(
+              maxLines: 3,
               controller: _descController,
               keyboardType: TextInputType.text,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: SC.DECSRIPTION,
-                errorText: _titleErrorText,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9.0),
+                  ),
+                ),
               ),
-              validator: (value) => _descErrorText,
-              onChanged: _validateDesc,
+            ),
+            Markup.dividerH10,
+            DropdownButtonFormField(
+              items: categories?.map((Category category) {
+                return DropdownMenuItem(
+                  value: category,
+                  child: Text(category.name),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() => category = newValue);
+              },
+              value: category,
+              decoration: const InputDecoration(
+                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(9.0),
+                  ),
+                ),
+              ),
             ),
             Markup.dividerH10,
             ElevatedButton(

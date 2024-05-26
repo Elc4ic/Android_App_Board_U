@@ -12,13 +12,14 @@ part 'ad_list_event.dart';
 part 'ad_list_state.dart';
 
 class AdListBloc extends Bloc<AdListEvent, AdListState> {
-  AdListBloc(this.adRepository) : super(AdListInitial()) {
+  AdListBloc(this.adRepository, this.userRepository) : super(AdListInitial()) {
     on<LoadAdList>(_load);
     on<LoadMyAd>(_load_my);
     on<LoadFavAd>(_load_fav);
   }
 
   final AdRepository adRepository;
+  final UserRepository userRepository;
 
   Future<void> _load(
     LoadAdList event,
@@ -45,7 +46,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adRepository.getMyAds();
+      final ads = await adRepository.getMyAds(userRepository.getToken());
       emit(AdListLoaded(adList: ads.data));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
@@ -62,7 +63,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adRepository.getMyAds();
+      final ads = await adRepository.getMyAds(userRepository.getToken());
       emit(AdListLoaded(adList: ads.data));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));

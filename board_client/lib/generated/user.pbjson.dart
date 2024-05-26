@@ -25,37 +25,37 @@ const IsSuccess$json = {
 final $typed_data.Uint8List isSuccessDescriptor = $convert.base64Decode(
     'CglJc1N1Y2Nlc3MSFAoFbG9naW4YASABKAhSBWxvZ2lu');
 
-@$core.Deprecated('Use loginRequestMessageDescriptor instead')
-const LoginRequestMessage$json = {
-  '1': 'LoginRequestMessage',
+@$core.Deprecated('Use loginRequestDescriptor instead')
+const LoginRequest$json = {
+  '1': 'LoginRequest',
   '2': [
     {'1': 'username', '3': 1, '4': 1, '5': 9, '10': 'username'},
     {'1': 'password', '3': 2, '4': 1, '5': 9, '10': 'password'},
   ],
 };
 
-/// Descriptor for `LoginRequestMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List loginRequestMessageDescriptor = $convert.base64Decode(
-    'ChNMb2dpblJlcXVlc3RNZXNzYWdlEhoKCHVzZXJuYW1lGAEgASgJUgh1c2VybmFtZRIaCghwYX'
-    'Nzd29yZBgCIAEoCVIIcGFzc3dvcmQ=');
+/// Descriptor for `LoginRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List loginRequestDescriptor = $convert.base64Decode(
+    'CgxMb2dpblJlcXVlc3QSGgoIdXNlcm5hbWUYASABKAlSCHVzZXJuYW1lEhoKCHBhc3N3b3JkGA'
+    'IgASgJUghwYXNzd29yZA==');
 
-@$core.Deprecated('Use loginResponseMessageDescriptor instead')
-const LoginResponseMessage$json = {
-  '1': 'LoginResponseMessage',
+@$core.Deprecated('Use loginResponseDescriptor instead')
+const LoginResponse$json = {
+  '1': 'LoginResponse',
   '2': [
     {'1': 'user', '3': 1, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
     {'1': 'access_token', '3': 2, '4': 1, '5': 9, '10': 'accessToken'},
   ],
 };
 
-/// Descriptor for `LoginResponseMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List loginResponseMessageDescriptor = $convert.base64Decode(
-    'ChRMb2dpblJlc3BvbnNlTWVzc2FnZRIfCgR1c2VyGAEgASgLMgsuYm9hcmQuVXNlclIEdXNlch'
-    'IhCgxhY2Nlc3NfdG9rZW4YAiABKAlSC2FjY2Vzc1Rva2Vu');
+/// Descriptor for `LoginResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List loginResponseDescriptor = $convert.base64Decode(
+    'Cg1Mb2dpblJlc3BvbnNlEh8KBHVzZXIYASABKAsyCy5ib2FyZC5Vc2VyUgR1c2VyEiEKDGFjY2'
+    'Vzc190b2tlbhgCIAEoCVILYWNjZXNzVG9rZW4=');
 
-@$core.Deprecated('Use signupRequestMessageDescriptor instead')
-const SignupRequestMessage$json = {
-  '1': 'SignupRequestMessage',
+@$core.Deprecated('Use signupRequestDescriptor instead')
+const SignupRequest$json = {
+  '1': 'SignupRequest',
   '2': [
     {'1': 'username', '3': 1, '4': 1, '5': 9, '10': 'username'},
     {'1': 'password', '3': 2, '4': 1, '5': 9, '10': 'password'},
@@ -63,23 +63,22 @@ const SignupRequestMessage$json = {
   ],
 };
 
-/// Descriptor for `SignupRequestMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List signupRequestMessageDescriptor = $convert.base64Decode(
-    'ChRTaWdudXBSZXF1ZXN0TWVzc2FnZRIaCgh1c2VybmFtZRgBIAEoCVIIdXNlcm5hbWUSGgoIcG'
-    'Fzc3dvcmQYAiABKAlSCHBhc3N3b3JkEhQKBXBob25lGAMgASgJUgVwaG9uZQ==');
+/// Descriptor for `SignupRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List signupRequestDescriptor = $convert.base64Decode(
+    'Cg1TaWdudXBSZXF1ZXN0EhoKCHVzZXJuYW1lGAEgASgJUgh1c2VybmFtZRIaCghwYXNzd29yZB'
+    'gCIAEoCVIIcGFzc3dvcmQSFAoFcGhvbmUYAyABKAlSBXBob25l');
 
-@$core.Deprecated('Use signupResponseMessageDescriptor instead')
-const SignupResponseMessage$json = {
-  '1': 'SignupResponseMessage',
+@$core.Deprecated('Use userResponseDescriptor instead')
+const UserResponse$json = {
+  '1': 'UserResponse',
   '2': [
     {'1': 'user', '3': 1, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
   ],
 };
 
-/// Descriptor for `SignupResponseMessage`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List signupResponseMessageDescriptor = $convert.base64Decode(
-    'ChVTaWdudXBSZXNwb25zZU1lc3NhZ2USHwoEdXNlchgBIAEoCzILLmJvYXJkLlVzZXJSBHVzZX'
-    'I=');
+/// Descriptor for `UserResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List userResponseDescriptor = $convert.base64Decode(
+    'CgxVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzILLmJvYXJkLlVzZXJSBHVzZXI=');
 
 @$core.Deprecated('Use setUserDescriptor instead')
 const SetUser$json = {
@@ -95,17 +94,17 @@ final $typed_data.Uint8List setUserDescriptor = $convert.base64Decode(
     'CgdTZXRVc2VyEh8KBHVzZXIYASABKAsyCy5ib2FyZC5Vc2VyUgR1c2VyEhQKBXRva2VuGAIgAS'
     'gJUgV0b2tlbg==');
 
-@$core.Deprecated('Use tokenProtoDescriptor instead')
-const TokenProto$json = {
-  '1': 'TokenProto',
+@$core.Deprecated('Use jwtProtoDescriptor instead')
+const JwtProto$json = {
+  '1': 'JwtProto',
   '2': [
     {'1': 'token', '3': 1, '4': 1, '5': 9, '10': 'token'},
   ],
 };
 
-/// Descriptor for `TokenProto`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List tokenProtoDescriptor = $convert.base64Decode(
-    'CgpUb2tlblByb3RvEhQKBXRva2VuGAEgASgJUgV0b2tlbg==');
+/// Descriptor for `JwtProto`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List jwtProtoDescriptor = $convert.base64Decode(
+    'CghKd3RQcm90bxIUCgV0b2tlbhgBIAEoCVIFdG9rZW4=');
 
 @$core.Deprecated('Use userDescriptor instead')
 const User$json = {
@@ -115,7 +114,7 @@ const User$json = {
     {'1': 'username', '3': 2, '4': 1, '5': 9, '10': 'username'},
     {'1': 'password', '3': 3, '4': 1, '5': 9, '10': 'password'},
     {'1': 'email', '3': 4, '4': 1, '5': 9, '10': 'email'},
-    {'1': 'token', '3': 5, '4': 1, '5': 9, '10': 'token'},
+    {'1': 'phone', '3': 5, '4': 1, '5': 9, '10': 'phone'},
     {'1': 'address', '3': 6, '4': 1, '5': 9, '10': 'address'},
     {'1': 'avatar', '3': 7, '4': 1, '5': 9, '10': 'avatar'},
   ],
@@ -124,7 +123,7 @@ const User$json = {
 /// Descriptor for `User`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List userDescriptor = $convert.base64Decode(
     'CgRVc2VyEg4KAmlkGAEgASgEUgJpZBIaCgh1c2VybmFtZRgCIAEoCVIIdXNlcm5hbWUSGgoIcG'
-    'Fzc3dvcmQYAyABKAlSCHBhc3N3b3JkEhQKBWVtYWlsGAQgASgJUgVlbWFpbBIUCgV0b2tlbhgF'
-    'IAEoCVIFdG9rZW4SGAoHYWRkcmVzcxgGIAEoCVIHYWRkcmVzcxIWCgZhdmF0YXIYByABKAlSBm'
+    'Fzc3dvcmQYAyABKAlSCHBhc3N3b3JkEhQKBWVtYWlsGAQgASgJUgVlbWFpbBIUCgVwaG9uZRgF'
+    'IAEoCVIFcGhvbmUSGAoHYWRkcmVzcxgGIAEoCVIHYWRkcmVzcxIWCgZhdmF0YXIYByABKAlSBm'
     'F2YXRhcg==');
 

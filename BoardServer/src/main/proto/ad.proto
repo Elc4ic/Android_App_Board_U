@@ -11,8 +11,8 @@ service AdAPI {
     rpc AddAd (ChangeAdRequest) returns (IsSuccess);
     rpc DeleteAd (ChangeAdRequest) returns (IsSuccess);
     rpc MuteAd (ChangeAdRequest) returns (IsSuccess);
-    rpc GetFavoriteAds (TokenProto) returns (RepeatedAdResponse);
-    rpc GetMyAds (TokenProto) returns (RepeatedAdResponse);
+    rpc GetFavoriteAds (JwtProto) returns (RepeatedAdResponse);
+    rpc GetMyAds (JwtProto) returns (RepeatedAdResponse);
 }
 
 service CategoryAPI {

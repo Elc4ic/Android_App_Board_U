@@ -6,40 +6,45 @@ import com.example.boardserver.utils.JwtProvider
 import com.example.boardserver.utils.UserUtils
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
+import net.devh.boot.grpc.server.service.GrpcService
 
+@GrpcService
 class UserService(
     private val userRepository: UserRepository,
     private val jwtProvider: JwtProvider,
 ) : board.UserAPIGrpc.UserAPIImplBase() {
 
-    override fun signUp(
-        request: UserOuterClass.SignupRequestMessage?,
-        responseObserver: StreamObserver<UserOuterClass.SignupResponseMessage>?
+    override fun getSignUp(
+        request: UserOuterClass.SignupRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        val passwordHash = UserUtils.hashPassword(request!!.password)
+        if (userRepository.findByUsername(request!!.username).isEmpty) {
+            responseObserver!!.onNext(UserUtils.failGrpc())
+            responseObserver.onCompleted()
+        }
         val newUser = UserOuterClass.User.newBuilder()
             .setUsername(request.username)
-            .setPassword(passwordHash)
+            .setPassword(UserUtils.hashPassword(request.password))
             .build()
         userRepository.save(UserUtils.fromUserGrpc(newUser))
-        responseObserver!!.onNext(UserOuterClass.SignupResponseMessage.newBuilder().setUser(newUser).build())
+        responseObserver!!.onNext(UserUtils.successGrpc())
         responseObserver.onCompleted()
     }
 
-    override fun login(
-        request: UserOuterClass.LoginRequestMessage?,
-        responseObserver: StreamObserver<UserOuterClass.LoginResponseMessage>?
+    override fun getLogin(
+        request: UserOuterClass.LoginRequest?,
+        responseObserver: StreamObserver<UserOuterClass.LoginResponse>?
     ) {
         val user = userRepository.findByUsername(request!!.username).get()
         if (UserUtils.checkPassword(request.password, user.password)) {
-            responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный ввод").asException())
-        } else {
             responseObserver!!.onNext(
-                UserOuterClass.LoginResponseMessage.newBuilder()
+                UserOuterClass.LoginResponse.newBuilder()
                     .setUser(UserUtils.toUserGrpc(user))
-                    .setAccessToken(jwtProvider.generateAccessToken(user))
+                    .setAccessToken(jwtProvider.createJwt(user.id))
                     .build()
             )
+        } else {
+            responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный ввод").asException())
         }
         responseObserver.onCompleted()
     }
@@ -52,7 +57,7 @@ class UserService(
     }
 
     override fun deleteUser(
-        request: UserOuterClass.TokenProto?,
+        request: UserOuterClass.JwtProto?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         super.deleteUser(request, responseObserver)

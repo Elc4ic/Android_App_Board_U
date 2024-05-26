@@ -31,6 +31,10 @@ class UserService implements UserRepository {
   @override
   User? getUser() => appUser;
 
+  void setUser(User user) {
+    appUser = user;
+  }
+
   String? getToken() => authToken;
 
   @override
@@ -56,28 +60,27 @@ class UserService implements UserRepository {
   }
 
   @override
-  void login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     try {
       final request =
-          LoginRequestMessage(username: username, password: password);
-      final response = await _client.login(request);
+          LoginRequest(username: username, password: password);
+      final response = await _client.getLogin(request);
       await updateToken(response.accessToken);
       appUser = response.user;
     } catch (e) {
-      log(e.toString());
+      log("$e my login error");
       rethrow;
     }
   }
 
   @override
-  Future<User> signup(String username, String password, String phone) async {
+  Future<void> signUp(String username, String password, String phone) async {
     try {
-      final request = SignupRequestMessage(
+      final request = SignupRequest(
           username: username, password: password, phone: phone);
-      final response = await _client.signUp(request);
-      return response.user;
+      await _client.getSignUp(request);
     } catch (e) {
-      log(e.toString());
+      log("$e my signUp error");
       rethrow;
     }
   }

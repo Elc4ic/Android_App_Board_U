@@ -10,3 +10,14 @@ class LoadCategories extends CategoryListEvent {
 
   final Completer? completer;
 }
+
+class LoadAdInCategory extends CategoryListEvent {
+  LoadAdInCategory({
+    required this.category,
+    this.completer,
+  });
+
+  final Category category;
+
+  final Completer? completer;
+}

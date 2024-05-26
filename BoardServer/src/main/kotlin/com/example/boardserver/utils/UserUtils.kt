@@ -11,9 +11,9 @@ object UserUtils {
             username = user.username,
             password = user.password,
             email = user.email,
-            token = user.token,
             address = user.address,
             avatar = user.avatar,
+            phone = user.phone
         )
     }
 
@@ -23,7 +23,7 @@ object UserUtils {
             .setUsername(user.username)
             .setPassword(user.password)
             .setEmail(user.email)
-            .setToken(user.token)
+            .setPhone(user.phone)
             .setAddress(user.address)
             .setAvatar(user.avatar)
             .build()
@@ -34,10 +34,18 @@ object UserUtils {
     }
 
     fun checkPassword(input: String, user: String): Boolean {
-        return !BCrypt.verifyer()
+        return BCrypt.verifyer()
             .verify(
                 input.toByteArray(Charsets.UTF_8),
                 user.toByteArray(Charsets.UTF_8)
             ).verified
     }
+
+    fun successGrpc(): UserOuterClass.IsSuccess{
+        return UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+    }
+    fun failGrpc(): UserOuterClass.IsSuccess{
+        return UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+    }
+
 }

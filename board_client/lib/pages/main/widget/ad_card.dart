@@ -10,9 +10,10 @@ import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
 
 class AdCard extends StatefulWidget {
-  const AdCard({super.key, required this.ad});
+  const AdCard({super.key, required this.ad, this.token});
 
   final Ad ad;
+  final String? token;
 
   @override
   State<AdCard> createState() => _AdCardState();
@@ -63,7 +64,7 @@ class _AdCardState extends State<AdCard> {
                             FavButton(
                               isFav: false,
                               onPressed: () => {
-                                adRepository.setFavoriteAd(widget.ad.id),
+                                adRepository.setFavoriteAd(widget.ad.id,widget.token),
                               },
                             )
                           ],

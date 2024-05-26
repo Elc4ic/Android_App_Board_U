@@ -4,6 +4,7 @@ import 'package:board_client/pages/favorite/fav_page.dart';
 import 'package:board_client/pages/login/login_page.dart';
 import 'package:board_client/pages/login/login_redirect_page.dart';
 import 'package:board_client/pages/login/sign_up_page.dart';
+import 'package:board_client/pages/main/category_page.dart';
 import 'package:board_client/pages/main/main_page.dart';
 import 'package:board_client/pages/settings/settings_page.dart';
 import 'package:board_client/widgets/footers/navigation_bar.dart';
@@ -71,8 +72,8 @@ GoRouter router = GoRouter(
           path: '/home/:category',
           name: AppRoute.category.name,
           pageBuilder: (context, state) {
-            final category = state.pathParameters['category']!;
-            return MaterialPage(child: MainPage(search: category));
+            final index = state.pathParameters['category']!;
+            return MaterialPage(child: CategoryPage(categoryIndex: int.parse(index),));
           },
         ),
         GoRoute(
@@ -87,7 +88,7 @@ GoRouter router = GoRouter(
           path: '/my',
           name: AppRoute.my.name,
           pageBuilder: (context, state) {
-            if (userRepository.getUser() == null) {
+            if (userRepository.getToken() == null) {
               return const MaterialPage(child: LoginRedirectPage());
             }
             return const MaterialPage(child: MyAdsPage());
@@ -115,7 +116,7 @@ GoRouter router = GoRouter(
           path: '/favorites',
           name: AppRoute.fav.name,
           pageBuilder: (context, state) {
-            if (userRepository.getUser() == null) {
+            if (userRepository.getToken() == null) {
               return const MaterialPage(child: LoginRedirectPage());
             }
             return const MaterialPage(child: FavPage());
@@ -125,7 +126,7 @@ GoRouter router = GoRouter(
           path: '/chats',
           name: AppRoute.chats.name,
           pageBuilder: (context, state) {
-            if (userRepository.getUser() == null) {
+            if (userRepository.getToken() == null) {
               return const MaterialPage(child: LoginRedirectPage());
             }
             final search = state.uri.queryParameters['search'];
@@ -136,11 +137,10 @@ GoRouter router = GoRouter(
           path: '/settings',
           name: AppRoute.settings.name,
           pageBuilder: (context, state) {
-            final user = userRepository.getUser();
-            if (user == null) {
+            if (userRepository.getToken() == null) {
               return const MaterialPage(child: LoginRedirectPage());
             }
-            return MaterialPage(child: SettingsPage(user: user));
+            return MaterialPage(child: SettingsPage());
           },
         ),
       ],

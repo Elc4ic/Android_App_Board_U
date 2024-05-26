@@ -22,6 +22,7 @@ class FavPage extends StatefulWidget {
 class _FavPageState extends State<FavPage> {
   final _adListBloc = AdListBloc(
     GetIt.I<AdRepository>(),
+    GetIt.I<UserRepository>(),
   );
 
   @override
@@ -39,6 +40,14 @@ class _FavPageState extends State<FavPage> {
             bloc: _adListBloc,
             builder: (context, state) {
               if (state is AdListLoaded) {
+                if (state.adList.isEmpty) {
+                  return SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Styles.Text16(SC.SEARCH_NOTHING),
+                    ),
+                  );
+                }
                 return ListView.builder(
                     padding: Markup.padding_all_4,
                     itemCount: state.adList.length,

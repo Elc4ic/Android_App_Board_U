@@ -9,7 +9,6 @@ import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/widgets.dart';
-import '../login/login_redirect_page.dart';
 
 class MyAdsPage extends StatefulWidget {
   const MyAdsPage({super.key});
@@ -20,7 +19,8 @@ class MyAdsPage extends StatefulWidget {
 
 class _MyAdsPageState extends State<MyAdsPage> {
   final _adListBloc = AdListBloc(
-    GetIt.I<AdRepository>()
+    GetIt.I<AdRepository>(),
+    GetIt.I<UserRepository>(),
   );
 
   @override
@@ -38,6 +38,14 @@ class _MyAdsPageState extends State<MyAdsPage> {
             bloc: _adListBloc,
             builder: (context, state) {
               if (state is AdListLoaded) {
+                if (state.adList.isEmpty) {
+                  return SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Styles.Text16(SC.SEARCH_NOTHING),
+                    ),
+                  );
+                }
                 return ListView.builder(
                     padding: Markup.padding_all_4,
                     itemCount: state.adList.length,

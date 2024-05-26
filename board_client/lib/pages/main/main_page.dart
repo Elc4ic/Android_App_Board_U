@@ -1,8 +1,6 @@
-import 'package:board_client/pages/login/login_redirect_page.dart';
 import 'package:board_client/pages/main/widget/ad_card.dart';
 import 'package:board_client/widgets/custom_grid.dart';
 import 'package:board_client/values/values.dart';
-import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:board_client/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   var userRepository = GetIt.I<UserRepository>();
   final _adListBloc = AdListBloc(
     GetIt.I<AdRepository>(),
+    GetIt.I<UserRepository>(),
   );
   final _catListBloc = CategoryListBloc(
     GetIt.I<CategoryRepository>(),
@@ -56,10 +55,10 @@ class _MainPageState extends State<MainPage> {
                     if (state is CategoryListLoaded) {
                       return ListView(
                         scrollDirection: Axis.horizontal,
-                        children: NavItems.generateCaterory(state.categories),
+                        children: NavItems.generateCategory(state.categories,context),
                       );
                     }
-                    if (state is CategoryListLoadingFailure) {
+                    if (state is CategoryFailure) {
                       return Center(
                         child: TryAgainWidget(
                           exception: state.exception,

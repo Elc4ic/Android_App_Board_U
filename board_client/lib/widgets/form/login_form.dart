@@ -66,7 +66,7 @@ class _AddAdFormState extends State<LoginForm> {
             Markup.dividerH10,
             TextFormField(
               controller: _passwordController,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.visiblePassword,
               decoration: const InputDecoration(
                 labelText: SC.PASSWORD,
                 border: OutlineInputBorder(

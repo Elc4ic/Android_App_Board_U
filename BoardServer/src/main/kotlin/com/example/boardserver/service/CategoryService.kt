@@ -13,6 +13,7 @@ class CategoryService(
     private val categoryRepository: CategoryRepository,
     private val adRepository: AdRepository,
 ) : board.CategoryAPIGrpc.CategoryAPIImplBase() {
+
     override fun getAllCategories(
         request: AdOuterClass.Empty?,
         responseObserver: StreamObserver<AdOuterClass.GetAllCategoriesResponse>?
@@ -26,8 +27,8 @@ class CategoryService(
         request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
     ) {
-        val cat = categoryRepository.findById(request!!.id)
-        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(cat.get().ads))
+        val cat = categoryRepository.findById(request!!.id).get()
+        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(cat.ads))
         responseObserver?.onCompleted()
     }
 }

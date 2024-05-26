@@ -8,15 +8,15 @@ abstract class AdRepository {
 
   Future<Ad> getOneAd(int id);
 
-  void setFavoriteAd(Int64 id);
+  void setFavoriteAd(Int64 id, String? token);
 
-  Future<Empty> addAd(Ad ad);
+  Future<Empty> addAd(Ad ad, String? token);
 
-  Future<IsSuccess> deleteAd(Ad ad);
+  Future<IsSuccess> deleteAd(Ad ad, String? token);
 
-  Future<IsSuccess> muteAd(Ad ad);
+  Future<IsSuccess> muteAd(Ad ad, String? token);
 
-  Future<RepeatedAdResponse> getFavoriteAds();
+  Future<RepeatedAdResponse> getFavoriteAds(String? token);
 
-  Future<RepeatedAdResponse> getMyAds();
+  Future<RepeatedAdResponse> getMyAds(String? token);
 }

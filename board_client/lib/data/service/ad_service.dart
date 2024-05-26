@@ -22,8 +22,8 @@ class AdService implements AdRepository {
   }
 
   @override
-  Future<Empty> addAd(Ad ad) async {
-    _client.addAd(ChangeAdRequest(ad: ad, token: "dscscds"));
+  Future<Empty> addAd(Ad ad,String? token) async {
+    _client.addAd(ChangeAdRequest(ad: ad, token: token));
     return Empty();
   }
 
@@ -41,33 +41,33 @@ class AdService implements AdRepository {
 
   @override
   Future<Ad> getOneAd(int id) async {
-    final ad = await _client.getOneAd(GetByIdRequest(id: fnum.Int64(id), token: "dssss"));
+    final ad = await _client.getOneAd(GetByIdRequest(id: fnum.Int64(id), token: "empty_token"));
     return ad;
   }
 
   @override
-  void setFavoriteAd(fnum.Int64 id) async {
+  void setFavoriteAd(fnum.Int64 id,String? token) async {
     _client.setFavoriteAd(
-        SetFavoriteRequest(id: id, value: false, token: "wwwsw"));
+        SetFavoriteRequest(id: id, value: false, token: token));
   }
 
   @override
-  Future<IsSuccess> deleteAd(Ad ad) async {
-    return _client.deleteAd(ChangeAdRequest(ad: ad, token: "cccdc"));
+  Future<IsSuccess> deleteAd(Ad ad,String? token) async {
+    return await _client.deleteAd(ChangeAdRequest(ad: ad, token: token));
   }
 
   @override
-  Future<RepeatedAdResponse> getFavoriteAds() {
-    return _client.getFavoriteAds(TokenProto(token: "cdcdcd"));
+  Future<RepeatedAdResponse> getFavoriteAds(String? token) async {
+    return await  _client.getFavoriteAds(JwtProto(token: token));
   }
 
   @override
-  Future<RepeatedAdResponse> getMyAds() {
-    return _client.getMyAds(TokenProto(token: "cdcdcd"));
+  Future<RepeatedAdResponse> getMyAds(String? token) async {
+    return await _client.getMyAds(JwtProto(token: token));
   }
 
   @override
-  Future<IsSuccess> muteAd(Ad ad) {
-    return _client.muteAd(ChangeAdRequest(ad: ad, token: "cccdc"));
+  Future<IsSuccess> muteAd(Ad ad,String? token) async {
+    return await _client.muteAd(ChangeAdRequest(ad: ad, token: token));
   }
 }

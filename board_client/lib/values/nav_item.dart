@@ -9,13 +9,15 @@ class NavItems {
     SC.SETTINGS_PAGE,
   ];
 
-  static List<Widget> generateCaterory(List<Category> category) {
+  static List<Widget> generateCategory(List<Category> category,BuildContext context) {
     return List.generate(
       category.length,
       (index) => CustomContainerButton(
         text: Styles.Text12(category[index].name),
         backcolor: Colors.blueAccent,
-        onTap: () {},
+        onTap: () {
+          context.push("${SC.MAIN_PAGE}/$index");
+        },
         radius: Markup.size_12,
       ),
     ).toList();

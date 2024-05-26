@@ -64,8 +64,8 @@ class IsSuccess extends $pb.GeneratedMessage {
   void clearLogin() => clearField(1);
 }
 
-class LoginRequestMessage extends $pb.GeneratedMessage {
-  factory LoginRequestMessage({
+class LoginRequest extends $pb.GeneratedMessage {
+  factory LoginRequest({
     $core.String? username,
     $core.String? password,
   }) {
@@ -78,11 +78,11 @@ class LoginRequestMessage extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  LoginRequestMessage._() : super();
-  factory LoginRequestMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory LoginRequestMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LoginRequest._() : super();
+  factory LoginRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LoginRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'LoginRequestMessage', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'LoginRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'username')
     ..aOS(2, _omitFieldNames ? '' : 'password')
     ..hasRequiredFields = false
@@ -92,22 +92,22 @@ class LoginRequestMessage extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  LoginRequestMessage clone() => LoginRequestMessage()..mergeFromMessage(this);
+  LoginRequest clone() => LoginRequest()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LoginRequestMessage copyWith(void Function(LoginRequestMessage) updates) => super.copyWith((message) => updates(message as LoginRequestMessage)) as LoginRequestMessage;
+  LoginRequest copyWith(void Function(LoginRequest) updates) => super.copyWith((message) => updates(message as LoginRequest)) as LoginRequest;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static LoginRequestMessage create() => LoginRequestMessage._();
-  LoginRequestMessage createEmptyInstance() => create();
-  static $pb.PbList<LoginRequestMessage> createRepeated() => $pb.PbList<LoginRequestMessage>();
+  static LoginRequest create() => LoginRequest._();
+  LoginRequest createEmptyInstance() => create();
+  static $pb.PbList<LoginRequest> createRepeated() => $pb.PbList<LoginRequest>();
   @$core.pragma('dart2js:noInline')
-  static LoginRequestMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LoginRequestMessage>(create);
-  static LoginRequestMessage? _defaultInstance;
+  static LoginRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LoginRequest>(create);
+  static LoginRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get username => $_getSZ(0);
@@ -128,8 +128,8 @@ class LoginRequestMessage extends $pb.GeneratedMessage {
   void clearPassword() => clearField(2);
 }
 
-class LoginResponseMessage extends $pb.GeneratedMessage {
-  factory LoginResponseMessage({
+class LoginResponse extends $pb.GeneratedMessage {
+  factory LoginResponse({
     User? user,
     $core.String? accessToken,
   }) {
@@ -142,11 +142,11 @@ class LoginResponseMessage extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  LoginResponseMessage._() : super();
-  factory LoginResponseMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory LoginResponseMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  LoginResponse._() : super();
+  factory LoginResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory LoginResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'LoginResponseMessage', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'LoginResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOM<User>(1, _omitFieldNames ? '' : 'user', subBuilder: User.create)
     ..aOS(2, _omitFieldNames ? '' : 'accessToken')
     ..hasRequiredFields = false
@@ -156,22 +156,22 @@ class LoginResponseMessage extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  LoginResponseMessage clone() => LoginResponseMessage()..mergeFromMessage(this);
+  LoginResponse clone() => LoginResponse()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  LoginResponseMessage copyWith(void Function(LoginResponseMessage) updates) => super.copyWith((message) => updates(message as LoginResponseMessage)) as LoginResponseMessage;
+  LoginResponse copyWith(void Function(LoginResponse) updates) => super.copyWith((message) => updates(message as LoginResponse)) as LoginResponse;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static LoginResponseMessage create() => LoginResponseMessage._();
-  LoginResponseMessage createEmptyInstance() => create();
-  static $pb.PbList<LoginResponseMessage> createRepeated() => $pb.PbList<LoginResponseMessage>();
+  static LoginResponse create() => LoginResponse._();
+  LoginResponse createEmptyInstance() => create();
+  static $pb.PbList<LoginResponse> createRepeated() => $pb.PbList<LoginResponse>();
   @$core.pragma('dart2js:noInline')
-  static LoginResponseMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LoginResponseMessage>(create);
-  static LoginResponseMessage? _defaultInstance;
+  static LoginResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<LoginResponse>(create);
+  static LoginResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   User get user => $_getN(0);
@@ -194,8 +194,8 @@ class LoginResponseMessage extends $pb.GeneratedMessage {
   void clearAccessToken() => clearField(2);
 }
 
-class SignupRequestMessage extends $pb.GeneratedMessage {
-  factory SignupRequestMessage({
+class SignupRequest extends $pb.GeneratedMessage {
+  factory SignupRequest({
     $core.String? username,
     $core.String? password,
     $core.String? phone,
@@ -212,11 +212,11 @@ class SignupRequestMessage extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  SignupRequestMessage._() : super();
-  factory SignupRequestMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SignupRequestMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  SignupRequest._() : super();
+  factory SignupRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SignupRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'SignupRequestMessage', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'SignupRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'username')
     ..aOS(2, _omitFieldNames ? '' : 'password')
     ..aOS(3, _omitFieldNames ? '' : 'phone')
@@ -227,22 +227,22 @@ class SignupRequestMessage extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  SignupRequestMessage clone() => SignupRequestMessage()..mergeFromMessage(this);
+  SignupRequest clone() => SignupRequest()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SignupRequestMessage copyWith(void Function(SignupRequestMessage) updates) => super.copyWith((message) => updates(message as SignupRequestMessage)) as SignupRequestMessage;
+  SignupRequest copyWith(void Function(SignupRequest) updates) => super.copyWith((message) => updates(message as SignupRequest)) as SignupRequest;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static SignupRequestMessage create() => SignupRequestMessage._();
-  SignupRequestMessage createEmptyInstance() => create();
-  static $pb.PbList<SignupRequestMessage> createRepeated() => $pb.PbList<SignupRequestMessage>();
+  static SignupRequest create() => SignupRequest._();
+  SignupRequest createEmptyInstance() => create();
+  static $pb.PbList<SignupRequest> createRepeated() => $pb.PbList<SignupRequest>();
   @$core.pragma('dart2js:noInline')
-  static SignupRequestMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignupRequestMessage>(create);
-  static SignupRequestMessage? _defaultInstance;
+  static SignupRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignupRequest>(create);
+  static SignupRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get username => $_getSZ(0);
@@ -272,8 +272,8 @@ class SignupRequestMessage extends $pb.GeneratedMessage {
   void clearPhone() => clearField(3);
 }
 
-class SignupResponseMessage extends $pb.GeneratedMessage {
-  factory SignupResponseMessage({
+class UserResponse extends $pb.GeneratedMessage {
+  factory UserResponse({
     User? user,
   }) {
     final $result = create();
@@ -282,11 +282,11 @@ class SignupResponseMessage extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  SignupResponseMessage._() : super();
-  factory SignupResponseMessage.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SignupResponseMessage.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  UserResponse._() : super();
+  factory UserResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory UserResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'SignupResponseMessage', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'UserResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOM<User>(1, _omitFieldNames ? '' : 'user', subBuilder: User.create)
     ..hasRequiredFields = false
   ;
@@ -295,22 +295,22 @@ class SignupResponseMessage extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  SignupResponseMessage clone() => SignupResponseMessage()..mergeFromMessage(this);
+  UserResponse clone() => UserResponse()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SignupResponseMessage copyWith(void Function(SignupResponseMessage) updates) => super.copyWith((message) => updates(message as SignupResponseMessage)) as SignupResponseMessage;
+  UserResponse copyWith(void Function(UserResponse) updates) => super.copyWith((message) => updates(message as UserResponse)) as UserResponse;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static SignupResponseMessage create() => SignupResponseMessage._();
-  SignupResponseMessage createEmptyInstance() => create();
-  static $pb.PbList<SignupResponseMessage> createRepeated() => $pb.PbList<SignupResponseMessage>();
+  static UserResponse create() => UserResponse._();
+  UserResponse createEmptyInstance() => create();
+  static $pb.PbList<UserResponse> createRepeated() => $pb.PbList<UserResponse>();
   @$core.pragma('dart2js:noInline')
-  static SignupResponseMessage getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignupResponseMessage>(create);
-  static SignupResponseMessage? _defaultInstance;
+  static UserResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UserResponse>(create);
+  static UserResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   User get user => $_getN(0);
@@ -390,8 +390,8 @@ class SetUser extends $pb.GeneratedMessage {
   void clearToken() => clearField(2);
 }
 
-class TokenProto extends $pb.GeneratedMessage {
-  factory TokenProto({
+class JwtProto extends $pb.GeneratedMessage {
+  factory JwtProto({
     $core.String? token,
   }) {
     final $result = create();
@@ -400,11 +400,11 @@ class TokenProto extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  TokenProto._() : super();
-  factory TokenProto.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory TokenProto.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  JwtProto._() : super();
+  factory JwtProto.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory JwtProto.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'TokenProto', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'JwtProto', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'token')
     ..hasRequiredFields = false
   ;
@@ -413,22 +413,22 @@ class TokenProto extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  TokenProto clone() => TokenProto()..mergeFromMessage(this);
+  JwtProto clone() => JwtProto()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  TokenProto copyWith(void Function(TokenProto) updates) => super.copyWith((message) => updates(message as TokenProto)) as TokenProto;
+  JwtProto copyWith(void Function(JwtProto) updates) => super.copyWith((message) => updates(message as JwtProto)) as JwtProto;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static TokenProto create() => TokenProto._();
-  TokenProto createEmptyInstance() => create();
-  static $pb.PbList<TokenProto> createRepeated() => $pb.PbList<TokenProto>();
+  static JwtProto create() => JwtProto._();
+  JwtProto createEmptyInstance() => create();
+  static $pb.PbList<JwtProto> createRepeated() => $pb.PbList<JwtProto>();
   @$core.pragma('dart2js:noInline')
-  static TokenProto getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<TokenProto>(create);
-  static TokenProto? _defaultInstance;
+  static JwtProto getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<JwtProto>(create);
+  static JwtProto? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get token => $_getSZ(0);
@@ -446,7 +446,7 @@ class User extends $pb.GeneratedMessage {
     $core.String? username,
     $core.String? password,
     $core.String? email,
-    $core.String? token,
+    $core.String? phone,
     $core.String? address,
     $core.String? avatar,
   }) {
@@ -463,8 +463,8 @@ class User extends $pb.GeneratedMessage {
     if (email != null) {
       $result.email = email;
     }
-    if (token != null) {
-      $result.token = token;
+    if (phone != null) {
+      $result.phone = phone;
     }
     if (address != null) {
       $result.address = address;
@@ -483,7 +483,7 @@ class User extends $pb.GeneratedMessage {
     ..aOS(2, _omitFieldNames ? '' : 'username')
     ..aOS(3, _omitFieldNames ? '' : 'password')
     ..aOS(4, _omitFieldNames ? '' : 'email')
-    ..aOS(5, _omitFieldNames ? '' : 'token')
+    ..aOS(5, _omitFieldNames ? '' : 'phone')
     ..aOS(6, _omitFieldNames ? '' : 'address')
     ..aOS(7, _omitFieldNames ? '' : 'avatar')
     ..hasRequiredFields = false
@@ -547,13 +547,13 @@ class User extends $pb.GeneratedMessage {
   void clearEmail() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get token => $_getSZ(4);
+  $core.String get phone => $_getSZ(4);
   @$pb.TagNumber(5)
-  set token($core.String v) { $_setString(4, v); }
+  set phone($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasToken() => $_has(4);
+  $core.bool hasPhone() => $_has(4);
   @$pb.TagNumber(5)
-  void clearToken() => clearField(5);
+  void clearPhone() => clearField(5);
 
   @$pb.TagNumber(6)
   $core.String get address => $_getSZ(5);

@@ -46,13 +46,13 @@ class AdAPIClient extends $grpc.Client {
       '/board.AdAPI/MuteAd',
       ($1.ChangeAdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
-  static final _$getFavoriteAds = $grpc.ClientMethod<$0.TokenProto, $1.RepeatedAdResponse>(
+  static final _$getFavoriteAds = $grpc.ClientMethod<$0.JwtProto, $1.RepeatedAdResponse>(
       '/board.AdAPI/GetFavoriteAds',
-      ($0.TokenProto value) => value.writeToBuffer(),
+      ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.RepeatedAdResponse.fromBuffer(value));
-  static final _$getMyAds = $grpc.ClientMethod<$0.TokenProto, $1.RepeatedAdResponse>(
+  static final _$getMyAds = $grpc.ClientMethod<$0.JwtProto, $1.RepeatedAdResponse>(
       '/board.AdAPI/GetMyAds',
-      ($0.TokenProto value) => value.writeToBuffer(),
+      ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.RepeatedAdResponse.fromBuffer(value));
 
   AdAPIClient($grpc.ClientChannel channel,
@@ -85,11 +85,11 @@ class AdAPIClient extends $grpc.Client {
     return $createUnaryCall(_$muteAd, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.RepeatedAdResponse> getFavoriteAds($0.TokenProto request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$1.RepeatedAdResponse> getFavoriteAds($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getFavoriteAds, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.RepeatedAdResponse> getMyAds($0.TokenProto request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$1.RepeatedAdResponse> getMyAds($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getMyAds, request, options: options);
   }
 }
@@ -141,19 +141,19 @@ abstract class AdAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.ChangeAdRequest.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.TokenProto, $1.RepeatedAdResponse>(
+    $addMethod($grpc.ServiceMethod<$0.JwtProto, $1.RepeatedAdResponse>(
         'GetFavoriteAds',
         getFavoriteAds_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.TokenProto.fromBuffer(value),
+        ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($1.RepeatedAdResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.TokenProto, $1.RepeatedAdResponse>(
+    $addMethod($grpc.ServiceMethod<$0.JwtProto, $1.RepeatedAdResponse>(
         'GetMyAds',
         getMyAds_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $0.TokenProto.fromBuffer(value),
+        ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($1.RepeatedAdResponse value) => value.writeToBuffer()));
   }
 
@@ -181,11 +181,11 @@ abstract class AdAPIServiceBase extends $grpc.Service {
     return muteAd(call, await request);
   }
 
-  $async.Future<$1.RepeatedAdResponse> getFavoriteAds_Pre($grpc.ServiceCall call, $async.Future<$0.TokenProto> request) async {
+  $async.Future<$1.RepeatedAdResponse> getFavoriteAds_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
     return getFavoriteAds(call, await request);
   }
 
-  $async.Future<$1.RepeatedAdResponse> getMyAds_Pre($grpc.ServiceCall call, $async.Future<$0.TokenProto> request) async {
+  $async.Future<$1.RepeatedAdResponse> getMyAds_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
     return getMyAds(call, await request);
   }
 
@@ -195,8 +195,8 @@ abstract class AdAPIServiceBase extends $grpc.Service {
   $async.Future<$0.IsSuccess> addAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
   $async.Future<$0.IsSuccess> deleteAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
   $async.Future<$0.IsSuccess> muteAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
-  $async.Future<$1.RepeatedAdResponse> getFavoriteAds($grpc.ServiceCall call, $0.TokenProto request);
-  $async.Future<$1.RepeatedAdResponse> getMyAds($grpc.ServiceCall call, $0.TokenProto request);
+  $async.Future<$1.RepeatedAdResponse> getFavoriteAds($grpc.ServiceCall call, $0.JwtProto request);
+  $async.Future<$1.RepeatedAdResponse> getMyAds($grpc.ServiceCall call, $0.JwtProto request);
 }
 @$pb.GrpcServiceName('board.CategoryAPI')
 class CategoryAPIClient extends $grpc.Client {

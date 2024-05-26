@@ -7,6 +7,7 @@ import com.example.boardserver.repository.CategoryRepository
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.AdUtils
 import com.example.boardserver.utils.JwtProvider
+import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.data.domain.PageRequest
@@ -37,8 +38,8 @@ class AdService(
     }
 
     override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
-        val ad = request.let { adRepository.findById(it.id) }
-        responseObserver?.onNext(ad.let { AdUtils.toAdGrpc(it.get()) })
+        val ad = adRepository.findById(request.id).get()
+        responseObserver?.onNext(AdUtils.toAdGrpc(ad))
         responseObserver?.onCompleted()
     }
 
@@ -46,14 +47,20 @@ class AdService(
         request: AdOuterClass.SetFavoriteRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        val user = userRepository.findByToken(request!!.token).get()
-        val ad = adRepository.findById(request.id).get()
-        if (user.fav_ads.contains(ad)) {
-            user.deleteFavAd { ad }
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            val user = userRepository.findById(userId).get()
+            val ad = adRepository.findById(request.id).get()
+            if (user.fav_ads.contains(ad)) {
+                user.deleteFavAd { ad }
+            } else {
+                user.addFavAd { ad }
+            }
+
+            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
-            user.addFavAd { ad }
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }
-        responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         responseObserver?.onCompleted()
     }
 
@@ -61,13 +68,15 @@ class AdService(
         request: AdOuterClass.ChangeAdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        if (request!!.token == null) {
-            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(false).build())
-        } else {
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
             adRepository.save(AdUtils.fromAdGrpc(request.ad))
-            val user = userRepository.findByToken(request.token).get()
+            val user = userRepository.findById(userId).get()
             user.addMyAd { AdUtils.fromAdGrpc(request.ad) }
+
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }
         responseObserver?.onCompleted()
     }
@@ -76,33 +85,58 @@ class AdService(
         request: AdOuterClass.ChangeAdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        adRepository.delete(AdUtils.fromAdGrpc(request!!.ad))
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            adRepository.delete(AdUtils.fromAdGrpc(request.ad))
+
+            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun muteAd(
         request: AdOuterClass.ChangeAdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        adRepository.save(AdUtils.fromAdGrpcMute(request!!.ad))
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            adRepository.save(AdUtils.fromAdGrpcMute(request.ad))
+
+            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun getFavoriteAds(
-        request: UserOuterClass.TokenProto?,
+        request: UserOuterClass.JwtProto?,
         responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
     ) {
-        val user = userRepository.findByToken(request!!.token).get()
-        responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.fav_ads))
-        responseObserver.onCompleted()
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            val user = userRepository.findById(userId).get()
+            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.fav_ads))
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun getMyAds(
-        request: UserOuterClass.TokenProto?,
+        request: UserOuterClass.JwtProto?,
         responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
     ) {
-        val user = userRepository.findByToken(request!!.token).get()
-        responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.my_ads))
-        responseObserver.onCompleted()
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            val user = userRepository.findByUsername(request.token).get()
+            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.my_ads))
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
-
 
 }

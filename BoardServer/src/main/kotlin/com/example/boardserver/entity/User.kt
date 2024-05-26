@@ -11,7 +11,7 @@ class User(
     val username: String,
     val password: String,
     val email: String,
-    val token: String,
+    val phone: String,
     val address: String,
     val avatar: String,
 

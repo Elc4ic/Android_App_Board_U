@@ -32,14 +32,20 @@ class _AddAdFormState extends State<SignUpForm> {
     }
   }
 
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      userRepository.signup(
-        _usernameController.text,
-        _passwordController.text,
-        _phoneController.text,
-      );
-      context.pop;
+      try {
+        userRepository.signUp(
+          _usernameController.text,
+          _passwordController.text,
+          _phoneController.text,
+        );
+        context.pushReplacement(SC.LOGIN_PAGE);
+      } catch (e) {
+        _usernameController.clear();
+        _passwordController.clear();
+        _phoneController.clear();
+      }
     }
   }
 
