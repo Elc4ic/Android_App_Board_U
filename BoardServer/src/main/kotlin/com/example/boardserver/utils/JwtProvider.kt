@@ -27,6 +27,8 @@ class JwtProvider(
 
     fun createJwt(userId: Long): String {
         return Jwts.builder()
+            .header().add("typ", "JWT")
+            .and()
             .subject(userId.toString())
             .expiration(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365)))
             .signWith(jwtAccessSecret)
@@ -66,7 +68,7 @@ class JwtProvider(
     fun validateToken(token: String): Boolean {
         return try {
             Jwts.parser()
-                .decryptWith(jwtAccessSecret)
+                .verifyWith(jwtAccessSecret)
                 .build()
                 .parseSignedClaims(token)
             return true
@@ -78,11 +80,12 @@ class JwtProvider(
     fun validateJwt(token: String): Long? {
         return try {
             val userId = Jwts.parser()
-                .decryptWith(jwtAccessSecret)
+                .verifyWith(jwtAccessSecret)
                 .build()
-                .parseSignedClaims(token).payload["userId"]
-            userId as Long
-        } catch (_: Exception) {
+                .parseSignedClaims(token).payload["sub"] as String
+            userId.toLong()
+        } catch (e: Exception) {
+            println(e)
             null
         }
     }

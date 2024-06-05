@@ -63,7 +63,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adRepository.getMyAds(userRepository.getToken());
+      final ads = await adRepository.getFavoriteAds(userRepository.getToken());
       emit(AdListLoaded(adList: ads.data));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));

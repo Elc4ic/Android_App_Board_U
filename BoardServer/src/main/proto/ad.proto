@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package board;
 
+import "image.proto";
 import "user.proto";
 
 service AdAPI {
@@ -56,10 +57,11 @@ message Ad {
     string title = 2;
     int64 price = 3;
     string description = 4;
+    bool is_fav = 5;
     bool is_active = 6;
     int32 views = 7;
+    repeated ImageProto images = 8;
     string created = 10;
-    repeated string images = 8;
     User user = 11;
     Category category = 12;
 }

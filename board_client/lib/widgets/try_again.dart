@@ -14,12 +14,12 @@ class TryAgainWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(exception.toString()),
-          const Text('Please try againg later'),
           TextButton(
             onPressed: onPressed,
             child: const Text('Try againg'),
           ),
+          Text(exception.toString()),
+          const Text('Please try againg later'),
         ],
       ),
     );

@@ -2,24 +2,29 @@ package com.example.boardserver.service
 
 import board.AdOuterClass
 import board.UserOuterClass
+import com.example.boardserver.entity.Favorites
 import com.example.boardserver.repository.AdRepository
-import com.example.boardserver.repository.CategoryRepository
+import com.example.boardserver.repository.FavoritesRepository
+import com.example.boardserver.repository.ImageRepository
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.AdUtils
+import com.example.boardserver.utils.ImageUtils
 import com.example.boardserver.utils.JwtProvider
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.transaction.annotation.Transactional
 
 
 @GrpcService
 class AdService(
     private val adRepository: AdRepository,
     private val userRepository: UserRepository,
-    private val categoryRepository: CategoryRepository,
+    private val imageRepository: ImageRepository,
     private val jwtProvider: JwtProvider,
+    private val favRepository: FavoritesRepository,
 ) : board.AdAPIGrpc.AdAPIImplBase() {
 
     override fun getManyAd(
@@ -27,7 +32,7 @@ class AdService(
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
         val pagingSort: Pageable = PageRequest.of(request!!.page.toInt(), request.limit.toInt())
-        val adPage = adRepository.findAll(pagingSort)
+        val adPage = adRepository.findAllByIsActive(pagingSort, true)
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
 
@@ -37,9 +42,11 @@ class AdService(
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
         val ad = adRepository.findById(request.id).get()
-        responseObserver?.onNext(AdUtils.toAdGrpc(ad))
+        val images = imageRepository.findByAdId(request.id)
+        responseObserver?.onNext(AdUtils.toAdGrpcWithImages(ad, images))
         responseObserver?.onCompleted()
     }
 
@@ -49,15 +56,20 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            val user = userRepository.findById(userId).get()
-            val ad = adRepository.findById(request.id).get()
-            if (user.fav_ads.contains(ad)) {
-                user.deleteFavAd { ad }
+            if (favRepository.countByUserIdAndAdId(userId, request.id) == 0L) {
+                val user = userRepository.findById(userId).get()
+                val ad = adRepository.findById(request.id).get()
+                favRepository.save(
+                    Favorites(
+                        user = user,
+                        ad = ad,
+                    )
+                )
+                responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
             } else {
-                user.addFavAd { ad }
+                favRepository.delete(favRepository.findByAdIdAndUserId(request.id, userId).get())
+                responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(false).build())
             }
-
-            responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }
@@ -70,10 +82,11 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            adRepository.save(AdUtils.fromAdGrpc(request.ad))
-            val user = userRepository.findById(userId).get()
-            user.addMyAd { AdUtils.fromAdGrpc(request.ad) }
-
+            val ad = AdUtils.fromAdGrpc(request.ad)
+            adRepository.save(ad)
+            request.ad.imagesList.forEach { image -> println(image.image) }
+            val images = ImageUtils.fromAdGrpcList(request.ad.imagesList, ad)
+            images.forEach { imageRepository.save(it) }
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -81,12 +94,14 @@ class AdService(
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun deleteAd(
         request: AdOuterClass.ChangeAdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
+            imageRepository.deleteByAdId(request.ad.id)
             adRepository.delete(AdUtils.fromAdGrpc(request.ad))
 
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
@@ -103,7 +118,6 @@ class AdService(
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
             adRepository.save(AdUtils.fromAdGrpcMute(request.ad))
-
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -117,8 +131,8 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            val user = userRepository.findById(userId).get()
-            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.fav_ads))
+            val ads = favRepository.findByUserId(userId)
+            responseObserver!!.onNext(AdUtils.toFavRepeatedAdGrpc(ads))
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }
@@ -131,8 +145,8 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            val user = userRepository.findByUsername(request.token).get()
-            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(user.my_ads))
+            val ads = adRepository.findByUserId(userId)
+            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(ads))
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }

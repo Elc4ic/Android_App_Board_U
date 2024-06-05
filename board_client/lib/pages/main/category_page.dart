@@ -70,15 +70,13 @@ class _CategoryPageState extends State<CategoryPage> {
                 }
                 if (state is CategoryFailure) {
                   return SliverFillRemaining(
-                    child: Center(
-                      child: TryAgainWidget(
-                        exception: state.exception,
-                        onPressed: () {
-                          _catListBloc.add(
-                            LoadAdInCategory(category: category),
-                          );
-                        },
-                      ),
+                    child: TryAgainWidget(
+                      exception: state.exception,
+                      onPressed: () {
+                        _catListBloc.add(
+                          LoadAdInCategory(category: category),
+                        );
+                      },
                     ),
                   );
                 }

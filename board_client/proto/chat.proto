@@ -2,27 +2,47 @@ syntax = "proto3";
 
 package board;
 
+import "ad.proto";
 import "user.proto";
 
 service ChatAPI {
-    rpc SendMessage (SendMessageRequest) returns (IsSuccess);
+    rpc GetChatsPreview (JwtProto) returns (RepeatedChatPreview);
+    rpc JoinChat (JoinRequest) returns (Chat);
+    rpc SendMessage (stream SendMessageRequest) returns (stream Message);
 }
 
-message SendMessageRequest {
-    Message message = 1;
-
+message RepeatedChatPreview {
+    repeated ChatPreview chats = 1;
 }
 
-message Chat {
-    int64 id = 1;
-    repeated Message data = 2;
+message JoinRequest {
+    int64 chat_id = 1;
+    string jwt = 2;
 }
 
 message Message {
-    string text = 1;
-    int64 owner = 2;
+    string id = 1;
+    int64 sender = 2;
     int64 receiver = 3;
-    string token = 4;
-    string data = 5;
+    string message = 4;
+    string created_at = 5;
+    int64 chat_id = 6;
 }
+
+message Chat {
+    ChatPreview chat = 1;
+    repeated Message data = 2;
+}
+
+message ChatPreview {
+    int64 id = 1;
+    User target = 2;
+    Ad ad = 3;
+}
+
+message SendMessageRequest {
+    int64 receiver = 1;
+    string message = 2;
+}
+
 

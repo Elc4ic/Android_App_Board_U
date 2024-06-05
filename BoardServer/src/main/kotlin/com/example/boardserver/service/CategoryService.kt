@@ -27,8 +27,8 @@ class CategoryService(
         request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
     ) {
-        val cat = categoryRepository.findById(request!!.id).get()
-        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(cat.ads))
+        val ads = adRepository.findByCategoryId(request!!.id)
+        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(ads))
         responseObserver?.onCompleted()
     }
 }

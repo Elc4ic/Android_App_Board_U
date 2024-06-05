@@ -1,20 +1,26 @@
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
 
 class RowCard extends StatefulWidget {
-  const RowCard({super.key, required this.ad});
+  const RowCard({super.key, required this.ad, required this.token});
 
   final Ad ad;
+  final String? token;
 
   @override
   State<RowCard> createState() => _RowCardState();
 }
 
 class _RowCardState extends State<RowCard> {
+  final adRepository = GetIt.I<AdRepository>();
+  bool isFav = true;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -54,7 +60,15 @@ class _RowCardState extends State<RowCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  FavButton(isFav: false, onPressed: () => {})
+                  FavButton(
+                    isFav: isFav,
+                    onPressed: () {
+                      setState(() {
+                        isFav = !isFav;
+                      });
+                      adRepository.setFavoriteAd(widget.ad.id, widget.token);
+                    },
+                  )
                 ],
               )
             ],

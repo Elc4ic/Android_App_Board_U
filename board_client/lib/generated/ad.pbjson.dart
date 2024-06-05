@@ -149,10 +149,11 @@ const Ad$json = {
     {'1': 'title', '3': 2, '4': 1, '5': 9, '10': 'title'},
     {'1': 'price', '3': 3, '4': 1, '5': 3, '10': 'price'},
     {'1': 'description', '3': 4, '4': 1, '5': 9, '10': 'description'},
+    {'1': 'is_fav', '3': 5, '4': 1, '5': 8, '10': 'isFav'},
     {'1': 'is_active', '3': 6, '4': 1, '5': 8, '10': 'isActive'},
     {'1': 'views', '3': 7, '4': 1, '5': 5, '10': 'views'},
+    {'1': 'images', '3': 8, '4': 3, '5': 11, '6': '.board.ImageProto', '10': 'images'},
     {'1': 'created', '3': 10, '4': 1, '5': 9, '10': 'created'},
-    {'1': 'images', '3': 8, '4': 3, '5': 9, '10': 'images'},
     {'1': 'user', '3': 11, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
     {'1': 'category', '3': 12, '4': 1, '5': 11, '6': '.board.Category', '10': 'category'},
   ],
@@ -161,11 +162,11 @@ const Ad$json = {
 /// Descriptor for `Ad`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List adDescriptor = $convert.base64Decode(
     'CgJBZBIOCgJpZBgBIAEoA1ICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEhQKBXByaWNlGAMgAS'
-    'gDUgVwcmljZRIgCgtkZXNjcmlwdGlvbhgEIAEoCVILZGVzY3JpcHRpb24SGwoJaXNfYWN0aXZl'
-    'GAYgASgIUghpc0FjdGl2ZRIUCgV2aWV3cxgHIAEoBVIFdmlld3MSGAoHY3JlYXRlZBgKIAEoCV'
-    'IHY3JlYXRlZBIWCgZpbWFnZXMYCCADKAlSBmltYWdlcxIfCgR1c2VyGAsgASgLMgsuYm9hcmQu'
-    'VXNlclIEdXNlchIrCghjYXRlZ29yeRgMIAEoCzIPLmJvYXJkLkNhdGVnb3J5UghjYXRlZ29yeQ'
-    '==');
+    'gDUgVwcmljZRIgCgtkZXNjcmlwdGlvbhgEIAEoCVILZGVzY3JpcHRpb24SFQoGaXNfZmF2GAUg'
+    'ASgIUgVpc0ZhdhIbCglpc19hY3RpdmUYBiABKAhSCGlzQWN0aXZlEhQKBXZpZXdzGAcgASgFUg'
+    'V2aWV3cxIpCgZpbWFnZXMYCCADKAsyES5ib2FyZC5JbWFnZVByb3RvUgZpbWFnZXMSGAoHY3Jl'
+    'YXRlZBgKIAEoCVIHY3JlYXRlZBIfCgR1c2VyGAsgASgLMgsuYm9hcmQuVXNlclIEdXNlchIrCg'
+    'hjYXRlZ29yeRgMIAEoCzIPLmJvYXJkLkNhdGVnb3J5UghjYXRlZ29yeQ==');
 
 @$core.Deprecated('Use repeatedAdResponseDescriptor instead')
 const RepeatedAdResponse$json = {

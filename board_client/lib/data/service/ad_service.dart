@@ -34,7 +34,7 @@ class AdService implements AdRepository {
           query: search,
           limit: fnum.Int64(pageSize),
           page: fnum.Int64(0),
-          token: "cscscs"),
+          token: "empty_token"),
     );
     return response;
   }
@@ -46,9 +46,10 @@ class AdService implements AdRepository {
   }
 
   @override
-  void setFavoriteAd(fnum.Int64 id,String? token) async {
-    _client.setFavoriteAd(
+  Future<bool> setFavoriteAd(fnum.Int64 id,String? token) async {
+    var response = await _client.setFavoriteAd(
         SetFavoriteRequest(id: id, value: false, token: token));
+    return response.login;
   }
 
   @override

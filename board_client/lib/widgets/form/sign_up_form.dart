@@ -40,7 +40,7 @@ class _AddAdFormState extends State<SignUpForm> {
           _passwordController.text,
           _phoneController.text,
         );
-        context.pushReplacement(SC.LOGIN_PAGE);
+        context.go(SC.LOGIN_PAGE);
       } catch (e) {
         _usernameController.clear();
         _passwordController.clear();

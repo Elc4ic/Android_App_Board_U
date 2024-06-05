@@ -14,6 +14,7 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import 'image.pb.dart' as $4;
 import 'user.pb.dart' as $0;
 
 class Empty extends $pb.GeneratedMessage {
@@ -454,9 +455,10 @@ class Ad extends $pb.GeneratedMessage {
     $core.String? title,
     $fixnum.Int64? price,
     $core.String? description,
+    $core.bool? isFav,
     $core.bool? isActive,
     $core.int? views,
-    $core.Iterable<$core.String>? images,
+    $core.Iterable<$4.ImageProto>? images,
     $core.String? created,
     $0.User? user,
     Category? category,
@@ -473,6 +475,9 @@ class Ad extends $pb.GeneratedMessage {
     }
     if (description != null) {
       $result.description = description;
+    }
+    if (isFav != null) {
+      $result.isFav = isFav;
     }
     if (isActive != null) {
       $result.isActive = isActive;
@@ -503,9 +508,10 @@ class Ad extends $pb.GeneratedMessage {
     ..aOS(2, _omitFieldNames ? '' : 'title')
     ..aInt64(3, _omitFieldNames ? '' : 'price')
     ..aOS(4, _omitFieldNames ? '' : 'description')
+    ..aOB(5, _omitFieldNames ? '' : 'isFav')
     ..aOB(6, _omitFieldNames ? '' : 'isActive')
     ..a<$core.int>(7, _omitFieldNames ? '' : 'views', $pb.PbFieldType.O3)
-    ..pPS(8, _omitFieldNames ? '' : 'images')
+    ..pc<$4.ImageProto>(8, _omitFieldNames ? '' : 'images', $pb.PbFieldType.PM, subBuilder: $4.ImageProto.create)
     ..aOS(10, _omitFieldNames ? '' : 'created')
     ..aOM<$0.User>(11, _omitFieldNames ? '' : 'user', subBuilder: $0.User.create)
     ..aOM<Category>(12, _omitFieldNames ? '' : 'category', subBuilder: Category.create)
@@ -569,57 +575,66 @@ class Ad extends $pb.GeneratedMessage {
   @$pb.TagNumber(4)
   void clearDescription() => clearField(4);
 
+  @$pb.TagNumber(5)
+  $core.bool get isFav => $_getBF(4);
+  @$pb.TagNumber(5)
+  set isFav($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasIsFav() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearIsFav() => clearField(5);
+
   @$pb.TagNumber(6)
-  $core.bool get isActive => $_getBF(4);
+  $core.bool get isActive => $_getBF(5);
   @$pb.TagNumber(6)
-  set isActive($core.bool v) { $_setBool(4, v); }
+  set isActive($core.bool v) { $_setBool(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasIsActive() => $_has(4);
+  $core.bool hasIsActive() => $_has(5);
   @$pb.TagNumber(6)
   void clearIsActive() => clearField(6);
 
   @$pb.TagNumber(7)
-  $core.int get views => $_getIZ(5);
+  $core.int get views => $_getIZ(6);
   @$pb.TagNumber(7)
-  set views($core.int v) { $_setSignedInt32(5, v); }
+  set views($core.int v) { $_setSignedInt32(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasViews() => $_has(5);
+  $core.bool hasViews() => $_has(6);
   @$pb.TagNumber(7)
   void clearViews() => clearField(7);
 
   @$pb.TagNumber(8)
-  $core.List<$core.String> get images => $_getList(6);
+  $core.List<$4.ImageProto> get images => $_getList(7);
 
   @$pb.TagNumber(10)
-  $core.String get created => $_getSZ(7);
+  $core.String get created => $_getSZ(8);
   @$pb.TagNumber(10)
-  set created($core.String v) { $_setString(7, v); }
+  set created($core.String v) { $_setString(8, v); }
   @$pb.TagNumber(10)
-  $core.bool hasCreated() => $_has(7);
+  $core.bool hasCreated() => $_has(8);
   @$pb.TagNumber(10)
   void clearCreated() => clearField(10);
 
   @$pb.TagNumber(11)
-  $0.User get user => $_getN(8);
+  $0.User get user => $_getN(9);
   @$pb.TagNumber(11)
   set user($0.User v) { setField(11, v); }
   @$pb.TagNumber(11)
-  $core.bool hasUser() => $_has(8);
+  $core.bool hasUser() => $_has(9);
   @$pb.TagNumber(11)
   void clearUser() => clearField(11);
   @$pb.TagNumber(11)
-  $0.User ensureUser() => $_ensure(8);
+  $0.User ensureUser() => $_ensure(9);
 
   @$pb.TagNumber(12)
-  Category get category => $_getN(9);
+  Category get category => $_getN(10);
   @$pb.TagNumber(12)
   set category(Category v) { setField(12, v); }
   @$pb.TagNumber(12)
-  $core.bool hasCategory() => $_has(9);
+  $core.bool hasCategory() => $_has(10);
   @$pb.TagNumber(12)
   void clearCategory() => clearField(12);
   @$pb.TagNumber(12)
-  Category ensureCategory() => $_ensure(9);
+  Category ensureCategory() => $_ensure(10);
 }
 
 class RepeatedAdResponse extends $pb.GeneratedMessage {

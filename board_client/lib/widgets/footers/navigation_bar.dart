@@ -12,6 +12,8 @@ class AppScaffold extends StatefulWidget {
 }
 
 class _AppScaffoldState extends State<AppScaffold> {
+  int prev_index = 0;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,22 +39,15 @@ class _AppScaffoldState extends State<AppScaffold> {
   int _calculateSelectedIndex(BuildContext context) {
     final String location =
         GoRouter.of(context).routeInformationProvider.value.uri.path;
-    if (location.startsWith(NavItems.paths[0])) {
-      return 0;
+    for (int i = 0; i < 5; i++) {
+      if (location.startsWith(NavItems.paths[i])) {
+        setState(() {
+          prev_index = i;
+        });
+        return i;
+      }
     }
-    if (location.startsWith(NavItems.paths[1])) {
-      return 1;
-    }
-    if (location.startsWith(NavItems.paths[2])) {
-      return 2;
-    }
-    if (location.startsWith(NavItems.paths[3])) {
-      return 3;
-    }
-    if (location.startsWith(NavItems.paths[4])) {
-      return 4;
-    }
-    return 0;
+    return prev_index;
   }
 
   void onTap(int index) {

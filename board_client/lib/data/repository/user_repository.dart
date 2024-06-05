@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../generated/user.pb.dart';
 
 abstract class UserRepository {
   Future<SharedPreferences> getSharedPreferences();
@@ -8,11 +9,15 @@ abstract class UserRepository {
 
   Future<bool> updateToken(String token);
 
+  Future<void> loadUser();
+
   String? getToken();
+
+  User? getUser();
 
   Future<bool> logout();
 
-  Future<void> login(String username, String password);
+  Future<bool> login(String username, String password);
 
-  Future<void> signUp(String username, String password, String phone);
+  Future<bool> signUp(String username, String password, String phone);
 }

@@ -9,4 +9,9 @@ class Chat (
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
 
+    @ManyToOne
+    @JoinColumn(name = "ad_id")
+    val ad: Ad,
+
+
 )

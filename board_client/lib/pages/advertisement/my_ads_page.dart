@@ -18,6 +18,8 @@ class MyAdsPage extends StatefulWidget {
 }
 
 class _MyAdsPageState extends State<MyAdsPage> {
+  var userRepository = GetIt.I<UserRepository>();
+
   final _adListBloc = AdListBloc(
     GetIt.I<AdRepository>(),
     GetIt.I<UserRepository>(),
@@ -34,35 +36,46 @@ class _MyAdsPageState extends State<MyAdsPage> {
     return Scaffold(
       body: SelectionArea(
         child: SafeArea(
-          child: BlocBuilder<AdListBloc, AdListState>(
-            bloc: _adListBloc,
-            builder: (context, state) {
-              if (state is AdListLoaded) {
-                if (state.adList.isEmpty) {
-                  return SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: Styles.Text16(SC.SEARCH_NOTHING),
-                    ),
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _adListBloc.add(LoadMyAd());
+            },
+            child: BlocBuilder<AdListBloc, AdListState>(
+              bloc: _adListBloc,
+              builder: (context, state) {
+                if (state is AdListLoaded) {
+                  if (state.adList.isEmpty) {
+                    return CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: 100,
+                            child: Center(
+                              child: Styles.Text16(SC.SEARCH_NOTHING),
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                  return ListView.builder(
+                      padding: Markup.padding_all_4,
+                      itemCount: state.adList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AdRow(ad: state.adList[index],token: userRepository.getToken(),);
+                      });
+                }
+                if (state is AdListLoadingFailure) {
+                  return TryAgainWidget(
+                    exception: state.exception,
+                    onPressed: () {
+                      _adListBloc.add(LoadMyAd());
+                    },
                   );
                 }
-                return ListView.builder(
-                    padding: Markup.padding_all_4,
-                    itemCount: state.adList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AdRow(ad: state.adList[index]);
-                    });
-              }
-              if (state is AdListLoadingFailure) {
-                return TryAgainWidget(
-                  exception: state.exception,
-                  onPressed: () {
-                    _adListBloc.add(LoadMyAd());
-                  },
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
         ),
       ),

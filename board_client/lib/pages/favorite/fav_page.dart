@@ -10,7 +10,6 @@ import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/widgets.dart';
-import '../login/login_redirect_page.dart';
 
 class FavPage extends StatefulWidget {
   const FavPage({super.key});
@@ -19,7 +18,9 @@ class FavPage extends StatefulWidget {
   State<FavPage> createState() => _FavPageState();
 }
 
-class _FavPageState extends State<FavPage> {
+class _FavPageState extends State<FavPage>{
+  var userRepository = GetIt.I<UserRepository>();
+
   final _adListBloc = AdListBloc(
     GetIt.I<AdRepository>(),
     GetIt.I<UserRepository>(),
@@ -34,26 +35,39 @@ class _FavPageState extends State<FavPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SelectionArea(
-        child: SafeArea(
+      body: SafeArea(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _adListBloc.add(LoadFavAd());
+          },
           child: BlocBuilder<AdListBloc, AdListState>(
             bloc: _adListBloc,
             builder: (context, state) {
               if (state is AdListLoaded) {
                 if (state.adList.isEmpty) {
-                  return SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: Styles.Text16(SC.SEARCH_NOTHING),
-                    ),
+                  return CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Styles.Text16(SC.SEARCH_NOTHING),
+                          ),
+                        ),
+                      )
+                    ],
                   );
                 }
                 return ListView.builder(
-                    padding: Markup.padding_all_4,
-                    itemCount: state.adList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return RowCard(ad: state.adList[index]);
-                    });
+                  padding: Markup.padding_all_4,
+                  itemCount: state.adList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return RowCard(
+                      ad: state.adList[index],
+                      token: userRepository.getToken(),
+                    );
+                  },
+                );
               }
               if (state is AdListLoadingFailure) {
                 return TryAgainWidget(

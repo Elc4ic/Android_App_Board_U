@@ -25,6 +25,7 @@ dependencies:
   shared_preferences: ^2.2.3
   form_field_validator: ^1.1.0
   flutter_multi_formatter: ^2.12.8
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

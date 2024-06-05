@@ -1,5 +1,5 @@
 import 'package:board_client/pages/advertisement/add_ad_page.dart';
-import 'package:board_client/pages/chats/chats_page.dart';
+import 'package:board_client/pages/chats/chats_preview_page.dart';
 import 'package:board_client/pages/favorite/fav_page.dart';
 import 'package:board_client/pages/login/login_page.dart';
 import 'package:board_client/pages/login/login_redirect_page.dart';
@@ -11,137 +11,126 @@ import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
 
 import '../data/repository/user_repository.dart';
-import '../pages/advertisement/ad_page.dart';
+import '../pages/main/ad_page.dart';
 import '../pages/advertisement/my_ads_page.dart';
 import 'not_found_page.dart';
 
-enum AppRoute {
-  home,
-  settings,
-  chats,
-  my,
-  add,
-  change,
-  login,
-  fav,
-  ad,
-  category,
-  signup
-}
-
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorKey = GlobalKey<NavigatorState>();
 final userRepository = GetIt.I<UserRepository>();
 
 GoRouter router = GoRouter(
-  navigatorKey: _rootNavigatorKey,
   initialLocation: '/home',
   debugLogDiagnostics: false,
   routes: [
     GoRoute(
+      path: '/ad/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return AdPage(id: int.parse(id));
+      },
+    ),
+    GoRoute(
+      path: '/add',
+      builder: (context, state) {
+        return const AddAdPage(token: "sscsc");
+      },
+    ),
+    GoRoute(
       path: '/login',
-      name: AppRoute.login.name,
       pageBuilder: (context, state) {
         return const MaterialPage(child: LoginPage());
       },
     ),
     GoRoute(
       path: '/signup',
-      name: AppRoute.signup.name,
       pageBuilder: (context, state) {
         return const MaterialPage(child: SignUpPage());
       },
     ),
-    ShellRoute(
-      navigatorKey: _shellNavigatorKey,
+    StatefulShellRoute.indexedStack(
       builder: (context, state, child) {
         return AppScaffold(body: child);
       },
-      routes: [
-        GoRoute(
-          path: '/home',
-          name: AppRoute.home.name,
-          pageBuilder: (context, state) {
-            return const MaterialPage(child: MainPage(search: ""));
-          },
-        ),
-        GoRoute(
-          path: '/home/:category',
-          name: AppRoute.category.name,
-          pageBuilder: (context, state) {
-            final index = state.pathParameters['category']!;
-            return MaterialPage(child: CategoryPage(categoryIndex: int.parse(index),));
-          },
-        ),
-        GoRoute(
-          path: '/ad/:id',
-          name: AppRoute.ad.name,
-          pageBuilder: (context, state) {
-            final id = state.pathParameters['id']!;
-            return MaterialPage(child: AdPage(id: int.parse(id)));
-          },
-        ),
-        GoRoute(
-          path: '/my',
-          name: AppRoute.my.name,
-          pageBuilder: (context, state) {
-            if (userRepository.getToken() == null) {
-              return const MaterialPage(child: LoginRedirectPage());
-            }
-            return const MaterialPage(child: MyAdsPage());
-          },
+      branches: [
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: 'add',
-              name: AppRoute.add.name,
-              pageBuilder: (context, state) {
-                return const MaterialPage(child: AddAdPage(token: "sscsc"));
-              },
+              path: '/home',
+              builder: (context, state) => const MainPage(),
+              routes: [
+                GoRoute(
+                  path: ':category',
+                  builder: (context, state) {
+                    final index = state.pathParameters['category']!;
+                    return CategoryPage(categoryIndex: int.parse(index));
+                  },
+                ),
+              ],
             ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
             GoRoute(
-              path: 'change/:id/:token',
-              name: AppRoute.change.name,
-              pageBuilder: (context, state) {
-                final id = state.pathParameters['id']!;
-                final token = state.pathParameters['token']!;
-                return const MaterialPage(child: MyAdsPage());
+              path: '/my',
+              builder: (context, state) {
+                if (userRepository.getToken() == null) {
+                  return const LoginRedirectPage();
+                }
+                return const MyAdsPage();
+              },
+              routes: [
+                GoRoute(
+                  path: 'change/:id',
+                  builder: (context, state) {
+                    final id = state.pathParameters['id']!;
+                    return const MyAdsPage();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/favorites',
+              builder: (context, state) {
+                if (userRepository.getToken() == null) {
+                  return const LoginRedirectPage();
+                }
+                return const FavPage();
               },
             ),
           ],
         ),
-        GoRoute(
-          path: '/favorites',
-          name: AppRoute.fav.name,
-          pageBuilder: (context, state) {
-            if (userRepository.getToken() == null) {
-              return const MaterialPage(child: LoginRedirectPage());
-            }
-            return const MaterialPage(child: FavPage());
-          },
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/chats',
+              builder: (context, state) {
+                if (userRepository.getToken() == null) {
+                  return const LoginRedirectPage();
+                }
+                final search = state.uri.queryParameters['search'];
+                return const ChatsPreviewPage();
+              },
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/chats',
-          name: AppRoute.chats.name,
-          pageBuilder: (context, state) {
-            if (userRepository.getToken() == null) {
-              return const MaterialPage(child: LoginRedirectPage());
-            }
-            final search = state.uri.queryParameters['search'];
-            return const MaterialPage(child: ChatsPage());
-          },
-        ),
-        GoRoute(
-          path: '/settings',
-          name: AppRoute.settings.name,
-          pageBuilder: (context, state) {
-            if (userRepository.getToken() == null) {
-              return const MaterialPage(child: LoginRedirectPage());
-            }
-            return MaterialPage(child: SettingsPage());
-          },
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) {
+                if (userRepository.getToken() == null) {
+                  return const LoginRedirectPage();
+                }
+                return const SettingsPage();
+              },
+            ),
+          ],
         ),
       ],
     ),

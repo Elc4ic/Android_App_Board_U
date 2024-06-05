@@ -14,7 +14,5 @@ void main() {
   GetIt.I.registerLazySingleton<UserRepository>(() => UserService());
   GetIt.I.registerLazySingleton<CategoryRepository>(() => CategoryService());
 
-  GetIt.I<UserRepository>().isAuthAvailable();
-
   runApp(const MyApp());
 }

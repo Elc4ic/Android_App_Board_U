@@ -19,24 +19,12 @@ class _AddAdFormState extends State<LoginForm> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      method();
-    });
-    super.initState();
-  }
-
-  Future<void> method() async {
-    if (await userRepository.isAuthAvailable()) {
-      context.pushReplacement(SC.MAIN_PAGE);
-    }
-  }
-
-  void _submitForm() {
+  Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      userRepository.login(_usernameController.text, _passwordController.text);
-      context.pushReplacement(SC.MAIN_PAGE);
+      await userRepository.login(_usernameController.text, _passwordController.text);
+      while(context.canPop()){
+        context.pop();
+      }
     }
   }
 

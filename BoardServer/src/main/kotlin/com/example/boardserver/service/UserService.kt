@@ -19,16 +19,18 @@ class UserService(
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         if (userRepository.findByUsername(request!!.username).isEmpty) {
-            responseObserver!!.onNext(UserUtils.failGrpc())
-            responseObserver.onCompleted()
+            val newUser = UserOuterClass.User.newBuilder()
+                .setUsername(request.username)
+                .setPassword(UserUtils.hashPassword(request.password))
+                .setPhone(request.phone)
+                .build()
+            userRepository.save(UserUtils.fromUserGrpc(newUser))
+            responseObserver?.onNext(UserUtils.successGrpc())
+
+        } else {
+            responseObserver?.onNext(UserUtils.failGrpc())
         }
-        val newUser = UserOuterClass.User.newBuilder()
-            .setUsername(request.username)
-            .setPassword(UserUtils.hashPassword(request.password))
-            .build()
-        userRepository.save(UserUtils.fromUserGrpc(newUser))
-        responseObserver!!.onNext(UserUtils.successGrpc())
-        responseObserver.onCompleted()
+        responseObserver?.onCompleted()
     }
 
     override fun getLogin(
@@ -47,6 +49,22 @@ class UserService(
             responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный ввод").asException())
         }
         responseObserver.onCompleted()
+    }
+
+    override fun getUserData(
+        request: UserOuterClass.JwtProto?,
+        responseObserver: StreamObserver<UserOuterClass.UserResponse>?
+    ) {
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            val user = userRepository.findById(userId).get()
+            responseObserver?.onNext(
+                UserOuterClass.UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build()
+            )
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun changeUserData(

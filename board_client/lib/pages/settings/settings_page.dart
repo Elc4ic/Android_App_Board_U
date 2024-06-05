@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,24 +15,38 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final userRepository = GetIt.I<UserRepository>();
+
   @override
   Widget build(BuildContext context) {
+    final user = userRepository.getUser();
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             const SliverToBoxAdapter(
               child: SizedBox(
-                height: 400,
+                height: 200,
               ),
             ),
             SliverToBoxAdapter(
               child: Column(
                 children: [
+                  Styles.Text16("${user?.username}"),
+                  Markup.dividerW5,
+                  Styles.Text16("${user?.phone}"),
+                  Markup.dividerW5,
                   Styles.Text16("${userRepository.getToken()} token"),
                 ],
-              )
-            )
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: ElevatedButton(
+                onPressed: () {
+                  userRepository.logout();
+                },
+                child: Styles.Text16("logout"),
+              ),
+            ),
           ],
         ),
       ),

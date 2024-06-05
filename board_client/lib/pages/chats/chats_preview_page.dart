@@ -5,14 +5,14 @@ import 'package:fixnum/fixnum.dart' as fnum;
 
 import '../../widgets/footers/navigation_bar.dart';
 
-class ChatsPage extends StatefulWidget {
-  const ChatsPage({super.key});
+class ChatsPreviewPage extends StatefulWidget {
+  const ChatsPreviewPage({super.key});
 
   @override
-  State<ChatsPage> createState() => _ChatsPageState();
+  State<ChatsPreviewPage> createState() => _ChatsPreviewPageState();
 }
 
-class _ChatsPageState extends State<ChatsPage> {
+class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

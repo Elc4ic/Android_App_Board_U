@@ -31,17 +31,26 @@ class UserService implements UserRepository {
   @override
   User? getUser() => appUser;
 
-  void setUser(User user) {
-    appUser = user;
+  @override
+  Future<void> loadUser() async {
+    final response = await _client.getUserData(JwtProto(token: authToken));
+    appUser = response.user;
   }
 
+  @override
   String? getToken() => authToken;
 
   @override
   Future<bool> isAuthAvailable() async {
     final sharedPreferences = await getSharedPreferences();
     authToken = sharedPreferences.getString('token');
-    return authToken != null;
+    log("${authToken}token");
+    if (authToken != null) {
+      final response = await _client.getUserData(JwtProto(token: authToken));
+      appUser = response.user;
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -60,28 +69,30 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<void> login(String username, String password) async {
+  Future<bool> login(String username, String password) async {
     try {
-      final request =
-          LoginRequest(username: username, password: password);
+      final request = LoginRequest(username: username, password: password);
       final response = await _client.getLogin(request);
+      log(response.accessToken);
       await updateToken(response.accessToken);
       appUser = response.user;
+      return true;
     } catch (e) {
       log("$e my login error");
-      rethrow;
+      return false;
     }
   }
 
   @override
-  Future<void> signUp(String username, String password, String phone) async {
+  Future<bool> signUp(String username, String password, String phone) async {
     try {
-      final request = SignupRequest(
-          username: username, password: password, phone: phone);
+      final request =
+          SignupRequest(username: username, password: password, phone: phone);
       await _client.getSignUp(request);
+      return true;
     } catch (e) {
       log("$e my signUp error");
-      rethrow;
+      return false;
     }
   }
 }

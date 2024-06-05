@@ -3,21 +3,17 @@ package com.example.boardserver.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "messages")
-class Message (
+@Table(name = "favorites")
+class Favorites (
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     val user: User,
 
     @ManyToOne
-    @JoinColumn(name = "chat_id")
-    val chat: Chat,
-
-    var content: String,
-    val data: String,
-
+    @JoinColumn(name = "ad_id")
+    val ad: Ad
 )

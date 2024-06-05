@@ -10,5 +10,8 @@ import java.util.*
 @Repository
 interface AdRepository : JpaRepository<Ad, Long> {
     override fun findAll(pageable: Pageable): Page<Ad>
+    fun findAllByIsActive(pageable: Pageable,active: Boolean): Page<Ad>
     override fun findById(id: Long): Optional<Ad>
+    fun findByCategoryId(id: Long): MutableList<Ad>
+    fun findByUserId(id: Long): MutableList<Ad>
 }

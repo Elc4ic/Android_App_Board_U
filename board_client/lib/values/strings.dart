@@ -2,6 +2,7 @@ part of 'values.dart';
 
 class SC {
   static const String APP_TITLE = "Доска объявлений ДВФУ";
+  static const String RUBLES = "₽";
 
   //headers
   static const String SEARCH_HINT = "Поиск...";
@@ -47,7 +48,7 @@ class SC {
   static const String CHATS_PAGE = "/chats";
   static const String CHAT_PAGE = "/chat";
   static const String SETTINGS_PAGE = "/settings";
-  static const String ADD_PAGE = "/my/add";
+  static const String ADD_PAGE = "/add";
   static const String CHANGE_PAGE = "/my/change";
   static const String LOGIN_PAGE = "/login";
   static const String SIGNUP_PAGE = "/signup";

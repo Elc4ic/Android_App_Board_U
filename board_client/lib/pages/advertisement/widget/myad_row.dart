@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../data/repository/ad_repository.dart';
+import '../../../data/repository/user_repository.dart';
 import '../../../generated/ad.pb.dart';
 import '../../../values/values.dart';
+import 'my_dialog.dart';
 
 class AdRow extends StatefulWidget {
-  const AdRow({super.key, required this.ad});
+  const AdRow({super.key, required this.ad, required this.token});
 
   final Ad ad;
+  final String? token;
 
   @override
   State<AdRow> createState() => _AdRowState();
 }
 
 class _AdRowState extends State<AdRow> {
+  var adRepository = GetIt.I<AdRepository>();
+  var userRepository = GetIt.I<UserRepository>();
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -45,12 +53,12 @@ class _AdRowState extends State<AdRow> {
                       children: [
                         Styles.TitleText16("${widget.ad.price} P"),
                         Styles.Text16(widget.ad.title),
-                        Styles.Text12("активна"),
+                        Styles.Text12("активно"),
                         Row(
                           children: [
                             const Icon(Icons.remove_red_eye),
                             Markup.dividerW5,
-                            Styles.Text12("14"),
+                            Styles.Text12(widget.ad.views.toString()),
                           ],
                         )
                       ],
@@ -67,19 +75,20 @@ class _AdRowState extends State<AdRow> {
                     onPressed: () => {},
                   ),
                   IconButton(
-                    tooltip: SC.DELETE,
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => {},
-                  ),
-                  IconButton(
                     tooltip: SC.HIDE,
                     icon: const Icon(Icons.closed_caption_disabled_outlined),
-                    onPressed: () => {},
+                    onPressed: () => myDialog(context, () async {
+                      await adRepository.muteAd(widget.ad, widget.token);
+                      context.pop();
+                    }),
                   ),
                   IconButton(
                     tooltip: SC.CLOSE,
                     icon: const Icon(Icons.close),
-                    onPressed: () => {},
+                    onPressed: () => myDialog(context, () async {
+                      await adRepository.deleteAd(widget.ad, widget.token);
+                      context.pop();
+                    }),
                   ),
                 ],
               )

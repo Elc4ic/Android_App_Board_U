@@ -8,7 +8,7 @@ abstract class AdRepository {
 
   Future<Ad> getOneAd(int id);
 
-  void setFavoriteAd(Int64 id, String? token);
+  Future<bool> setFavoriteAd(Int64 id, String? token);
 
   Future<Empty> addAd(Ad ad, String? token);
 

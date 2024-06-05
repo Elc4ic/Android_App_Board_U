@@ -13,9 +13,9 @@ import '../../data/repository/category_repository.dart';
 import '../../data/repository/user_repository.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.search});
+  const MainPage({super.key});
 
-  final String search;
+  final String search = "";
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -44,73 +44,81 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: header,
       body: SelectionArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 40,
-                child: BlocBuilder<CategoryListBloc, CategoryListState>(
-                  bloc: _catListBloc,
-                  builder: (context, state) {
-                    if (state is CategoryListLoaded) {
-                      return ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: NavItems.generateCategory(state.categories,context),
-                      );
-                    }
-                    if (state is CategoryFailure) {
-                      return Center(
-                        child: TryAgainWidget(
-                          exception: state.exception,
-                          onPressed: () {
-                            _adListBloc.add(LoadAdList(widget.search));
-                          },
-                        ),
-                      );
-                    }
-                    return const Center(child: CircularProgressIndicator());
-                  },
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _adListBloc.add(LoadAdList(widget.search));
+            _catListBloc.add(LoadCategories());
+          },
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: 40,
+                  child: BlocBuilder<CategoryListBloc, CategoryListState>(
+                    bloc: _catListBloc,
+                    builder: (context, state) {
+                      if (state is CategoryListLoaded) {
+                        return ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: NavItems.generateCategory(
+                              state.categories, context),
+                        );
+                      }
+                      if (state is CategoryFailure) {
+                        return Center(
+                          child: TryAgainWidget(
+                            exception: state.exception,
+                            onPressed: () {
+                              _adListBloc.add(LoadAdList(widget.search));
+                            },
+                          ),
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
                 ),
               ),
-            ),
-            BlocBuilder<AdListBloc, AdListState>(
-              bloc: _adListBloc,
-              builder: (context, state) {
-                if (state is AdListLoaded) {
-                  if (state.adList.isEmpty) {
-                    return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 100,
-                        child: Center(
-                          child: Styles.Text16(SC.SEARCH_NOTHING),
+              BlocBuilder<AdListBloc, AdListState>(
+                bloc: _adListBloc,
+                builder: (context, state) {
+                  if (state is AdListLoaded) {
+                    if (state.adList.isEmpty) {
+                      return SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Styles.Text16(SC.SEARCH_NOTHING),
+                          ),
                         ),
-                      ),
+                      );
+                    }
+                    return CustomGrid(
+                      cellWidth: 180,
+                      width: widthNow,
+                      items: List.generate(
+                          state.adList.length,
+                          (index) => AdCard(
+                              ad: state.adList[index],
+                              token: userRepository.getToken())).toList(),
                     );
                   }
-                  return CustomGrid(
-                    cellWidth: 180,
-                    width: widthNow,
-                    items: List.generate(state.adList.length,
-                        (index) => AdCard(ad: state.adList[index])).toList(),
-                  );
-                }
-                if (state is AdListLoadingFailure) {
-                  return SliverFillRemaining(
-                    child: Center(
+                  if (state is AdListLoadingFailure) {
+                    return SliverFillRemaining(
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
                           _adListBloc.add(LoadAdList(widget.search));
                         },
                       ),
-                    ),
-                  );
-                }
-                return const SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()));
-              },
-            ),
-          ],
+                    );
+                  }
+                  return const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()));
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

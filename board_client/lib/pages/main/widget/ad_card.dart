@@ -21,6 +21,7 @@ class AdCard extends StatefulWidget {
 
 class _AdCardState extends State<AdCard> {
   final adRepository = GetIt.I<AdRepository>();
+  bool isFav = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,8 @@ class _AdCardState extends State<AdCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Styles.Text16(widget.ad.title),
-                            Styles.TitleText16("${widget.ad.price} Р"),
+                            Styles.TitleText16(
+                                "${widget.ad.price} ${SC.RUBLES}"),
                           ],
                         ),
                       ),
@@ -62,10 +64,14 @@ class _AdCardState extends State<AdCard> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             FavButton(
-                              isFav: false,
-                              onPressed: () => {
-                                adRepository.setFavoriteAd(widget.ad.id,widget.token),
+                              onPressed: (){
+                                adRepository.setFavoriteAd(
+                                    widget.ad.id, widget.token);
+                                setState((){
+                                  isFav = !isFav;
+                                });
                               },
+                              isFav: isFav,
                             )
                           ],
                         ),

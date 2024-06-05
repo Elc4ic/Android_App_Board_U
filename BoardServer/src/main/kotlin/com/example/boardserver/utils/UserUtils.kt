@@ -30,14 +30,14 @@ object UserUtils {
     }
 
     fun hashPassword(password: String): String {
-        return BCrypt.withDefaults().hash(10, password.toByteArray(Charsets.UTF_8)).toString()
+        return BCrypt.withDefaults().hashToString(8, password.toCharArray())
     }
 
     fun checkPassword(input: String, user: String): Boolean {
         return BCrypt.verifyer()
             .verify(
-                input.toByteArray(Charsets.UTF_8),
-                user.toByteArray(Charsets.UTF_8)
+                input.toCharArray(),
+                user.toCharArray()
             ).verified
     }
 
