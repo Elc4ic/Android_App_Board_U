@@ -31,14 +31,31 @@ class AdService(
         request: AdOuterClass.GetManyAdRequest?,
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
+
+        val userId = jwtProvider.validateJwt(request!!.token)
         val pagingSort: Pageable = PageRequest.of(request!!.page.toInt(), request.limit.toInt())
         val adPage = adRepository.findAllByIsActive(pagingSort, true)
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
-
-        responseObserver?.onNext(
-            AdUtils.toPaginatedAdGrpc(adPage.content, request.page, total, pageCount)
-        )
+        val ads = mutableListOf<AdOuterClass.Ad>()
+        adPage.forEach { ad ->
+            ads.add(
+                AdUtils.toAdGrpcWithImages(
+                    ad,
+                    imageRepository.findByAdId(ad.id),
+                    if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
+                    else false,
+                )
+            )
+        }
+        val response = AdOuterClass.PaginatedAd.newBuilder()
+            .addAllData(ads)
+            .setCount(ads.size.toLong())
+            .setTotal(total)
+            .setPage(request.page)
+            .setPageCount(pageCount)
+            .build()
+        responseObserver?.onNext(response)
         responseObserver?.onCompleted()
     }
 
@@ -84,7 +101,7 @@ class AdService(
         if (userId != null) {
             val ad = AdUtils.fromAdGrpc(request.ad)
             adRepository.save(ad)
-            request.ad.imagesList.forEach { image -> println(image.image) }
+            request.ad.imagesList.forEach { image -> println("${image.image} ${image.image.size()}") }
             val images = ImageUtils.fromAdGrpcList(request.ad.imagesList, ad)
             images.forEach { imageRepository.save(it) }
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())

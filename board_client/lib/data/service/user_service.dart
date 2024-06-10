@@ -95,4 +95,10 @@ class UserService implements UserRepository {
       return false;
     }
   }
+
+  @override
+  Future<bool> changeUser(User? user, String? token) async {
+    final response = await _client.changeUserData(SetUser(user: user,token: token));
+    return response.login;
+  }
 }

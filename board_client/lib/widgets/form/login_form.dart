@@ -21,10 +21,10 @@ class _AddAdFormState extends State<LoginForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      await userRepository.login(_usernameController.text, _passwordController.text);
-      while(context.canPop()){
-        context.pop();
-      }
+      await userRepository.login(
+          _usernameController.text, _passwordController.text);
+      NavItems.resetAllBranches(context);
+      context.go(SC.MAIN_PAGE);
     }
   }
 
@@ -49,7 +49,8 @@ class _AddAdFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              validator: RequiredValidator(errorText: 'Please enter login').call,
+              validator:
+                  RequiredValidator(errorText: 'Please enter login').call,
             ),
             Markup.dividerH10,
             TextFormField(
@@ -64,13 +65,15 @@ class _AddAdFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              validator: RequiredValidator(errorText: 'Please enter password').call,
+              validator:
+                  RequiredValidator(errorText: 'Please enter password').call,
             ),
             TextButton(
-                onPressed: () {
-                  context.push(SC.SIGNUP_PAGE);
-                },
-                child: Styles.Text12(SC.SIGN_UP),),
+              onPressed: () {
+                context.push(SC.SIGNUP_PAGE);
+              },
+              child: Styles.Text12(SC.SIGN_UP),
+            ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,

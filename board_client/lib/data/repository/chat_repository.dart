@@ -1,8 +1,13 @@
-import 'package:fixnum/fixnum.dart';
+import '../../generated/ad.pb.dart';
 import '../../generated/chat.pb.dart';
-import '../../generated/user.pb.dart';
+import 'package:fixnum/fixnum.dart';
 
 abstract class ChatRepository {
-  Future<List<ChatPreview>> getChatsPreview (String token);
-  Future<Chat> joinChat (Int64 chatId, String token);
+  Future<List<ChatPreview>> getChatsPreview(String? token);
+
+  Stream<Message> sendMessage(Stream<SendMessageRequest> stream);
+
+  Future<GetAllMessagesResponse> getMessages(int id, String? token);
+
+  Future<Int64> startChat(Ad ad,String? token);
 }

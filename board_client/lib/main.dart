@@ -6,13 +6,16 @@ import 'package:get_it/get_it.dart';
 import 'app.dart';
 import 'data/repository/ad_repository.dart';
 import 'data/repository/user_repository.dart';
+import 'data/repository/chat_repository.dart';
 import 'data/service/category_service.dart';
 import 'data/service/user_service.dart';
+import 'data/service/chat_service.dart';
 
 void main() {
   GetIt.I.registerLazySingleton<AdRepository>(() => AdService());
   GetIt.I.registerLazySingleton<UserRepository>(() => UserService());
   GetIt.I.registerLazySingleton<CategoryRepository>(() => CategoryService());
+  GetIt.I.registerLazySingleton<ChatRepository>(() => ChatService());
 
   runApp(const MyApp());
 }

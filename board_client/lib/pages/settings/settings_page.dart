@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../data/repository/user_repository.dart';
 import '../../generated/user.pb.dart';
@@ -35,6 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   Markup.dividerW5,
                   Styles.Text16("${user?.phone}"),
                   Markup.dividerW5,
+                  Styles.Text16("${user?.address}"),
+                  Markup.dividerW5,
                   Styles.Text16("${userRepository.getToken()} token"),
                 ],
               ),
@@ -45,6 +48,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   userRepository.logout();
                 },
                 child: Styles.Text16("logout"),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: ElevatedButton(
+                onPressed: () {
+                  context.push("/setaddress");
+                },
+                child: Styles.Text16("Настроить адресс"),
               ),
             ),
           ],

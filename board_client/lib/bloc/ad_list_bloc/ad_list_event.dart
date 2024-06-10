@@ -5,11 +5,14 @@ abstract class AdListEvent {}
 
 class LoadAdList extends AdListEvent {
   LoadAdList(
-    this.search, {
+    this.search, this.page, this.pageSize, this.clear, {
     this.completer,
   });
 
   final String search;
+  final int page;
+  final int pageSize;
+  final bool clear;
   final Completer? completer;
 }
 

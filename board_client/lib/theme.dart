@@ -21,7 +21,6 @@ ThemeData mainTheme(BuildContext context) {
       unselectedItemColor: Colors.black,
       selectedItemColor: Colors.black,
     ),
-
   );
 }
 

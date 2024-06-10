@@ -1,5 +1,4 @@
 import 'package:board_client/pages/favorite/widget/row_card.dart';
-import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

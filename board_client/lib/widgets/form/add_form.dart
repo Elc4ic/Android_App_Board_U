@@ -35,14 +35,13 @@ class _AddAdFormState extends State<AddAdForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final imageProto = Const.imageFromFilePicker(widget.result);
       await adRepository.addAd(
         Ad(
             title: _titleController.text,
             price: fnum.Int64(int.parse(_priceController.text)),
             description: _descController.text,
             user: userRepository.getUser(),
-            images: imageProto,
+            images: Const.imageFromFilePicker(widget.result),
             category: category,
             created: DateTime.now().toString()),
         userRepository.getToken(),

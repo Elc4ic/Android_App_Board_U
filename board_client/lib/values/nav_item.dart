@@ -36,4 +36,10 @@ class NavItems {
       ),
     ).toList();
   }
+
+  static void resetAllBranches(BuildContext context) {
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  }
+
+
 }

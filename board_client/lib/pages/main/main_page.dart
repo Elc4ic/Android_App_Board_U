@@ -31,9 +31,12 @@ class _MainPageState extends State<MainPage> {
     GetIt.I<CategoryRepository>(),
   );
 
+  int page = 0;
+  final pageSize = 10;
+
   @override
   void initState() {
-    _adListBloc.add(LoadAdList(widget.search));
+    _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
     _catListBloc.add(LoadCategories());
     super.initState();
   }
@@ -46,7 +49,10 @@ class _MainPageState extends State<MainPage> {
       body: SelectionArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _adListBloc.add(LoadAdList(widget.search));
+            setState(() {
+              page = 0;
+            });
+            _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
             _catListBloc.add(LoadCategories());
           },
           child: CustomScrollView(
@@ -69,7 +75,8 @@ class _MainPageState extends State<MainPage> {
                           child: TryAgainWidget(
                             exception: state.exception,
                             onPressed: () {
-                              _adListBloc.add(LoadAdList(widget.search));
+                              _adListBloc.add(LoadAdList(
+                                  widget.search, page, pageSize, false));
                             },
                           ),
                         );
@@ -93,14 +100,16 @@ class _MainPageState extends State<MainPage> {
                         ),
                       );
                     }
-                    return CustomGrid(
-                      cellWidth: 180,
-                      width: widthNow,
-                      items: List.generate(
-                          state.adList.length,
-                          (index) => AdCard(
-                              ad: state.adList[index],
-                              token: userRepository.getToken())).toList(),
+                    return Container(
+                      child: CustomGrid(
+                        cellWidth: 180,
+                        width: widthNow,
+                        items: List.generate(
+                            state.adList.length,
+                            (index) => AdCard(
+                                ad: state.adList[index],
+                                token: userRepository.getToken())).toList(),
+                      ),
                     );
                   }
                   if (state is AdListLoadingFailure) {
@@ -108,7 +117,8 @@ class _MainPageState extends State<MainPage> {
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _adListBloc.add(LoadAdList(widget.search));
+                          _adListBloc.add(
+                              LoadAdList(widget.search, page, pageSize, false));
                         },
                       ),
                     );
@@ -117,6 +127,17 @@ class _MainPageState extends State<MainPage> {
                       child: Center(child: CircularProgressIndicator()));
                 },
               ),
+              SliverToBoxAdapter(
+                  child: ElevatedButton(
+                child: Styles.Text12("Загрузить"),
+                onPressed: () {
+                  setState(() {
+                    page++;
+                  });
+                  _adListBloc
+                      .add(LoadAdList(widget.search, page, pageSize, false));
+                },
+              )),
             ],
           ),
         ),

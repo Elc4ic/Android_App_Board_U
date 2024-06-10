@@ -8,7 +8,6 @@ import '../../values/values.dart';
 
 class AdService implements AdRepository {
   late AdAPIClient _client;
-  final pageSize = 10;
 
   AdService() {
     final channel = ClientChannel(
@@ -22,44 +21,46 @@ class AdService implements AdRepository {
   }
 
   @override
-  Future<Empty> addAd(Ad ad,String? token) async {
+  Future<Empty> addAd(Ad ad, String? token) async {
     _client.addAd(ChangeAdRequest(ad: ad, token: token));
     return Empty();
   }
 
   @override
-  Future<PaginatedAd> getManyAd(String search) async {
+  Future<PaginatedAd> getManyAd(
+      String search, int page, int pageSize, String? token) async {
     final response = _client.getManyAd(
       GetManyAdRequest(
           query: search,
           limit: fnum.Int64(pageSize),
-          page: fnum.Int64(0),
-          token: "empty_token"),
+          page: fnum.Int64(page),
+          token: token),
     );
     return response;
   }
 
   @override
   Future<Ad> getOneAd(int id) async {
-    final ad = await _client.getOneAd(GetByIdRequest(id: fnum.Int64(id), token: "empty_token"));
+    final ad = await _client
+        .getOneAd(GetByIdRequest(id: fnum.Int64(id), token: "empty_token"));
     return ad;
   }
 
   @override
-  Future<bool> setFavoriteAd(fnum.Int64 id,String? token) async {
-    var response = await _client.setFavoriteAd(
-        SetFavoriteRequest(id: id, value: false, token: token));
+  Future<bool> setFavoriteAd(fnum.Int64 id, String? token) async {
+    var response = await _client
+        .setFavoriteAd(SetFavoriteRequest(id: id, value: false, token: token));
     return response.login;
   }
 
   @override
-  Future<IsSuccess> deleteAd(Ad ad,String? token) async {
+  Future<IsSuccess> deleteAd(Ad ad, String? token) async {
     return await _client.deleteAd(ChangeAdRequest(ad: ad, token: token));
   }
 
   @override
   Future<RepeatedAdResponse> getFavoriteAds(String? token) async {
-    return await  _client.getFavoriteAds(JwtProto(token: token));
+    return await _client.getFavoriteAds(JwtProto(token: token));
   }
 
   @override
@@ -68,7 +69,7 @@ class AdService implements AdRepository {
   }
 
   @override
-  Future<IsSuccess> muteAd(Ad ad,String? token) async {
+  Future<IsSuccess> muteAd(Ad ad, String? token) async {
     return await _client.muteAd(ChangeAdRequest(ad: ad, token: token));
   }
 }

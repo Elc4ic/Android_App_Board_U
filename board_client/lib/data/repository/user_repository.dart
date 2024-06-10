@@ -15,6 +15,8 @@ abstract class UserRepository {
 
   User? getUser();
 
+  Future<bool> changeUser(User? user, String? token);
+
   Future<bool> logout();
 
   Future<bool> login(String username, String password);

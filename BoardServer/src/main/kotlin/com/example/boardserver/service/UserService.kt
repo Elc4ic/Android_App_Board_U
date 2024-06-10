@@ -71,7 +71,16 @@ class UserService(
         request: UserOuterClass.SetUser?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
-        super.changeUserData(request, responseObserver)
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            userRepository.save(UserUtils.fromUserGrpc(request.user!!))
+            responseObserver?.onNext(
+                UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+            )
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun deleteUser(

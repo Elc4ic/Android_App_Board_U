@@ -68,18 +68,6 @@ object AdUtils {
             .build()
     }
 
-    fun toPaginatedAdGrpc(adPage: List<Ad>, page: Long, total: Long, pageCount: Long): AdOuterClass.PaginatedAd {
-        val ads = mutableListOf<AdOuterClass.Ad>()
-        adPage.forEach { ad -> ads.add(toAdGrpc(ad)) }
-        return AdOuterClass.PaginatedAd.newBuilder()
-            .addAllData(ads)
-            .setCount(ads.size.toLong())
-            .setTotal(total)
-            .setPage(page)
-            .setPageCount(pageCount)
-            .build()
-    }
-
     fun toRepeatedAdGrpc(adPage: List<Ad>): AdOuterClass.RepeatedAdResponse {
         val ads = mutableListOf<AdOuterClass.Ad>()
         adPage.forEach { ad -> ads.add(toAdGrpc(ad)) }

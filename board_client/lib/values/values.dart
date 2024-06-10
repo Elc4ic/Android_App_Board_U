@@ -3,6 +3,7 @@ library values;
 import 'dart:io';
 
 import 'package:board_client/generated/image.pb.dart';
+import 'package:board_client/routing/router.dart';
 import 'package:board_client/widgets/buttons/container_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,4 +37,31 @@ class Const {
             (i) => ImageProto(image: File(files[i].path).readAsBytesSync()))
         .toList();
   }
+}
+
+class Address {
+  static const List<String> lc = ["Кампус", 'Город', "Другое"];
+  static const List<String> campus = [
+    "9",
+    "10",
+    "11",
+    "8.2",
+    "8.1",
+    "2.1",
+    "1.8",
+    "7.1",
+    "7.2",
+  ];
+  static const List<String> gorod = [
+    'Пограничная 26',
+    "Державина 21",
+    "Державина 15"
+  ];
+}
+
+class Item {
+  final int i;
+  final String name;
+
+  Item(this.i, this.name);
 }

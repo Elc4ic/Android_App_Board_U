@@ -6,6 +6,7 @@ import 'package:board_client/pages/login/login_redirect_page.dart';
 import 'package:board_client/pages/login/sign_up_page.dart';
 import 'package:board_client/pages/main/category_page.dart';
 import 'package:board_client/pages/main/main_page.dart';
+import 'package:board_client/pages/settings/set_address_page.dart';
 import 'package:board_client/pages/settings/settings_page.dart';
 import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../data/repository/user_repository.dart';
+import '../pages/chats/message_page.dart';
 import '../pages/main/ad_page.dart';
 import '../pages/advertisement/my_ads_page.dart';
 import 'not_found_page.dart';
@@ -31,9 +33,22 @@ GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/chat/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return MessagePage(chatId: int.parse(id),);
+      },
+    ),
+    GoRoute(
       path: '/add',
       builder: (context, state) {
         return const AddAdPage(token: "sscsc");
+      },
+    ),
+    GoRoute(
+      path: '/setaddress',
+      builder: (context, state) {
+        return const SetAddressPage();
       },
     ),
     GoRoute(
