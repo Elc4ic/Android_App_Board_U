@@ -44,7 +44,9 @@ class _MessagePageState extends State<MessagePage> {
   initAsync() async {
     await fetchChatsHistory();
     startListeningMessageRequest();
-    addMessage("Join_room");
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scrollDown();
+    });
   }
 
   void startListeningMessageRequest() {
@@ -75,9 +77,7 @@ class _MessagePageState extends State<MessagePage> {
 
       controller.clear();
       scrollDown();
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
 
@@ -114,7 +114,7 @@ class _MessagePageState extends State<MessagePage> {
   void scrollDown() {
     scrollController.animateTo(
       scrollController.position.maxScrollExtent,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
     );
   }

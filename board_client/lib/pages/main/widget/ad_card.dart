@@ -21,7 +21,17 @@ class AdCard extends StatefulWidget {
 
 class _AdCardState extends State<AdCard> {
   final adRepository = GetIt.I<AdRepository>();
+
   bool isFav = false;
+
+  @override
+  void initState() {
+    setState(() {
+      isFav = widget.ad.isFav;
+    });
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +74,10 @@ class _AdCardState extends State<AdCard> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             FavButton(
-                              onPressed: (){
+                              onPressed: () {
                                 adRepository.setFavoriteAd(
                                     widget.ad.id, widget.token);
-                                setState((){
+                                setState(() {
                                   isFav = !isFav;
                                 });
                               },

@@ -27,6 +27,7 @@ class _AdRowState extends State<AdRow> {
     return SizedBox(
       height: 120,
       child: Card(
+        color: widget.ad.isActive ? Colors.white : Colors.black12,
         child: InkWell(
           onTap: () {
             context.push("/ad/${widget.ad.id}");
@@ -53,7 +54,8 @@ class _AdRowState extends State<AdRow> {
                       children: [
                         Styles.TitleText16("${widget.ad.price} P"),
                         Styles.Text16(widget.ad.title),
-                        Styles.Text12("активно"),
+                        Styles.Text12(
+                            widget.ad.isActive ? "активно" : "не активно"),
                         Row(
                           children: [
                             const Icon(Icons.remove_red_eye),
