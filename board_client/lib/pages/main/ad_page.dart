@@ -31,13 +31,13 @@ class _AdPageState extends State<AdPage> {
     GetIt.I<AdRepository>(),
   );
 
+  bool isFav = false;
+
   @override
   void initState() {
-    _adBloc.add(LoadAd(id: widget.id));
+    _adBloc.add(LoadAd(id: widget.id, token: userRepository.getToken()));
     super.initState();
   }
-
-  bool isFav = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _AdPageState extends State<AdPage> {
             if (state is AdLoaded) {
               return Scaffold(
                 appBar: adHeader(
-                  isFav,
+                  state.ad.isFav,
                   () async {
                     await adRepository.setFavoriteAd(
                         state.ad.id, userRepository.getToken());
@@ -62,35 +62,46 @@ class _AdPageState extends State<AdPage> {
                 ),
                 body: ListView(
                   children: [
-                    Container(
-                      color: Colors.blue,
+                    SizedBox(
                       height: 400,
-                      child: Image.memory(
-                          Uint8List.fromList(state.ad.images.first.image)),
+                      child: PageView.builder(
+                        itemCount: state.ad.images.length,
+                        pageSnapping: true,
+                        itemBuilder: (context, pagePosition) {
+                          return Container(
+                            color: Colors.blue,
+                            child: Image.memory(
+                              Uint8List.fromList(
+                                  state.ad.images[pagePosition].chunk),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                     Padding(
                       padding: Markup.padding_all_16,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Styles.TitleText32("${state.ad.price} ${SC.RUBLES}"),
-                          Styles.TitleText32(state.ad.title),
-                          Styles.TitleText24("Описание: "),
-                          Styles.Text24(state.ad.description),
-                          Markup.dividerW10,
-                          Styles.Text12(state.ad.user.address),
-                          Styles.Text12(state.ad.user.username),
+                          Styles.TitleText24("${state.ad.price} ${SC.RUBLES}"),
+                          Styles.TitleText24(state.ad.title),
+                          Styles.TitleText16("Описание:"),
+                          Styles.Text16(state.ad.description),
+                          Markup.dividerH10,
+                          Styles.Text12("Адреc: ${state.ad.user.address}"),
+                          Styles.Text12(
+                              "Пользователь: ${state.ad.user.username}"),
+                          Markup.dividerH10,
                           Row(
                             children: [
                               ElevatedButton(
-                                onPressed: () {
-
-                                },
+                                onPressed: () {},
                                 child: Styles.Text12("Позвонить"),
                               ),
                               ElevatedButton(
-                                onPressed: () async{
-                                  final chatId = await chatRepository.startChat(state.ad,userRepository.getToken());
+                                onPressed: () async {
+                                  final chatId = await chatRepository.startChat(
+                                      state.ad, userRepository.getToken());
                                   context.push("/chat/$chatId");
                                 },
                                 child: Styles.Text12("Написать"),

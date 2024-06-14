@@ -6,6 +6,7 @@ import 'package:board_client/pages/chats/widget/received_message.dart';
 import 'package:board_client/pages/chats/widget/sent_message.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
@@ -113,7 +114,7 @@ class _MessagePageState extends State<MessagePage> {
 
   void scrollDown() {
     scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
+      scrollController.position.minScrollExtent,
       duration: const Duration(seconds: 1),
       curve: Curves.fastOutSlowIn,
     );
@@ -136,21 +137,20 @@ class _MessagePageState extends State<MessagePage> {
                   ? errorWidget()
                   : messages.isNotEmpty
                       ? Expanded(
-                          child: Center(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              controller: scrollController,
-                              itemCount: messages.length,
-                              itemBuilder: ((context, index) {
-                                Message message = messages[index];
-                                final user = userRepository.getUser();
-                                bool isOwn =
-                                    message.sender.username == user?.username;
-                                return isOwn
-                                    ? SentMessageScreen(message: message)
-                                    : ReceivedMessageScreen(message: message);
-                              }),
-                            ),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            reverse: true,
+                            controller: scrollController,
+                            itemCount: messages.length,
+                            itemBuilder: ((context, index) {
+                              Message message = messages[messages.length - index-1];
+                              final user = userRepository.getUser();
+                              bool isOwn =
+                                  message.sender.username == user?.username;
+                              return isOwn
+                                  ? SentMessageScreen(message: message)
+                                  : ReceivedMessageScreen(message: message);
+                            }),
                           ),
                         )
                       : const Center(

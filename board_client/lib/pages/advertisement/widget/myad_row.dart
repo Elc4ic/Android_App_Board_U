@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../bloc/ad_list_bloc/ad_list_bloc.dart';
 import '../../../data/repository/ad_repository.dart';
 import '../../../data/repository/user_repository.dart';
 import '../../../generated/ad.pb.dart';
@@ -9,10 +10,11 @@ import '../../../values/values.dart';
 import 'my_dialog.dart';
 
 class AdRow extends StatefulWidget {
-  const AdRow({super.key, required this.ad, required this.token});
+  const AdRow({super.key, required this.ad, required this.token, required this.adListBloc});
 
   final Ad ad;
   final String? token;
+  final AdListBloc adListBloc;
 
   @override
   State<AdRow> createState() => _AdRowState();
@@ -82,6 +84,7 @@ class _AdRowState extends State<AdRow> {
                     onPressed: () => myDialog(context, () async {
                       await adRepository.muteAd(widget.ad, widget.token);
                       context.pop();
+                      widget.adListBloc.add(LoadMyAd());
                     }),
                   ),
                   IconButton(
@@ -90,6 +93,7 @@ class _AdRowState extends State<AdRow> {
                     onPressed: () => myDialog(context, () async {
                       await adRepository.deleteAd(widget.ad, widget.token);
                       context.pop();
+                      widget.adListBloc.add(LoadMyAd());
                     }),
                   ),
                 ],

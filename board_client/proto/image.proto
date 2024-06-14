@@ -3,6 +3,6 @@ syntax = "proto3";
 package board;
 
 message ImageProto {
-    bytes image = 1;
+    bytes chunk = 2;
 }
 

@@ -32,7 +32,7 @@ class _AddAdPageState extends State<AddAdPage> {
                       border: Border.all(width: 2)),
                   child: InkWell(
                     onTap: _imagePick,
-                    child: Center(
+                    child: const Center(
                       child: Icon(Icons.file_download_sharp),
                     ),
                   ),

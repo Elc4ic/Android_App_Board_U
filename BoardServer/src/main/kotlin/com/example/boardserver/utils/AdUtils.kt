@@ -52,7 +52,7 @@ object AdUtils {
             .build()
     }
 
-    fun toAdGrpcWithImages(ad: Ad, images: MutableList<Image>, isFav: Boolean = false): AdOuterClass.Ad {
+    fun toAdGrpcWithImages(ad: Ad, images: List<Image>, isFav: Boolean = false): AdOuterClass.Ad {
         return AdOuterClass.Ad.newBuilder()
             .setId(ad.id)
             .setTitle(ad.title)

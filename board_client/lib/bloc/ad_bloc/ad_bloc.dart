@@ -5,6 +5,7 @@ import 'package:meta/meta.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 
 import '../../data/repository/ad_repository.dart';
+import '../../data/repository/user_repository.dart';
 import '../../generated/ad.pb.dart';
 
 part 'ad_event.dart';
@@ -26,7 +27,7 @@ class AdBloc extends Bloc<AdEvent, AdState> {
       if (state is! AdLoaded) {
         emit(AdLoading());
       }
-      final ad = await adRepository.getOneAd(event.id);
+      final ad = await adRepository.getOneAd(event.id, event.token);
       emit(AdLoaded(ad: ad));
     } catch (e) {
       emit(AdLoadingFailure(exception: e));

@@ -1,15 +1,24 @@
+import 'package:board_client/bloc/chat_bloc/chat_bloc.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../generated/ad.pb.dart';
+import '../../../data/repository/chat_repository.dart';
 import '../../../values/values.dart';
+import '../../advertisement/widget/my_dialog.dart';
 
 class ChatRow extends StatefulWidget {
-  const ChatRow({super.key, required this.chat});
+  const ChatRow(
+      {super.key,
+      required this.chat,
+      required this.token,
+      required this.chatBloc});
 
   final ChatPreview chat;
+  final String? token;
+  final ChatBloc chatBloc;
 
   @override
   State<ChatRow> createState() => _ChatRowState();
@@ -22,6 +31,11 @@ class _ChatRowState extends State<ChatRow> {
       height: 120,
       child: Card(
         child: InkWell(
+          onLongPress: () => myDialog(context, () async {
+            GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
+            context.pop();
+            widget.chatBloc.add(LoadChatList());
+          }),
           onTap: () {
             context.push("/chat/${widget.chat.id}");
           },
@@ -47,7 +61,8 @@ class _ChatRowState extends State<ChatRow> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Styles.Text12("05.06.2024  ${widget.chat.target.username}"),
+                            Styles.Text12(
+                                "05.06.2024  ${widget.chat.target.username}"),
                           ],
                         ),
                         Row(

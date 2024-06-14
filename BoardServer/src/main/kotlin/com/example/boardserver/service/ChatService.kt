@@ -1,5 +1,6 @@
 package com.example.boardserver.service
 
+import board.AdOuterClass
 import board.Chat
 import board.Chat.RepeatedChatPreview
 import board.Chat.SendMessageRequest
@@ -13,6 +14,7 @@ import com.example.boardserver.utils.MessageUtils
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
+import org.springframework.transaction.annotation.Transactional
 import com.example.boardserver.entity.Chat as EntityChat
 
 @GrpcService
@@ -93,6 +95,19 @@ class ChatService(
                 .findByOwnerIdAndReceiverIdAndAdId(user.id, request.ad.user.id, request.ad.id)
                 .get()
             responseObserver?.onNext(Chat.StartResponse.newBuilder().setChatId(chat.id).build())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
+    }
+
+    @Transactional
+    override fun deleteChat(request: Chat.DeleteChatRequest?, responseObserver: StreamObserver<AdOuterClass.Empty>?) {
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            messageRepository.deleteAllByChatId(request.chatId)
+            chatRepository.deleteById(request.chatId)
+            responseObserver?.onNext(AdOuterClass.Empty.getDefaultInstance())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }

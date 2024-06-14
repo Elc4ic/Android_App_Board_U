@@ -60,10 +60,10 @@ message Ad {
     bool is_fav = 5;
     bool is_active = 6;
     int32 views = 7;
-    repeated ImageProto images = 8;
-    string created = 10;
-    User user = 11;
-    Category category = 12;
+    string created = 8;
+    User user = 9;
+    Category category = 10;
+    repeated ImageProto images = 11;
 }
 message RepeatedAdResponse {
     repeated Ad data = 1;

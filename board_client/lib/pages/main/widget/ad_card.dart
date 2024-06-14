@@ -1,10 +1,11 @@
+import 'dart:typed_data';
+
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
 
 import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
@@ -22,17 +23,6 @@ class AdCard extends StatefulWidget {
 class _AdCardState extends State<AdCard> {
   final adRepository = GetIt.I<AdRepository>();
 
-  bool isFav = false;
-
-  @override
-  void initState() {
-    setState(() {
-      isFav = widget.ad.isFav;
-    });
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -46,25 +36,29 @@ class _AdCardState extends State<AdCard> {
           child: Column(
             children: [
               Flexible(
-                flex: 4,
-                child: Container(
-                  color: Colors.blue,
+                fit: FlexFit.tight,
+                flex: 5,
+                child: Image.memory(
+                  width: Const.cellWidth,
+                  fit: BoxFit.fitWidth,
+                  Uint8List.fromList(widget.ad.images.first.chunk),
                 ),
               ),
               Flexible(
                 flex: 3,
                 child: Padding(
-                  padding: Markup.padding_t_l_8,
+                  padding: Markup.padding_all_8,
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 3,
+                        flex: 4,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Styles.Text16(widget.ad.title),
                             Styles.TitleText16(
                                 "${widget.ad.price} ${SC.RUBLES}"),
+                            Styles.Text12(selectAddress()),
                           ],
                         ),
                       ),
@@ -78,10 +72,10 @@ class _AdCardState extends State<AdCard> {
                                 adRepository.setFavoriteAd(
                                     widget.ad.id, widget.token);
                                 setState(() {
-                                  isFav = !isFav;
+                                  widget.ad.isFav = !widget.ad.isFav;
                                 });
                               },
-                              isFav: isFav,
+                              isFav: widget.ad.isFav,
                             )
                           ],
                         ),
@@ -95,5 +89,12 @@ class _AdCardState extends State<AdCard> {
         ),
       ),
     );
+  }
+
+  String selectAddress() {
+    if (widget.ad.user.address.startsWith("К")) {
+      return "Кампус";
+    }
+    return "Город";
   }
 }

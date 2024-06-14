@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface MessageRepository : JpaRepository<Message, Long> {
     fun findByChatId(id: Long): MutableList<Message>
+    fun deleteAllByChatId(id: Long)
 }

@@ -7,6 +7,7 @@ import "user.proto";
 
 service ChatAPI {
     rpc StartChat (StartRequest) returns (StartResponse);
+    rpc DeleteChat (DeleteChatRequest) returns (Empty);
     rpc GetChatsPreview (JwtProto) returns (RepeatedChatPreview);
     rpc SendMessage (stream SendMessageRequest) returns (stream Message) {};
     rpc GetAllMessage (GetAllMessagesRequest) returns (GetAllMessagesResponse) {};
@@ -14,6 +15,11 @@ service ChatAPI {
 
 
 message GetAllMessagesRequest {
+    string token = 1;
+    int64 chat_id = 2;
+}
+
+message DeleteChatRequest {
     string token = 1;
     int64 chat_id = 2;
 }

@@ -40,9 +40,9 @@ class AdService implements AdRepository {
   }
 
   @override
-  Future<Ad> getOneAd(int id) async {
+  Future<Ad> getOneAd(int id,String? token) async {
     final ad = await _client
-        .getOneAd(GetByIdRequest(id: fnum.Int64(id), token: "empty_token"));
+        .getOneAd(GetByIdRequest(id: fnum.Int64(id), token: token));
     return ad;
   }
 

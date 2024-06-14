@@ -15,11 +15,11 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class ImageProto extends $pb.GeneratedMessage {
   factory ImageProto({
-    $core.List<$core.int>? image,
+    $core.List<$core.int>? chunk,
   }) {
     final $result = create();
-    if (image != null) {
-      $result.image = image;
+    if (chunk != null) {
+      $result.chunk = chunk;
     }
     return $result;
   }
@@ -28,7 +28,7 @@ class ImageProto extends $pb.GeneratedMessage {
   factory ImageProto.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ImageProto', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
-    ..a<$core.List<$core.int>>(1, _omitFieldNames ? '' : 'image', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(2, _omitFieldNames ? '' : 'chunk', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -53,14 +53,14 @@ class ImageProto extends $pb.GeneratedMessage {
   static ImageProto getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ImageProto>(create);
   static ImageProto? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.List<$core.int> get image => $_getN(0);
-  @$pb.TagNumber(1)
-  set image($core.List<$core.int> v) { $_setBytes(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasImage() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearImage() => clearField(1);
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get chunk => $_getN(0);
+  @$pb.TagNumber(2)
+  set chunk($core.List<$core.int> v) { $_setBytes(0, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasChunk() => $_has(0);
+  @$pb.TagNumber(2)
+  void clearChunk() => clearField(2);
 }
 
 

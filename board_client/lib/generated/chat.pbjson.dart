@@ -27,6 +27,20 @@ final $typed_data.Uint8List getAllMessagesRequestDescriptor = $convert.base64Dec
     'ChVHZXRBbGxNZXNzYWdlc1JlcXVlc3QSFAoFdG9rZW4YASABKAlSBXRva2VuEhcKB2NoYXRfaW'
     'QYAiABKANSBmNoYXRJZA==');
 
+@$core.Deprecated('Use deleteChatRequestDescriptor instead')
+const DeleteChatRequest$json = {
+  '1': 'DeleteChatRequest',
+  '2': [
+    {'1': 'token', '3': 1, '4': 1, '5': 9, '10': 'token'},
+    {'1': 'chat_id', '3': 2, '4': 1, '5': 3, '10': 'chatId'},
+  ],
+};
+
+/// Descriptor for `DeleteChatRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List deleteChatRequestDescriptor = $convert.base64Decode(
+    'ChFEZWxldGVDaGF0UmVxdWVzdBIUCgV0b2tlbhgBIAEoCVIFdG9rZW4SFwoHY2hhdF9pZBgCIA'
+    'EoA1IGY2hhdElk');
+
 @$core.Deprecated('Use getAllMessagesResponseDescriptor instead')
 const GetAllMessagesResponse$json = {
   '1': 'GetAllMessagesResponse',

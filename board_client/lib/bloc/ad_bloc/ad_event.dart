@@ -4,7 +4,11 @@ part of 'ad_bloc.dart';
 abstract class AdEvent {}
 
 class LoadAd extends AdEvent {
-  LoadAd({required this.id,
+  LoadAd({
+    required this.id,
+    this.token,
   });
+
   final int id;
+  final String? token;
 }

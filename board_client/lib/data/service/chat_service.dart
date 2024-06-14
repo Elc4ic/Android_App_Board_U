@@ -41,7 +41,13 @@ class ChatService implements ChatRepository {
 
   @override
   Future<fnum.Int64> startChat(Ad ad, String? token) async {
-    final response = await _client.startChat(StartRequest(ad: ad, token: token));
+    final response =
+        await _client.startChat(StartRequest(ad: ad, token: token));
     return response.chatId;
+  }
+
+  @override
+  Future<void> deleteChat(fnum.Int64 chatId, String? token) async {
+    await _client.deleteChat(DeleteChatRequest(chatId: chatId, token: token));
   }
 }

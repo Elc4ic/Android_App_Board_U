@@ -9,15 +9,14 @@ object ImageUtils {
 
     fun toImageGrpc(image: Image): ImageProto {
         return ImageProto.newBuilder()
-            .setImage(image.imageBytes.toByteString())
+            .setChunk(image.imageBytes.toByteString())
             .build()
     }
 
     fun fromImageGrpc(image: ImageProto, ad: Ad): Image {
         return Image(
-            id = image.id,
             ad = ad,
-            imageBytes = image.image.toByteArray(),
+            imageBytes = image.chunk.toByteArray(),
         )
     }
 
@@ -27,7 +26,7 @@ object ImageUtils {
         return imagesGrpc
     }
 
-    fun fromAdGrpcList(imagesGrpc: List<ImageProto>, ad: Ad): List<Image> {
+    fun fromImageGrpcList(imagesGrpc: List<ImageProto>, ad: Ad): List<Image> {
         val images = mutableListOf<Image>()
         imagesGrpc.forEach { images.add(fromImageGrpc(it, ad)) }
         return images

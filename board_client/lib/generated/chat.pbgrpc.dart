@@ -15,6 +15,7 @@ import 'dart:core' as $core;
 import 'package:grpc/service_api.dart' as $grpc;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import 'ad.pb.dart' as $1;
 import 'chat.pb.dart' as $3;
 import 'user.pb.dart' as $0;
 
@@ -26,6 +27,10 @@ class ChatAPIClient extends $grpc.Client {
       '/board.ChatAPI/StartChat',
       ($3.StartRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $3.StartResponse.fromBuffer(value));
+  static final _$deleteChat = $grpc.ClientMethod<$3.DeleteChatRequest, $1.Empty>(
+      '/board.ChatAPI/DeleteChat',
+      ($3.DeleteChatRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $1.Empty.fromBuffer(value));
   static final _$getChatsPreview = $grpc.ClientMethod<$0.JwtProto, $3.RepeatedChatPreview>(
       '/board.ChatAPI/GetChatsPreview',
       ($0.JwtProto value) => value.writeToBuffer(),
@@ -47,6 +52,10 @@ class ChatAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$3.StartResponse> startChat($3.StartRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$startChat, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$1.Empty> deleteChat($3.DeleteChatRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$deleteChat, request, options: options);
   }
 
   $grpc.ResponseFuture<$3.RepeatedChatPreview> getChatsPreview($0.JwtProto request, {$grpc.CallOptions? options}) {
@@ -74,6 +83,13 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $3.StartRequest.fromBuffer(value),
         ($3.StartResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$3.DeleteChatRequest, $1.Empty>(
+        'DeleteChat',
+        deleteChat_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $3.DeleteChatRequest.fromBuffer(value),
+        ($1.Empty value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.JwtProto, $3.RepeatedChatPreview>(
         'GetChatsPreview',
         getChatsPreview_Pre,
@@ -101,6 +117,10 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
     return startChat(call, await request);
   }
 
+  $async.Future<$1.Empty> deleteChat_Pre($grpc.ServiceCall call, $async.Future<$3.DeleteChatRequest> request) async {
+    return deleteChat(call, await request);
+  }
+
   $async.Future<$3.RepeatedChatPreview> getChatsPreview_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
     return getChatsPreview(call, await request);
   }
@@ -110,6 +130,7 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
   }
 
   $async.Future<$3.StartResponse> startChat($grpc.ServiceCall call, $3.StartRequest request);
+  $async.Future<$1.Empty> deleteChat($grpc.ServiceCall call, $3.DeleteChatRequest request);
   $async.Future<$3.RepeatedChatPreview> getChatsPreview($grpc.ServiceCall call, $0.JwtProto request);
   $async.Stream<$3.Message> sendMessage($grpc.ServiceCall call, $async.Stream<$3.SendMessageRequest> request);
   $async.Future<$3.GetAllMessagesResponse> getAllMessage($grpc.ServiceCall call, $3.GetAllMessagesRequest request);

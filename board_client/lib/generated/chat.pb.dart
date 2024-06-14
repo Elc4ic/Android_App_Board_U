@@ -81,6 +81,70 @@ class GetAllMessagesRequest extends $pb.GeneratedMessage {
   void clearChatId() => clearField(2);
 }
 
+class DeleteChatRequest extends $pb.GeneratedMessage {
+  factory DeleteChatRequest({
+    $core.String? token,
+    $fixnum.Int64? chatId,
+  }) {
+    final $result = create();
+    if (token != null) {
+      $result.token = token;
+    }
+    if (chatId != null) {
+      $result.chatId = chatId;
+    }
+    return $result;
+  }
+  DeleteChatRequest._() : super();
+  factory DeleteChatRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DeleteChatRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DeleteChatRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'token')
+    ..aInt64(2, _omitFieldNames ? '' : 'chatId')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DeleteChatRequest clone() => DeleteChatRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DeleteChatRequest copyWith(void Function(DeleteChatRequest) updates) => super.copyWith((message) => updates(message as DeleteChatRequest)) as DeleteChatRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static DeleteChatRequest create() => DeleteChatRequest._();
+  DeleteChatRequest createEmptyInstance() => create();
+  static $pb.PbList<DeleteChatRequest> createRepeated() => $pb.PbList<DeleteChatRequest>();
+  @$core.pragma('dart2js:noInline')
+  static DeleteChatRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeleteChatRequest>(create);
+  static DeleteChatRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get token => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set token($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasToken() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearToken() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get chatId => $_getI64(1);
+  @$pb.TagNumber(2)
+  set chatId($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasChatId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChatId() => clearField(2);
+}
+
 class GetAllMessagesResponse extends $pb.GeneratedMessage {
   factory GetAllMessagesResponse({
     $core.Iterable<Message>? messages,

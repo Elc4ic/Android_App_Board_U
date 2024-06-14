@@ -62,7 +62,11 @@ class _MyAdsPageState extends State<MyAdsPage> {
                       padding: Markup.padding_all_4,
                       itemCount: state.adList.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return AdRow(ad: state.adList[index],token: userRepository.getToken(),);
+                        return AdRow(
+                          ad: state.adList[index],
+                          token: userRepository.getToken(),
+                          adListBloc: _adListBloc,
+                        );
                       });
                 }
                 if (state is AdListLoadingFailure) {
@@ -80,7 +84,9 @@ class _MyAdsPageState extends State<MyAdsPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () { context.push(SC.ADD_PAGE); },
+        onPressed: () {
+          context.push(SC.ADD_PAGE);
+        },
         child: const Icon(Icons.add),
       ),
     );

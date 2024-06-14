@@ -16,6 +16,8 @@ spring:
   grpc:
     server:
       port: 9090
+      maxInboundMessageSize: 32MB
+      maxOutboundMessageSize: 32MB
 
 jwt:
   secret:

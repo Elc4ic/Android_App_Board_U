@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:fixnum/fixnum.dart' as fnum;
@@ -12,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/category_repository.dart';
 import '../../data/repository/user_repository.dart';
+import '../../generated/image.pb.dart';
 
 class AddAdForm extends StatefulWidget {
   const AddAdForm({super.key, required this.result});
@@ -35,19 +37,29 @@ class _AddAdFormState extends State<AddAdForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      await adRepository.addAd(
-        Ad(
-            title: _titleController.text,
-            price: fnum.Int64(int.parse(_priceController.text)),
-            description: _descController.text,
-            user: userRepository.getUser(),
-            images: Const.imageFromFilePicker(widget.result),
-            category: category,
-            created: DateTime.now().toString()),
-        userRepository.getToken(),
-      );
+      final images = imageFromFilePicker(widget.result);
+      Future.delayed(const Duration(seconds: 1), () async {
+        await adRepository.addAd(
+          Ad(
+              title: _titleController.text,
+              price: fnum.Int64(int.parse(_priceController.text)),
+              description: _descController.text,
+              user: userRepository.getUser(),
+              images: images,
+              category: category,
+              created: DateTime.now().toString()),
+          userRepository.getToken(),
+        );
+      });
       context.go(SC.AD_PAGE);
     }
+  }
+
+  List<ImageProto> imageFromFilePicker(List<XFile> files) {
+    return List.generate(
+        files.length,
+        (i) => ImageProto(
+            chunk: File(files[i].path).readAsBytesSync().toList())).toList();
   }
 
   @override

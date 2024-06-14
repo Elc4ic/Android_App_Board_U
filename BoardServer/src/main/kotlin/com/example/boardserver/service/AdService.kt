@@ -10,12 +10,14 @@ import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.AdUtils
 import com.example.boardserver.utils.ImageUtils
 import com.example.boardserver.utils.JwtProvider
+import com.google.protobuf.kotlin.toByteString
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
+import kotlin.jvm.optionals.toList
 
 
 @GrpcService
@@ -33,7 +35,7 @@ class AdService(
     ) {
 
         val userId = jwtProvider.validateJwt(request!!.token)
-        val pagingSort: Pageable = PageRequest.of(request!!.page.toInt(), request.limit.toInt())
+        val pagingSort: Pageable = PageRequest.of(request.page.toInt(), request.limit.toInt())
         val adPage = adRepository.findAllByIsActive(pagingSort, true)
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
@@ -42,7 +44,7 @@ class AdService(
             ads.add(
                 AdUtils.toAdGrpcWithImages(
                     ad,
-                    imageRepository.findByAdId(ad.id),
+                    imageRepository.findFirstByAdId(ad.id).toList(),
                     if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
                     else false,
                 )
@@ -61,9 +63,18 @@ class AdService(
 
     @Transactional
     override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
+        val userId = jwtProvider.validateJwt(request.token)
         val ad = adRepository.findById(request.id).get()
+        ad.views++
+        adRepository.save(ad);
         val images = imageRepository.findByAdId(request.id)
-        responseObserver?.onNext(AdUtils.toAdGrpcWithImages(ad, images))
+        responseObserver?.onNext(
+            AdUtils.toAdGrpcWithImages(
+                ad, images,
+                if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
+                else false,
+            )
+        )
         responseObserver?.onCompleted()
     }
 
@@ -93,6 +104,7 @@ class AdService(
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun addAd(
         request: AdOuterClass.ChangeAdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
@@ -101,8 +113,9 @@ class AdService(
         if (userId != null) {
             val ad = AdUtils.fromAdGrpc(request.ad)
             adRepository.save(ad)
-            request.ad.imagesList.forEach { image -> println("${image.image} ${image.image.size()}") }
-            val images = ImageUtils.fromAdGrpcList(request.ad.imagesList, ad)
+            request.ad.imagesList.forEach { image -> println("${image.allFields}") }
+            val images = ImageUtils.fromImageGrpcList(request.ad.imagesList, ad)
+            images.forEach { image -> println("${image.imageBytes.toByteString()}") }
             images.forEach { imageRepository.save(it) }
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
@@ -118,6 +131,7 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
+            favRepository.deleteAllByAdId(request.ad.id)
             imageRepository.deleteByAdId(request.ad.id)
             adRepository.delete(AdUtils.fromAdGrpc(request.ad))
 

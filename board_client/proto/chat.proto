@@ -7,7 +7,7 @@ import "user.proto";
 
 service ChatAPI {
     rpc StartChat (StartRequest) returns (StartResponse);
-    rpc DeleteChat (DeleteChatRequest) returns (StartResponse);
+    rpc DeleteChat (DeleteChatRequest) returns (Empty);
     rpc GetChatsPreview (JwtProto) returns (RepeatedChatPreview);
     rpc SendMessage (stream SendMessageRequest) returns (stream Message) {};
     rpc GetAllMessage (GetAllMessagesRequest) returns (GetAllMessagesResponse) {};

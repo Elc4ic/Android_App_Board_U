@@ -1,4 +1,4 @@
-library values;
+ library values;
 
 import 'dart:io';
 
@@ -29,14 +29,11 @@ class Const {
   //main const
   static const int PhoneWidth = 700;
   static const double HeaderHight = 65;
+  static const int cellWidthInt = 180;
+  static const double cellWidth = 180;
   static const String HOST = "77.246.159.112";
   static const int PORT = 9090;
 
-  static List<ImageProto> imageFromFilePicker(List<XFile> files) {
-    return List.generate(files.length,
-            (i) => ImageProto(image: File(files[i].path).readAsBytesSync()))
-        .toList();
-  }
 }
 
 class Address {

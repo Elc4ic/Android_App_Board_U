@@ -3,9 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/repository/user_repository.dart';
-import '../../generated/user.pb.dart';
 import '../../values/values.dart';
-import '../../widgets/footers/navigation_bar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -32,22 +30,12 @@ class _SettingsPageState extends State<SettingsPage> {
             SliverToBoxAdapter(
               child: Column(
                 children: [
-                  Styles.Text16("${user?.username}"),
+                  Styles.Text16("Логин: ${user?.username}"),
                   Markup.dividerW5,
-                  Styles.Text16("${user?.phone}"),
+                  Styles.Text16("Телефон: ${user?.phone}"),
                   Markup.dividerW5,
-                  Styles.Text16("${user?.address}"),
-                  Markup.dividerW5,
-                  Styles.Text16("${userRepository.getToken()} token"),
+                  Styles.Text16("Адресс: ${user?.address}"),
                 ],
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ElevatedButton(
-                onPressed: () {
-                  userRepository.logout();
-                },
-                child: Styles.Text16("logout"),
               ),
             ),
             SliverToBoxAdapter(
@@ -56,6 +44,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   context.push("/setaddress");
                 },
                 child: Styles.Text16("Настроить адресс"),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: ElevatedButton(
+                onPressed: () {
+                  userRepository.logout();
+                },
+                child: Styles.Text16("logout"),
               ),
             ),
           ],

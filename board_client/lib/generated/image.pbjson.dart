@@ -17,11 +17,11 @@ import 'dart:typed_data' as $typed_data;
 const ImageProto$json = {
   '1': 'ImageProto',
   '2': [
-    {'1': 'image', '3': 1, '4': 1, '5': 12, '10': 'image'},
+    {'1': 'chunk', '3': 2, '4': 1, '5': 12, '10': 'chunk'},
   ],
 };
 
 /// Descriptor for `ImageProto`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List imageProtoDescriptor = $convert.base64Decode(
-    'CgpJbWFnZVByb3RvEhQKBWltYWdlGAEgASgMUgVpbWFnZQ==');
+    'CgpJbWFnZVByb3RvEhQKBWNodW5rGAIgASgMUgVjaHVuaw==');
 

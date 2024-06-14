@@ -1,5 +1,6 @@
 import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/pages/chats/widget/chat_row.dart';
+import 'package:board_client/routing/router.dart';
 import 'package:flutter/material.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,15 +21,14 @@ class ChatsPreviewPage extends StatefulWidget {
 }
 
 class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
-
-  final _adListBloc = ChatBloc(
+  final _chatListBloc = ChatBloc(
     GetIt.I<ChatRepository>(),
     GetIt.I<UserRepository>(),
   );
 
   @override
   void initState() {
-    _adListBloc.add(LoadChatList());
+    _chatListBloc.add(LoadChatList());
     super.initState();
   }
 
@@ -38,10 +38,10 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _adListBloc.add(LoadChatList());
+            _chatListBloc.add(LoadChatList());
           },
           child: BlocBuilder<ChatBloc, ChatState>(
-            bloc: _adListBloc,
+            bloc: _chatListBloc,
             builder: (context, state) {
               if (state is ChatLoaded) {
                 if (state.chat.isEmpty) {
@@ -64,6 +64,8 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return ChatRow(
                       chat: state.chat[index],
+                      token: userRepository.getToken(),
+                      chatBloc: _chatListBloc,
                     );
                   },
                 );
@@ -72,7 +74,7 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _adListBloc.add(LoadChatList());
+                    _chatListBloc.add(LoadChatList());
                   },
                 );
               }

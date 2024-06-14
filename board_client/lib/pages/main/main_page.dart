@@ -36,8 +36,11 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
-    _catListBloc.add(LoadCategories());
+    Future.delayed(const Duration(seconds: 1), () {
+      _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
+      _catListBloc.add(LoadCategories());
+    });
+
     super.initState();
   }
 
@@ -100,16 +103,14 @@ class _MainPageState extends State<MainPage> {
                         ),
                       );
                     }
-                    return Container(
-                      child: CustomGrid(
-                        cellWidth: 180,
-                        width: widthNow,
-                        items: List.generate(
-                            state.adList.length,
-                            (index) => AdCard(
-                                ad: state.adList[index],
-                                token: userRepository.getToken())).toList(),
-                      ),
+                    return CustomGrid(
+                      cellWidth: Const.cellWidthInt,
+                      width: widthNow,
+                      items: List.generate(
+                          state.adList.length,
+                          (index) => AdCard(
+                              ad: state.adList[index],
+                              token: userRepository.getToken())).toList(),
                     );
                   }
                   if (state is AdListLoadingFailure) {

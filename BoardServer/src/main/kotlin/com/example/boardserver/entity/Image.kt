@@ -9,7 +9,7 @@ import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
 class Image(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long,
+    val id: Long = 0L,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
