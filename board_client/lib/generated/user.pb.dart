@@ -64,6 +64,56 @@ class IsSuccess extends $pb.GeneratedMessage {
   void clearLogin() => clearField(1);
 }
 
+class GetByUserIdRequest extends $pb.GeneratedMessage {
+  factory GetByUserIdRequest({
+    $fixnum.Int64? id,
+  }) {
+    final $result = create();
+    if (id != null) {
+      $result.id = id;
+    }
+    return $result;
+  }
+  GetByUserIdRequest._() : super();
+  factory GetByUserIdRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetByUserIdRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetByUserIdRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  GetByUserIdRequest clone() => GetByUserIdRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  GetByUserIdRequest copyWith(void Function(GetByUserIdRequest) updates) => super.copyWith((message) => updates(message as GetByUserIdRequest)) as GetByUserIdRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GetByUserIdRequest create() => GetByUserIdRequest._();
+  GetByUserIdRequest createEmptyInstance() => create();
+  static $pb.PbList<GetByUserIdRequest> createRepeated() => $pb.PbList<GetByUserIdRequest>();
+  @$core.pragma('dart2js:noInline')
+  static GetByUserIdRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetByUserIdRequest>(create);
+  static GetByUserIdRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+}
+
 class LoginRequest extends $pb.GeneratedMessage {
   factory LoginRequest({
     $core.String? username,
@@ -443,16 +493,20 @@ class JwtProto extends $pb.GeneratedMessage {
 class User extends $pb.GeneratedMessage {
   factory User({
     $fixnum.Int64? id,
+    $core.String? name,
     $core.String? username,
     $core.String? password,
     $core.String? email,
     $core.String? phone,
     $core.String? address,
-    $core.String? avatar,
+    $core.List<$core.int>? avatar,
   }) {
     final $result = create();
     if (id != null) {
       $result.id = id;
+    }
+    if (name != null) {
+      $result.name = name;
     }
     if (username != null) {
       $result.username = username;
@@ -480,12 +534,13 @@ class User extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'User', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..a<$fixnum.Int64>(1, _omitFieldNames ? '' : 'id', $pb.PbFieldType.OU6, defaultOrMaker: $fixnum.Int64.ZERO)
-    ..aOS(2, _omitFieldNames ? '' : 'username')
-    ..aOS(3, _omitFieldNames ? '' : 'password')
-    ..aOS(4, _omitFieldNames ? '' : 'email')
-    ..aOS(5, _omitFieldNames ? '' : 'phone')
-    ..aOS(6, _omitFieldNames ? '' : 'address')
-    ..aOS(7, _omitFieldNames ? '' : 'avatar')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
+    ..aOS(3, _omitFieldNames ? '' : 'username')
+    ..aOS(4, _omitFieldNames ? '' : 'password')
+    ..aOS(5, _omitFieldNames ? '' : 'email')
+    ..aOS(6, _omitFieldNames ? '' : 'phone')
+    ..aOS(7, _omitFieldNames ? '' : 'address')
+    ..a<$core.List<$core.int>>(8, _omitFieldNames ? '' : 'avatar', $pb.PbFieldType.OY)
     ..hasRequiredFields = false
   ;
 
@@ -520,58 +575,67 @@ class User extends $pb.GeneratedMessage {
   void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get username => $_getSZ(1);
+  $core.String get name => $_getSZ(1);
   @$pb.TagNumber(2)
-  set username($core.String v) { $_setString(1, v); }
+  set name($core.String v) { $_setString(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasUsername() => $_has(1);
+  $core.bool hasName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearUsername() => clearField(2);
+  void clearName() => clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get password => $_getSZ(2);
+  $core.String get username => $_getSZ(2);
   @$pb.TagNumber(3)
-  set password($core.String v) { $_setString(2, v); }
+  set username($core.String v) { $_setString(2, v); }
   @$pb.TagNumber(3)
-  $core.bool hasPassword() => $_has(2);
+  $core.bool hasUsername() => $_has(2);
   @$pb.TagNumber(3)
-  void clearPassword() => clearField(3);
+  void clearUsername() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.String get email => $_getSZ(3);
+  $core.String get password => $_getSZ(3);
   @$pb.TagNumber(4)
-  set email($core.String v) { $_setString(3, v); }
+  set password($core.String v) { $_setString(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasEmail() => $_has(3);
+  $core.bool hasPassword() => $_has(3);
   @$pb.TagNumber(4)
-  void clearEmail() => clearField(4);
+  void clearPassword() => clearField(4);
 
   @$pb.TagNumber(5)
-  $core.String get phone => $_getSZ(4);
+  $core.String get email => $_getSZ(4);
   @$pb.TagNumber(5)
-  set phone($core.String v) { $_setString(4, v); }
+  set email($core.String v) { $_setString(4, v); }
   @$pb.TagNumber(5)
-  $core.bool hasPhone() => $_has(4);
+  $core.bool hasEmail() => $_has(4);
   @$pb.TagNumber(5)
-  void clearPhone() => clearField(5);
+  void clearEmail() => clearField(5);
 
   @$pb.TagNumber(6)
-  $core.String get address => $_getSZ(5);
+  $core.String get phone => $_getSZ(5);
   @$pb.TagNumber(6)
-  set address($core.String v) { $_setString(5, v); }
+  set phone($core.String v) { $_setString(5, v); }
   @$pb.TagNumber(6)
-  $core.bool hasAddress() => $_has(5);
+  $core.bool hasPhone() => $_has(5);
   @$pb.TagNumber(6)
-  void clearAddress() => clearField(6);
+  void clearPhone() => clearField(6);
 
   @$pb.TagNumber(7)
-  $core.String get avatar => $_getSZ(6);
+  $core.String get address => $_getSZ(6);
   @$pb.TagNumber(7)
-  set avatar($core.String v) { $_setString(6, v); }
+  set address($core.String v) { $_setString(6, v); }
   @$pb.TagNumber(7)
-  $core.bool hasAvatar() => $_has(6);
+  $core.bool hasAddress() => $_has(6);
   @$pb.TagNumber(7)
-  void clearAvatar() => clearField(7);
+  void clearAddress() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.List<$core.int> get avatar => $_getN(7);
+  @$pb.TagNumber(8)
+  set avatar($core.List<$core.int> v) { $_setBytes(7, v); }
+  @$pb.TagNumber(8)
+  $core.bool hasAvatar() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearAvatar() => clearField(8);
 }
 
 

@@ -33,6 +33,10 @@ class UserAPIClient extends $grpc.Client {
       '/board.UserAPI/GetUserData',
       ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.UserResponse.fromBuffer(value));
+  static final _$getUserById = $grpc.ClientMethod<$0.GetByUserIdRequest, $0.UserResponse>(
+      '/board.UserAPI/GetUserById',
+      ($0.GetByUserIdRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.UserResponse.fromBuffer(value));
   static final _$changeUserData = $grpc.ClientMethod<$0.SetUser, $0.IsSuccess>(
       '/board.UserAPI/ChangeUserData',
       ($0.SetUser value) => value.writeToBuffer(),
@@ -58,6 +62,10 @@ class UserAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.UserResponse> getUserData($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getUserData, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.UserResponse> getUserById($0.GetByUserIdRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getUserById, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.IsSuccess> changeUserData($0.SetUser request, {$grpc.CallOptions? options}) {
@@ -95,6 +103,13 @@ abstract class UserAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($0.UserResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetByUserIdRequest, $0.UserResponse>(
+        'GetUserById',
+        getUserById_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.GetByUserIdRequest.fromBuffer(value),
+        ($0.UserResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.SetUser, $0.IsSuccess>(
         'ChangeUserData',
         changeUserData_Pre,
@@ -123,6 +138,10 @@ abstract class UserAPIServiceBase extends $grpc.Service {
     return getUserData(call, await request);
   }
 
+  $async.Future<$0.UserResponse> getUserById_Pre($grpc.ServiceCall call, $async.Future<$0.GetByUserIdRequest> request) async {
+    return getUserById(call, await request);
+  }
+
   $async.Future<$0.IsSuccess> changeUserData_Pre($grpc.ServiceCall call, $async.Future<$0.SetUser> request) async {
     return changeUserData(call, await request);
   }
@@ -134,6 +153,7 @@ abstract class UserAPIServiceBase extends $grpc.Service {
   $async.Future<$0.IsSuccess> getSignUp($grpc.ServiceCall call, $0.SignupRequest request);
   $async.Future<$0.LoginResponse> getLogin($grpc.ServiceCall call, $0.LoginRequest request);
   $async.Future<$0.UserResponse> getUserData($grpc.ServiceCall call, $0.JwtProto request);
+  $async.Future<$0.UserResponse> getUserById($grpc.ServiceCall call, $0.GetByUserIdRequest request);
   $async.Future<$0.IsSuccess> changeUserData($grpc.ServiceCall call, $0.SetUser request);
   $async.Future<$0.IsSuccess> deleteUser($grpc.ServiceCall call, $0.JwtProto request);
 }

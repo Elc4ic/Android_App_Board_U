@@ -25,6 +25,18 @@ const IsSuccess$json = {
 final $typed_data.Uint8List isSuccessDescriptor = $convert.base64Decode(
     'CglJc1N1Y2Nlc3MSFAoFbG9naW4YASABKAhSBWxvZ2lu');
 
+@$core.Deprecated('Use getByUserIdRequestDescriptor instead')
+const GetByUserIdRequest$json = {
+  '1': 'GetByUserIdRequest',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
+  ],
+};
+
+/// Descriptor for `GetByUserIdRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getByUserIdRequestDescriptor = $convert.base64Decode(
+    'ChJHZXRCeVVzZXJJZFJlcXVlc3QSDgoCaWQYASABKARSAmlk');
+
 @$core.Deprecated('Use loginRequestDescriptor instead')
 const LoginRequest$json = {
   '1': 'LoginRequest',
@@ -111,19 +123,20 @@ const User$json = {
   '1': 'User',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
-    {'1': 'username', '3': 2, '4': 1, '5': 9, '10': 'username'},
-    {'1': 'password', '3': 3, '4': 1, '5': 9, '10': 'password'},
-    {'1': 'email', '3': 4, '4': 1, '5': 9, '10': 'email'},
-    {'1': 'phone', '3': 5, '4': 1, '5': 9, '10': 'phone'},
-    {'1': 'address', '3': 6, '4': 1, '5': 9, '10': 'address'},
-    {'1': 'avatar', '3': 7, '4': 1, '5': 9, '10': 'avatar'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'username', '3': 3, '4': 1, '5': 9, '10': 'username'},
+    {'1': 'password', '3': 4, '4': 1, '5': 9, '10': 'password'},
+    {'1': 'email', '3': 5, '4': 1, '5': 9, '10': 'email'},
+    {'1': 'phone', '3': 6, '4': 1, '5': 9, '10': 'phone'},
+    {'1': 'address', '3': 7, '4': 1, '5': 9, '10': 'address'},
+    {'1': 'avatar', '3': 8, '4': 1, '5': 12, '10': 'avatar'},
   ],
 };
 
 /// Descriptor for `User`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List userDescriptor = $convert.base64Decode(
-    'CgRVc2VyEg4KAmlkGAEgASgEUgJpZBIaCgh1c2VybmFtZRgCIAEoCVIIdXNlcm5hbWUSGgoIcG'
-    'Fzc3dvcmQYAyABKAlSCHBhc3N3b3JkEhQKBWVtYWlsGAQgASgJUgVlbWFpbBIUCgVwaG9uZRgF'
-    'IAEoCVIFcGhvbmUSGAoHYWRkcmVzcxgGIAEoCVIHYWRkcmVzcxIWCgZhdmF0YXIYByABKAlSBm'
-    'F2YXRhcg==');
+    'CgRVc2VyEg4KAmlkGAEgASgEUgJpZBISCgRuYW1lGAIgASgJUgRuYW1lEhoKCHVzZXJuYW1lGA'
+    'MgASgJUgh1c2VybmFtZRIaCghwYXNzd29yZBgEIAEoCVIIcGFzc3dvcmQSFAoFZW1haWwYBSAB'
+    'KAlSBWVtYWlsEhQKBXBob25lGAYgASgJUgVwaG9uZRIYCgdhZGRyZXNzGAcgASgJUgdhZGRyZX'
+    'NzEhYKBmF2YXRhchgIIAEoDFIGYXZhdGFy');
 

@@ -1,6 +1,7 @@
 package com.example.boardserver.service
 
 import board.UserOuterClass
+import board.UserOuterClass.UserResponse
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.JwtProvider
 import com.example.boardserver.utils.UserUtils
@@ -20,6 +21,7 @@ class UserService(
     ) {
         if (userRepository.findByUsername(request!!.username).isEmpty) {
             val newUser = UserOuterClass.User.newBuilder()
+                .setName(request.username)
                 .setUsername(request.username)
                 .setPassword(UserUtils.hashPassword(request.password))
                 .setPhone(request.phone)
@@ -53,13 +55,13 @@ class UserService(
 
     override fun getUserData(
         request: UserOuterClass.JwtProto?,
-        responseObserver: StreamObserver<UserOuterClass.UserResponse>?
+        responseObserver: StreamObserver<UserResponse>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
             val user = userRepository.findById(userId).get()
             responseObserver?.onNext(
-                UserOuterClass.UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build()
+                UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build()
             )
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -88,5 +90,14 @@ class UserService(
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         super.deleteUser(request, responseObserver)
+    }
+
+    override fun getUserById(
+        request: UserOuterClass.GetByUserIdRequest?,
+        responseObserver: StreamObserver<UserResponse>?
+    ) {
+        val user = userRepository.findById(request!!.id).get();
+        responseObserver?.onNext(UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build())
+        responseObserver?.onCompleted()
     }
 }

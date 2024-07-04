@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:fixnum/fixnum.dart';
 
 import 'package:grpc/grpc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -98,7 +99,14 @@ class UserService implements UserRepository {
 
   @override
   Future<bool> changeUser(User? user, String? token) async {
-    final response = await _client.changeUserData(SetUser(user: user,token: token));
+    final response =
+        await _client.changeUserData(SetUser(user: user, token: token));
     return response.login;
+  }
+
+  @override
+  Future<User> getUserById(Int64 id) async {
+    final user = await _client.getUserById(GetByUserIdRequest(id: id));
+    return user.user;
   }
 }

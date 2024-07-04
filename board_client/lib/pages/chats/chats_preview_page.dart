@@ -1,8 +1,5 @@
-import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/pages/chats/widget/chat_row.dart';
-import 'package:board_client/routing/router.dart';
 import 'package:flutter/material.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
@@ -10,7 +7,6 @@ import '../../bloc/chat_bloc/chat_bloc.dart';
 import '../../data/repository/chat_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
-import '../../widgets/footers/navigation_bar.dart';
 import '../../widgets/widgets.dart';
 
 class ChatsPreviewPage extends StatefulWidget {
@@ -31,6 +27,8 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
     _chatListBloc.add(LoadChatList());
     super.initState();
   }
+
+  final userRepository = GetIt.I<UserRepository>();
 
   @override
   Widget build(BuildContext context) {

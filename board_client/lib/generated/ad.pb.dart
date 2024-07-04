@@ -14,7 +14,7 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'image.pb.dart' as $4;
+import 'image.pb.dart' as $3;
 import 'user.pb.dart' as $0;
 
 class Empty extends $pb.GeneratedMessage {
@@ -208,11 +208,15 @@ class GetByIdRequest extends $pb.GeneratedMessage {
 class ChangeAdRequest extends $pb.GeneratedMessage {
   factory ChangeAdRequest({
     Ad? ad,
+    $core.Iterable<$3.ImageProto>? images,
     $core.String? token,
   }) {
     final $result = create();
     if (ad != null) {
       $result.ad = ad;
+    }
+    if (images != null) {
+      $result.images.addAll(images);
     }
     if (token != null) {
       $result.token = token;
@@ -225,7 +229,8 @@ class ChangeAdRequest extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ChangeAdRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOM<Ad>(1, _omitFieldNames ? '' : 'ad', subBuilder: Ad.create)
-    ..aOS(2, _omitFieldNames ? '' : 'token')
+    ..pc<$3.ImageProto>(2, _omitFieldNames ? '' : 'images', $pb.PbFieldType.PM, subBuilder: $3.ImageProto.create)
+    ..aOS(3, _omitFieldNames ? '' : 'token')
     ..hasRequiredFields = false
   ;
 
@@ -262,17 +267,20 @@ class ChangeAdRequest extends $pb.GeneratedMessage {
   Ad ensureAd() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.String get token => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set token($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasToken() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearToken() => clearField(2);
+  $core.List<$3.ImageProto> get images => $_getList(1);
+
+  @$pb.TagNumber(3)
+  $core.String get token => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set token($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasToken() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearToken() => clearField(3);
 }
 
-class SetFavoriteRequest extends $pb.GeneratedMessage {
-  factory SetFavoriteRequest({
+class GetByIdWithBoolRequest extends $pb.GeneratedMessage {
+  factory GetByIdWithBoolRequest({
     $fixnum.Int64? id,
     $core.String? token,
     $core.bool? value,
@@ -289,11 +297,11 @@ class SetFavoriteRequest extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  SetFavoriteRequest._() : super();
-  factory SetFavoriteRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory SetFavoriteRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  GetByIdWithBoolRequest._() : super();
+  factory GetByIdWithBoolRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory GetByIdWithBoolRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'SetFavoriteRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetByIdWithBoolRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aInt64(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'token')
     ..aOB(3, _omitFieldNames ? '' : 'value')
@@ -304,22 +312,22 @@ class SetFavoriteRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  SetFavoriteRequest clone() => SetFavoriteRequest()..mergeFromMessage(this);
+  GetByIdWithBoolRequest clone() => GetByIdWithBoolRequest()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  SetFavoriteRequest copyWith(void Function(SetFavoriteRequest) updates) => super.copyWith((message) => updates(message as SetFavoriteRequest)) as SetFavoriteRequest;
+  GetByIdWithBoolRequest copyWith(void Function(GetByIdWithBoolRequest) updates) => super.copyWith((message) => updates(message as GetByIdWithBoolRequest)) as GetByIdWithBoolRequest;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static SetFavoriteRequest create() => SetFavoriteRequest._();
-  SetFavoriteRequest createEmptyInstance() => create();
-  static $pb.PbList<SetFavoriteRequest> createRepeated() => $pb.PbList<SetFavoriteRequest>();
+  static GetByIdWithBoolRequest create() => GetByIdWithBoolRequest._();
+  GetByIdWithBoolRequest createEmptyInstance() => create();
+  static $pb.PbList<GetByIdWithBoolRequest> createRepeated() => $pb.PbList<GetByIdWithBoolRequest>();
   @$core.pragma('dart2js:noInline')
-  static SetFavoriteRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SetFavoriteRequest>(create);
-  static SetFavoriteRequest? _defaultInstance;
+  static GetByIdWithBoolRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<GetByIdWithBoolRequest>(create);
+  static GetByIdWithBoolRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $fixnum.Int64 get id => $_getI64(0);
@@ -458,7 +466,6 @@ class Ad extends $pb.GeneratedMessage {
     $core.bool? isFav,
     $core.bool? isActive,
     $core.int? views,
-    $core.Iterable<$4.ImageProto>? images,
     $core.String? created,
     $0.User? user,
     Category? category,
@@ -485,9 +492,6 @@ class Ad extends $pb.GeneratedMessage {
     if (views != null) {
       $result.views = views;
     }
-    if (images != null) {
-      $result.images.addAll(images);
-    }
     if (created != null) {
       $result.created = created;
     }
@@ -511,7 +515,6 @@ class Ad extends $pb.GeneratedMessage {
     ..aOB(5, _omitFieldNames ? '' : 'isFav')
     ..aOB(6, _omitFieldNames ? '' : 'isActive')
     ..a<$core.int>(7, _omitFieldNames ? '' : 'views', $pb.PbFieldType.O3)
-    ..pc<$4.ImageProto>(8, _omitFieldNames ? '' : 'images', $pb.PbFieldType.PM, subBuilder: $4.ImageProto.create)
     ..aOS(10, _omitFieldNames ? '' : 'created')
     ..aOM<$0.User>(11, _omitFieldNames ? '' : 'user', subBuilder: $0.User.create)
     ..aOM<Category>(12, _omitFieldNames ? '' : 'category', subBuilder: Category.create)
@@ -602,39 +605,36 @@ class Ad extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   void clearViews() => clearField(7);
 
-  @$pb.TagNumber(8)
-  $core.List<$4.ImageProto> get images => $_getList(7);
-
   @$pb.TagNumber(10)
-  $core.String get created => $_getSZ(8);
+  $core.String get created => $_getSZ(7);
   @$pb.TagNumber(10)
-  set created($core.String v) { $_setString(8, v); }
+  set created($core.String v) { $_setString(7, v); }
   @$pb.TagNumber(10)
-  $core.bool hasCreated() => $_has(8);
+  $core.bool hasCreated() => $_has(7);
   @$pb.TagNumber(10)
   void clearCreated() => clearField(10);
 
   @$pb.TagNumber(11)
-  $0.User get user => $_getN(9);
+  $0.User get user => $_getN(8);
   @$pb.TagNumber(11)
   set user($0.User v) { setField(11, v); }
   @$pb.TagNumber(11)
-  $core.bool hasUser() => $_has(9);
+  $core.bool hasUser() => $_has(8);
   @$pb.TagNumber(11)
   void clearUser() => clearField(11);
   @$pb.TagNumber(11)
-  $0.User ensureUser() => $_ensure(9);
+  $0.User ensureUser() => $_ensure(8);
 
   @$pb.TagNumber(12)
-  Category get category => $_getN(10);
+  Category get category => $_getN(9);
   @$pb.TagNumber(12)
   set category(Category v) { setField(12, v); }
   @$pb.TagNumber(12)
-  $core.bool hasCategory() => $_has(10);
+  $core.bool hasCategory() => $_has(9);
   @$pb.TagNumber(12)
   void clearCategory() => clearField(12);
   @$pb.TagNumber(12)
-  Category ensureCategory() => $_ensure(10);
+  Category ensureCategory() => $_ensure(9);
 }
 
 class RepeatedAdResponse extends $pb.GeneratedMessage {
@@ -679,6 +679,50 @@ class RepeatedAdResponse extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.List<Ad> get data => $_getList(0);
+}
+
+class RepeatedImageResponse extends $pb.GeneratedMessage {
+  factory RepeatedImageResponse({
+    $core.Iterable<$3.ImageProto>? data,
+  }) {
+    final $result = create();
+    if (data != null) {
+      $result.data.addAll(data);
+    }
+    return $result;
+  }
+  RepeatedImageResponse._() : super();
+  factory RepeatedImageResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RepeatedImageResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'RepeatedImageResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..pc<$3.ImageProto>(1, _omitFieldNames ? '' : 'data', $pb.PbFieldType.PM, subBuilder: $3.ImageProto.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RepeatedImageResponse clone() => RepeatedImageResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RepeatedImageResponse copyWith(void Function(RepeatedImageResponse) updates) => super.copyWith((message) => updates(message as RepeatedImageResponse)) as RepeatedImageResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static RepeatedImageResponse create() => RepeatedImageResponse._();
+  RepeatedImageResponse createEmptyInstance() => create();
+  static $pb.PbList<RepeatedImageResponse> createRepeated() => $pb.PbList<RepeatedImageResponse>();
+  @$core.pragma('dart2js:noInline')
+  static RepeatedImageResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RepeatedImageResponse>(create);
+  static RepeatedImageResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$3.ImageProto> get data => $_getList(0);
 }
 
 class GetAllCategoriesResponse extends $pb.GeneratedMessage {

@@ -23,20 +23,6 @@ object AdUtils {
         )
     }
 
-    fun fromAdGrpcMute(ad: AdOuterClass.Ad): Ad {
-        return Ad(
-            id = ad.id,
-            title = ad.title,
-            price = ad.price,
-            description = ad.description,
-            views = ad.views,
-            isActive = !ad.isActive,
-            created = ad.created,
-            user = fromUserGrpc(ad.user),
-            category = fromCategoryGrpc(ad.category),
-        )
-    }
-
     fun toAdGrpc(ad: Ad, isFav: Boolean = false): AdOuterClass.Ad {
         return AdOuterClass.Ad.newBuilder()
             .setId(ad.id)
@@ -46,22 +32,6 @@ object AdUtils {
             .setIsFav(isFav)
             .setIsActive(ad.isActive)
             .setViews(ad.views)
-            .setCreated(ad.created)
-            .setUser(UserUtils.toUserGrpc(ad.user))
-            .setCategory(toCategoryGrpc(ad.category))
-            .build()
-    }
-
-    fun toAdGrpcWithImages(ad: Ad, images: List<Image>, isFav: Boolean = false): AdOuterClass.Ad {
-        return AdOuterClass.Ad.newBuilder()
-            .setId(ad.id)
-            .setTitle(ad.title)
-            .setPrice(ad.price)
-            .setDescription(ad.description)
-            .setIsFav(isFav)
-            .setIsActive(ad.isActive)
-            .setViews(ad.views)
-            .addAllImages(ImageUtils.toImageGrpcList(images))
             .setCreated(ad.created)
             .setUser(UserUtils.toUserGrpc(ad.user))
             .setCategory(toCategoryGrpc(ad.category))
@@ -83,6 +53,4 @@ object AdUtils {
             .addAllData(ads)
             .build()
     }
-
-
 }

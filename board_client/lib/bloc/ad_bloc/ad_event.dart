@@ -9,6 +9,6 @@ class LoadAd extends AdEvent {
     this.token,
   });
 
-  final int id;
+  final fnum.Int64 id;
   final String? token;
 }

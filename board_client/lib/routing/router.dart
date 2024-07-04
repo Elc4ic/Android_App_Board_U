@@ -10,16 +10,14 @@ import 'package:board_client/pages/settings/set_address_page.dart';
 import 'package:board_client/pages/settings/settings_page.dart';
 import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:fixnum/fixnum.dart';
 
-import '../data/repository/user_repository.dart';
 import '../pages/chats/message_page.dart';
 import '../pages/main/ad_page.dart';
 import '../pages/advertisement/my_ads_page.dart';
+import '../pages/settings/user_page.dart';
 import 'not_found_page.dart';
-
-final userRepository = GetIt.I<UserRepository>();
 
 GoRouter router = GoRouter(
   initialLocation: '/home',
@@ -29,14 +27,23 @@ GoRouter router = GoRouter(
       path: '/ad/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return AdPage(id: int.parse(id));
+        return AdPage(idAd: Int64(int.parse(id)));
+      },
+    ),
+    GoRoute(
+      path: '/user/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return UserPage(id: Int64(int.parse(id)));
       },
     ),
     GoRoute(
       path: '/chat/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return MessagePage(chatId: int.parse(id),);
+        return MessagePage(
+          chatId: int.parse(id),
+        );
       },
     ),
     GoRoute(
@@ -90,10 +97,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/my',
               builder: (context, state) {
-                if (userRepository.getToken() == null) {
-                  return const LoginRedirectPage();
-                }
-                return const MyAdsPage();
+                return LoginChecker(go: const MyAdsPage());
               },
               routes: [
                 GoRoute(
@@ -112,10 +116,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/favorites',
               builder: (context, state) {
-                if (userRepository.getToken() == null) {
-                  return const LoginRedirectPage();
-                }
-                return const FavPage();
+                return LoginChecker(go: const FavPage());
               },
             ),
           ],
@@ -125,11 +126,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/chats',
               builder: (context, state) {
-                if (userRepository.getToken() == null) {
-                  return const LoginRedirectPage();
-                }
-                final search = state.uri.queryParameters['search'];
-                return const ChatsPreviewPage();
+                return LoginChecker(go: const ChatsPreviewPage());
               },
             ),
           ],
@@ -139,10 +136,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/settings',
               builder: (context, state) {
-                if (userRepository.getToken() == null) {
-                  return const LoginRedirectPage();
-                }
-                return const SettingsPage();
+                return LoginChecker(go: const SettingsPage());
               },
             ),
           ],

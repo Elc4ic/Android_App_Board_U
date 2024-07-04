@@ -52,7 +52,7 @@ class _AddAdPageState extends State<AddAdPage> {
   }
 
   Future _imagePick() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final picked = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality: 40);
     setState(() {
       if (picked != null) {
         files.add(picked);

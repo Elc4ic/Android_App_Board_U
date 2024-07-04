@@ -40,7 +40,7 @@ class Styles {
     return Text(
       data,
       style: GoogleFonts.bitter(
-        fontSize: Markup.size_16,
+        fontSize: Markup.size_14,
       ),
     );
   }

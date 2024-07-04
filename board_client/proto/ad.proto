@@ -8,12 +8,14 @@ import "user.proto";
 service AdAPI {
     rpc GetManyAd (GetManyAdRequest) returns (PaginatedAd);
     rpc GetOneAd (GetByIdRequest) returns (Ad);
-    rpc SetFavoriteAd (SetFavoriteRequest) returns (IsSuccess);
+    rpc SetFavoriteAd (GetByIdRequest) returns (IsSuccess);
     rpc AddAd (ChangeAdRequest) returns (IsSuccess);
-    rpc DeleteAd (ChangeAdRequest) returns (IsSuccess);
-    rpc MuteAd (ChangeAdRequest) returns (IsSuccess);
+    rpc DeleteAd (GetByIdRequest) returns (IsSuccess);
+    rpc MuteAd (GetByIdRequest) returns (IsSuccess);
     rpc GetFavoriteAds (JwtProto) returns (RepeatedAdResponse);
     rpc GetMyAds (JwtProto) returns (RepeatedAdResponse);
+    rpc GetByUserId (GetByIdRequest) returns (RepeatedAdResponse);
+    rpc LoadImage (GetByIdWithBoolRequest) returns (RepeatedImageResponse);
 }
 
 service CategoryAPI {
@@ -36,9 +38,10 @@ message GetByIdRequest {
 }
 message ChangeAdRequest {
     Ad ad = 1;
-    string token = 2;
+    repeated ImageProto images = 2;
+    string token = 3;
 }
-message SetFavoriteRequest {
+message GetByIdWithBoolRequest {
     int64 id = 1;
     string token = 2;
     bool value = 3;
@@ -60,13 +63,16 @@ message Ad {
     bool is_fav = 5;
     bool is_active = 6;
     int32 views = 7;
-    repeated ImageProto images = 8;
     string created = 10;
     User user = 11;
     Category category = 12;
 }
 message RepeatedAdResponse {
     repeated Ad data = 1;
+}
+
+message RepeatedImageResponse {
+    repeated ImageProto data = 1;
 }
 
 message GetAllCategoriesResponse {

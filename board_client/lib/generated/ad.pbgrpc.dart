@@ -30,21 +30,21 @@ class AdAPIClient extends $grpc.Client {
       '/board.AdAPI/GetOneAd',
       ($1.GetByIdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.Ad.fromBuffer(value));
-  static final _$setFavoriteAd = $grpc.ClientMethod<$1.SetFavoriteRequest, $0.IsSuccess>(
+  static final _$setFavoriteAd = $grpc.ClientMethod<$1.GetByIdRequest, $0.IsSuccess>(
       '/board.AdAPI/SetFavoriteAd',
-      ($1.SetFavoriteRequest value) => value.writeToBuffer(),
+      ($1.GetByIdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
   static final _$addAd = $grpc.ClientMethod<$1.ChangeAdRequest, $0.IsSuccess>(
       '/board.AdAPI/AddAd',
       ($1.ChangeAdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
-  static final _$deleteAd = $grpc.ClientMethod<$1.ChangeAdRequest, $0.IsSuccess>(
+  static final _$deleteAd = $grpc.ClientMethod<$1.GetByIdRequest, $0.IsSuccess>(
       '/board.AdAPI/DeleteAd',
-      ($1.ChangeAdRequest value) => value.writeToBuffer(),
+      ($1.GetByIdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
-  static final _$muteAd = $grpc.ClientMethod<$1.ChangeAdRequest, $0.IsSuccess>(
+  static final _$muteAd = $grpc.ClientMethod<$1.GetByIdRequest, $0.IsSuccess>(
       '/board.AdAPI/MuteAd',
-      ($1.ChangeAdRequest value) => value.writeToBuffer(),
+      ($1.GetByIdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
   static final _$getFavoriteAds = $grpc.ClientMethod<$0.JwtProto, $1.RepeatedAdResponse>(
       '/board.AdAPI/GetFavoriteAds',
@@ -54,6 +54,14 @@ class AdAPIClient extends $grpc.Client {
       '/board.AdAPI/GetMyAds',
       ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.RepeatedAdResponse.fromBuffer(value));
+  static final _$getByUserId = $grpc.ClientMethod<$1.GetByIdRequest, $1.RepeatedAdResponse>(
+      '/board.AdAPI/GetByUserId',
+      ($1.GetByIdRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $1.RepeatedAdResponse.fromBuffer(value));
+  static final _$loadImage = $grpc.ClientMethod<$1.GetByIdWithBoolRequest, $1.RepeatedImageResponse>(
+      '/board.AdAPI/LoadImage',
+      ($1.GetByIdWithBoolRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $1.RepeatedImageResponse.fromBuffer(value));
 
   AdAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -69,7 +77,7 @@ class AdAPIClient extends $grpc.Client {
     return $createUnaryCall(_$getOneAd, request, options: options);
   }
 
-  $grpc.ResponseFuture<$0.IsSuccess> setFavoriteAd($1.SetFavoriteRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$0.IsSuccess> setFavoriteAd($1.GetByIdRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$setFavoriteAd, request, options: options);
   }
 
@@ -77,11 +85,11 @@ class AdAPIClient extends $grpc.Client {
     return $createUnaryCall(_$addAd, request, options: options);
   }
 
-  $grpc.ResponseFuture<$0.IsSuccess> deleteAd($1.ChangeAdRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$0.IsSuccess> deleteAd($1.GetByIdRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$deleteAd, request, options: options);
   }
 
-  $grpc.ResponseFuture<$0.IsSuccess> muteAd($1.ChangeAdRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$0.IsSuccess> muteAd($1.GetByIdRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$muteAd, request, options: options);
   }
 
@@ -91,6 +99,14 @@ class AdAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$1.RepeatedAdResponse> getMyAds($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getMyAds, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$1.RepeatedAdResponse> getByUserId($1.GetByIdRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getByUserId, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$1.RepeatedImageResponse> loadImage($1.GetByIdWithBoolRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$loadImage, request, options: options);
   }
 }
 
@@ -113,12 +129,12 @@ abstract class AdAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
         ($1.Ad value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$1.SetFavoriteRequest, $0.IsSuccess>(
+    $addMethod($grpc.ServiceMethod<$1.GetByIdRequest, $0.IsSuccess>(
         'SetFavoriteAd',
         setFavoriteAd_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $1.SetFavoriteRequest.fromBuffer(value),
+        ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$1.ChangeAdRequest, $0.IsSuccess>(
         'AddAd',
@@ -127,19 +143,19 @@ abstract class AdAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.ChangeAdRequest.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$1.ChangeAdRequest, $0.IsSuccess>(
+    $addMethod($grpc.ServiceMethod<$1.GetByIdRequest, $0.IsSuccess>(
         'DeleteAd',
         deleteAd_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $1.ChangeAdRequest.fromBuffer(value),
+        ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$1.ChangeAdRequest, $0.IsSuccess>(
+    $addMethod($grpc.ServiceMethod<$1.GetByIdRequest, $0.IsSuccess>(
         'MuteAd',
         muteAd_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $1.ChangeAdRequest.fromBuffer(value),
+        ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.JwtProto, $1.RepeatedAdResponse>(
         'GetFavoriteAds',
@@ -155,6 +171,20 @@ abstract class AdAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($1.RepeatedAdResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$1.GetByIdRequest, $1.RepeatedAdResponse>(
+        'GetByUserId',
+        getByUserId_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
+        ($1.RepeatedAdResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$1.GetByIdWithBoolRequest, $1.RepeatedImageResponse>(
+        'LoadImage',
+        loadImage_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $1.GetByIdWithBoolRequest.fromBuffer(value),
+        ($1.RepeatedImageResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.PaginatedAd> getManyAd_Pre($grpc.ServiceCall call, $async.Future<$1.GetManyAdRequest> request) async {
@@ -165,7 +195,7 @@ abstract class AdAPIServiceBase extends $grpc.Service {
     return getOneAd(call, await request);
   }
 
-  $async.Future<$0.IsSuccess> setFavoriteAd_Pre($grpc.ServiceCall call, $async.Future<$1.SetFavoriteRequest> request) async {
+  $async.Future<$0.IsSuccess> setFavoriteAd_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdRequest> request) async {
     return setFavoriteAd(call, await request);
   }
 
@@ -173,11 +203,11 @@ abstract class AdAPIServiceBase extends $grpc.Service {
     return addAd(call, await request);
   }
 
-  $async.Future<$0.IsSuccess> deleteAd_Pre($grpc.ServiceCall call, $async.Future<$1.ChangeAdRequest> request) async {
+  $async.Future<$0.IsSuccess> deleteAd_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdRequest> request) async {
     return deleteAd(call, await request);
   }
 
-  $async.Future<$0.IsSuccess> muteAd_Pre($grpc.ServiceCall call, $async.Future<$1.ChangeAdRequest> request) async {
+  $async.Future<$0.IsSuccess> muteAd_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdRequest> request) async {
     return muteAd(call, await request);
   }
 
@@ -189,14 +219,24 @@ abstract class AdAPIServiceBase extends $grpc.Service {
     return getMyAds(call, await request);
   }
 
+  $async.Future<$1.RepeatedAdResponse> getByUserId_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdRequest> request) async {
+    return getByUserId(call, await request);
+  }
+
+  $async.Future<$1.RepeatedImageResponse> loadImage_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdWithBoolRequest> request) async {
+    return loadImage(call, await request);
+  }
+
   $async.Future<$1.PaginatedAd> getManyAd($grpc.ServiceCall call, $1.GetManyAdRequest request);
   $async.Future<$1.Ad> getOneAd($grpc.ServiceCall call, $1.GetByIdRequest request);
-  $async.Future<$0.IsSuccess> setFavoriteAd($grpc.ServiceCall call, $1.SetFavoriteRequest request);
+  $async.Future<$0.IsSuccess> setFavoriteAd($grpc.ServiceCall call, $1.GetByIdRequest request);
   $async.Future<$0.IsSuccess> addAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
-  $async.Future<$0.IsSuccess> deleteAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
-  $async.Future<$0.IsSuccess> muteAd($grpc.ServiceCall call, $1.ChangeAdRequest request);
+  $async.Future<$0.IsSuccess> deleteAd($grpc.ServiceCall call, $1.GetByIdRequest request);
+  $async.Future<$0.IsSuccess> muteAd($grpc.ServiceCall call, $1.GetByIdRequest request);
   $async.Future<$1.RepeatedAdResponse> getFavoriteAds($grpc.ServiceCall call, $0.JwtProto request);
   $async.Future<$1.RepeatedAdResponse> getMyAds($grpc.ServiceCall call, $0.JwtProto request);
+  $async.Future<$1.RepeatedAdResponse> getByUserId($grpc.ServiceCall call, $1.GetByIdRequest request);
+  $async.Future<$1.RepeatedImageResponse> loadImage($grpc.ServiceCall call, $1.GetByIdWithBoolRequest request);
 }
 @$pb.GrpcServiceName('board.CategoryAPI')
 class CategoryAPIClient extends $grpc.Client {

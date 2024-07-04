@@ -30,9 +30,9 @@ class PromptAPIClient extends $grpc.Client {
       '/board.PromptAPI/GetOnePrompt',
       ($1.GetByIdRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.Ad.fromBuffer(value));
-  static final _$setFavoritePrompt = $grpc.ClientMethod<$1.SetFavoriteRequest, $1.Empty>(
+  static final _$setFavoritePrompt = $grpc.ClientMethod<$1.GetByIdWithBoolRequest, $1.Empty>(
       '/board.PromptAPI/SetFavoritePrompt',
-      ($1.SetFavoriteRequest value) => value.writeToBuffer(),
+      ($1.GetByIdWithBoolRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.Empty.fromBuffer(value));
   static final _$addPrompt = $grpc.ClientMethod<$2.ChangePromptRequest, $1.Empty>(
       '/board.PromptAPI/AddPrompt',
@@ -65,7 +65,7 @@ class PromptAPIClient extends $grpc.Client {
     return $createUnaryCall(_$getOnePrompt, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.Empty> setFavoritePrompt($1.SetFavoriteRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$1.Empty> setFavoritePrompt($1.GetByIdWithBoolRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$setFavoritePrompt, request, options: options);
   }
 
@@ -105,12 +105,12 @@ abstract class PromptAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
         ($1.Ad value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$1.SetFavoriteRequest, $1.Empty>(
+    $addMethod($grpc.ServiceMethod<$1.GetByIdWithBoolRequest, $1.Empty>(
         'SetFavoritePrompt',
         setFavoritePrompt_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $1.SetFavoriteRequest.fromBuffer(value),
+        ($core.List<$core.int> value) => $1.GetByIdWithBoolRequest.fromBuffer(value),
         ($1.Empty value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$2.ChangePromptRequest, $1.Empty>(
         'AddPrompt',
@@ -150,7 +150,7 @@ abstract class PromptAPIServiceBase extends $grpc.Service {
     return getOnePrompt(call, await request);
   }
 
-  $async.Future<$1.Empty> setFavoritePrompt_Pre($grpc.ServiceCall call, $async.Future<$1.SetFavoriteRequest> request) async {
+  $async.Future<$1.Empty> setFavoritePrompt_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdWithBoolRequest> request) async {
     return setFavoritePrompt(call, await request);
   }
 
@@ -172,7 +172,7 @@ abstract class PromptAPIServiceBase extends $grpc.Service {
 
   $async.Future<$2.PaginatedPrompt> getManyPrompts($grpc.ServiceCall call, $2.GetManyPromptsRequest request);
   $async.Future<$1.Ad> getOnePrompt($grpc.ServiceCall call, $1.GetByIdRequest request);
-  $async.Future<$1.Empty> setFavoritePrompt($grpc.ServiceCall call, $1.SetFavoriteRequest request);
+  $async.Future<$1.Empty> setFavoritePrompt($grpc.ServiceCall call, $1.GetByIdWithBoolRequest request);
   $async.Future<$1.Empty> addPrompt($grpc.ServiceCall call, $2.ChangePromptRequest request);
   $async.Future<$1.Empty> deletePrompt($grpc.ServiceCall call, $2.ChangePromptRequest request);
   $async.Future<$1.Empty> mutePrompt($grpc.ServiceCall call, $2.ChangePromptRequest request);

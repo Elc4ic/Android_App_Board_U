@@ -24,6 +24,15 @@ class LoadMyAd extends AdListEvent {
   final Completer? completer;
 }
 
+class LoadUserAd extends AdListEvent {
+  LoadUserAd(this.id, {
+    this.completer,
+  });
+
+  final Int64 id;
+  final Completer? completer;
+}
+
 class LoadFavAd extends AdListEvent {
   LoadFavAd({
     this.completer,

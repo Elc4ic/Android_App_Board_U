@@ -12,10 +12,10 @@ import '../../data/repository/ad_repository.dart';
 import '../../data/repository/category_repository.dart';
 import '../../data/repository/user_repository.dart';
 
+String commonSearch = "";
+
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
-
-  final String search = "";
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -37,7 +37,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 1), () {
-      _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
+      _adListBloc.add(LoadAdList(commonSearch, page, pageSize, true));
       _catListBloc.add(LoadCategories());
     });
 
@@ -48,14 +48,14 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     double widthNow = Markup.widthNow(context);
     return Scaffold(
-      appBar: header,
+      appBar: header(_adListBloc, page, pageSize),
       body: SelectionArea(
         child: RefreshIndicator(
           onRefresh: () async {
             setState(() {
               page = 0;
             });
-            _adListBloc.add(LoadAdList(widget.search, page, pageSize, true));
+            _adListBloc.add(LoadAdList(commonSearch, page, pageSize, true));
             _catListBloc.add(LoadCategories());
           },
           child: CustomScrollView(
@@ -79,7 +79,7 @@ class _MainPageState extends State<MainPage> {
                             exception: state.exception,
                             onPressed: () {
                               _adListBloc.add(LoadAdList(
-                                  widget.search, page, pageSize, false));
+                                  commonSearch, page, pageSize, false));
                             },
                           ),
                         );
@@ -119,7 +119,7 @@ class _MainPageState extends State<MainPage> {
                         exception: state.exception,
                         onPressed: () {
                           _adListBloc.add(
-                              LoadAdList(widget.search, page, pageSize, false));
+                              LoadAdList(commonSearch, page, pageSize, false));
                         },
                       ),
                     );
@@ -136,7 +136,7 @@ class _MainPageState extends State<MainPage> {
                     page++;
                   });
                   _adListBloc
-                      .add(LoadAdList(widget.search, page, pageSize, false));
+                      .add(LoadAdList(commonSearch, page, pageSize, false));
                 },
               )),
             ],
@@ -145,4 +145,56 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
+}
+
+PreferredSizeWidget header(
+    AdListBloc adListBloc, int page, int pageSize) {
+  final searchController = TextEditingController();
+  searchController.text = commonSearch;
+  return PreferredSize(
+    preferredSize: const Size.fromHeight(Const.HeaderHight),
+    child: AppBar(
+        title: Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Row(children: [
+              Flexible(
+                flex: 8,
+                child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(Markup.size_16)),
+                    child: Center(
+                        child: TextField(
+                            controller: searchController,
+                            keyboardType: TextInputType.text,
+                            onSubmitted: (String value) {
+                              commonSearch = value;
+                              adListBloc.add(LoadAdList(
+                                  commonSearch, page, pageSize, true));
+                            },
+                            decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.search),
+                                /*suffixIcon: IconButton(
+                                  tooltip: "Фильтрация",
+                                  icon: const Icon(Icons.filter_alt),
+                                  onPressed: () {
+                                  },
+                                ),*/
+                                hintText: SC.SEARCH_HINT,
+                                border: InputBorder.none)))),
+              ),
+              Flexible(
+                flex: 1,
+                child: Center(
+                    child: IconButton(
+                        tooltip: "Очистка",
+                        icon: const Icon(Icons.clear),
+                        onPressed: () => {
+                              adListBloc.add(LoadAdList(
+                                  commonSearch, page, pageSize, true))
+                            })),
+              )
+            ]))),
+  );
 }

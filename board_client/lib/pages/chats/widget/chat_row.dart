@@ -1,10 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:board_client/bloc/chat_bloc/chat_bloc.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../bloc/image_bloc/image_bloc.dart';
+import '../../../data/repository/ad_repository.dart';
 import '../../../data/repository/chat_repository.dart';
 import '../../../values/values.dart';
 import '../../advertisement/widget/my_dialog.dart';
@@ -25,6 +30,16 @@ class ChatRow extends StatefulWidget {
 }
 
 class _ChatRowState extends State<ChatRow> {
+  final _imageBloc = ImageBloc(
+    GetIt.I<AdRepository>(),
+  );
+
+  @override
+  void initState() {
+    _imageBloc.add(LoadImageList(widget.chat.ad.id, true, widget.token));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -35,7 +50,7 @@ class _ChatRowState extends State<ChatRow> {
             GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
             context.pop();
             widget.chatBloc.add(LoadChatList());
-          }),
+          },"Вы уверенны, что хотите удалить чат?"),
           onTap: () {
             context.push("/chat/${widget.chat.id}");
           },
@@ -48,10 +63,30 @@ class _ChatRowState extends State<ChatRow> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        color: Colors.blueAccent,
+                      child: BlocBuilder<ImageBloc, ImageState>(
+                        bloc: _imageBloc,
+                        builder: (context, state) {
+                          if (state is ImageLoaded) {
+                            return Image.memory(
+                              width: 100,
+                              height: 90,
+                              fit: BoxFit.fitWidth,
+                              Uint8List.fromList(state.images.first),
+                            );
+                          }
+                          if (state is ImageLoadingFailure) {
+                            return Container(
+                              width: 100,
+                              height: 90,
+                              color: Colors.blueAccent,
+                            );
+                          }
+                          return const SizedBox(
+                              width: 100,
+                              height: 90,
+                              child: Center(
+                                  child: CircularProgressIndicator()));
+                        },
                       ),
                     ),
                     Markup.dividerW10,

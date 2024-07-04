@@ -41,5 +41,37 @@ class NavItems {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }
 
+  static List<ImageProto> imageFromFilePicker(List<XFile> files) {
+    final webs = List<ImageProto>.empty(growable: true);
+    files.forEach((it) async {
+      webs.add(ImageProto(
+          chunk: await imageToWebp(File(it.path).readAsBytesSync())));
+    });
+    return webs;
+  }
 
+  static Future<Uint8List> imageFromFile(XFile file) async {
+    return imageToWebp(File(file.path).readAsBytesSync());
+  }
+
+  static Future<Uint8List> imageToWebp(Uint8List list) async {
+    final result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 480,
+      minWidth: 640,
+      quality: 40,
+      format: CompressFormat.webp,
+    );
+    return result;
+  }
+  static Future<Uint8List> avatarToWebp(Uint8List list) async {
+    final result = await FlutterImageCompress.compressWithList(
+      list,
+      minHeight: 100,
+      minWidth: 100,
+      quality: 10,
+      format: CompressFormat.webp,
+    );
+    return result;
+  }
 }

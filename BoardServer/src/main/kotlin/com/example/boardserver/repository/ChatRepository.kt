@@ -8,6 +8,7 @@ import java.util.*
 @Repository
 interface ChatRepository : JpaRepository<Chat, Long> {
     fun findByOwnerId(id: Long): MutableList<Chat>
+    fun findByAdId(id: Long): MutableList<Chat>
     fun countByOwnerIdAndReceiverIdAndAdId(
         ownerId: Long,
         receiverId: Long,

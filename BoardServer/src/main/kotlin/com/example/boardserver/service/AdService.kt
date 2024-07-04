@@ -3,10 +3,7 @@ package com.example.boardserver.service
 import board.AdOuterClass
 import board.UserOuterClass
 import com.example.boardserver.entity.Favorites
-import com.example.boardserver.repository.AdRepository
-import com.example.boardserver.repository.FavoritesRepository
-import com.example.boardserver.repository.ImageRepository
-import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.repository.*
 import com.example.boardserver.utils.AdUtils
 import com.example.boardserver.utils.ImageUtils
 import com.example.boardserver.utils.JwtProvider
@@ -17,7 +14,6 @@ import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.transaction.annotation.Transactional
-import kotlin.jvm.optionals.toList
 
 
 @GrpcService
@@ -27,6 +23,8 @@ class AdService(
     private val imageRepository: ImageRepository,
     private val jwtProvider: JwtProvider,
     private val favRepository: FavoritesRepository,
+    private val chatRepository: ChatRepository,
+    private val messageRepository: MessageRepository
 ) : board.AdAPIGrpc.AdAPIImplBase() {
 
     override fun getManyAd(
@@ -36,15 +34,15 @@ class AdService(
 
         val userId = jwtProvider.validateJwt(request!!.token)
         val pagingSort: Pageable = PageRequest.of(request.page.toInt(), request.limit.toInt())
+        /*val adPage = adRepository.findWithSearchAndActive(pagingSort, request.query)*/
         val adPage = adRepository.findAllByIsActive(pagingSort, true)
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
         val ads = mutableListOf<AdOuterClass.Ad>()
         adPage.forEach { ad ->
             ads.add(
-                AdUtils.toAdGrpcWithImages(
+                AdUtils.toAdGrpc(
                     ad,
-                    imageRepository.findFirstByAdId(ad.id).toList(),
                     if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
                     else false,
                 )
@@ -65,12 +63,13 @@ class AdService(
     override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
         val userId = jwtProvider.validateJwt(request.token)
         val ad = adRepository.findById(request.id).get()
-        ad.views++
-        adRepository.save(ad);
-        val images = imageRepository.findByAdId(request.id)
+        if (ad.user.id != userId) {
+            ad.views++
+            adRepository.save(ad)
+        }
         responseObserver?.onNext(
-            AdUtils.toAdGrpcWithImages(
-                ad, images,
+            AdUtils.toAdGrpc(
+                ad,
                 if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
                 else false,
             )
@@ -78,8 +77,22 @@ class AdService(
         responseObserver?.onCompleted()
     }
 
+    override fun loadImage(
+        request: AdOuterClass.GetByIdWithBoolRequest?,
+        responseObserver: StreamObserver<AdOuterClass.RepeatedImageResponse>?
+    ) {
+        if (request?.value == true) {
+            val image = imageRepository.findFirstByAdId(request.id).get()
+            responseObserver?.onNext(ImageUtils.toImageGrpcList(listOf(image)))
+        } else {
+            val images = imageRepository.findByAdId(request!!.id)
+            responseObserver?.onNext(ImageUtils.toImageGrpcList(images))
+        }
+        responseObserver?.onCompleted()
+    }
+
     override fun setFavoriteAd(
-        request: AdOuterClass.SetFavoriteRequest?,
+        request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
@@ -113,8 +126,7 @@ class AdService(
         if (userId != null) {
             val ad = AdUtils.fromAdGrpc(request.ad)
             adRepository.save(ad)
-            request.ad.imagesList.forEach { image -> println("${image.allFields}") }
-            val images = ImageUtils.fromImageGrpcList(request.ad.imagesList, ad)
+            val images = ImageUtils.fromImageGrpcList(request.imagesList, ad)
             images.forEach { image -> println("${image.imageBytes.toByteString()}") }
             images.forEach { imageRepository.save(it) }
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
@@ -126,15 +138,19 @@ class AdService(
 
     @Transactional
     override fun deleteAd(
-        request: AdOuterClass.ChangeAdRequest?,
+        request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            favRepository.deleteAllByAdId(request.ad.id)
-            imageRepository.deleteByAdId(request.ad.id)
-            adRepository.delete(AdUtils.fromAdGrpc(request.ad))
-
+            favRepository.deleteAllByAdId(request.id)
+            imageRepository.deleteByAdId(request.id)
+            val chats = chatRepository.findByAdId(request.id)
+            chats.forEach {
+                messageRepository.deleteAllByChatId(it.id);
+                chatRepository.delete(it)
+            }
+            adRepository.deleteById(request.id)
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -143,12 +159,14 @@ class AdService(
     }
 
     override fun muteAd(
-        request: AdOuterClass.ChangeAdRequest?,
+        request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            adRepository.save(AdUtils.fromAdGrpcMute(request.ad))
+            val ad = adRepository.findById(request.id).get();
+            ad.isActive = !ad.isActive;
+            adRepository.save(ad)
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -177,11 +195,19 @@ class AdService(
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
             val ads = adRepository.findByUserId(userId)
-            responseObserver!!.onNext(AdUtils.toRepeatedAdGrpc(ads))
+            responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(ads))
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
         }
         responseObserver?.onCompleted()
     }
 
+    override fun getByUserId(
+        request: AdOuterClass.GetByIdRequest?,
+        responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
+    ) {
+        val ads = adRepository.findByUserId(request!!.id)
+        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(ads))
+        responseObserver?.onCompleted()
+    }
 }

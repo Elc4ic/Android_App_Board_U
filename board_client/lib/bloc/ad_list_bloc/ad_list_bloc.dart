@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:fixnum/fixnum.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
@@ -18,6 +19,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
     on<LoadAdList>(_loadPage);
     on<LoadMyAd>(_load_my);
     on<LoadFavAd>(_load_fav);
+    on<LoadUserAd>(_load_user);
   }
 
   final AdRepository adRepository;
@@ -32,7 +34,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
         emit(AdListLoading());
       }
       final ads = await adRepository.getManyAd(
-          "search", event.page, event.pageSize, userRepository.getToken());
+          event.search, event.page, event.pageSize, userRepository.getToken());
       if (event.clear) {
         adList.clear();
       }
@@ -71,6 +73,23 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
         emit(AdListLoading());
       }
       final ads = await adRepository.getFavoriteAds(userRepository.getToken());
+      emit(AdListLoaded(adList: ads.data));
+    } catch (e) {
+      emit(AdListLoadingFailure(exception: e));
+    } finally {
+      event.completer?.complete();
+    }
+  }
+
+  Future<void> _load_user(
+      LoadUserAd event,
+      Emitter<AdListState> emit,
+      ) async {
+    try {
+      if (state is! AdListLoaded) {
+        emit(AdListLoading());
+      }
+      final ads = await adRepository.getByUserId(event.id);
       emit(AdListLoaded(adList: ads.data));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));

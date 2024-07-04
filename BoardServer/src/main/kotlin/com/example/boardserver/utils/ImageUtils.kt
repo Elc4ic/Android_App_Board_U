@@ -1,5 +1,6 @@
 package com.example.boardserver.utils
 
+import board.AdOuterClass.RepeatedImageResponse
 import board.Image.ImageProto
 import com.example.boardserver.entity.Ad
 import com.example.boardserver.entity.Image
@@ -20,10 +21,14 @@ object ImageUtils {
         )
     }
 
-    fun toImageGrpcList(images: List<Image>): List<ImageProto> {
+    fun toImageGrpcList(images: List<Image>): RepeatedImageResponse {
         val imagesGrpc = mutableListOf<ImageProto>()
         images.forEach { imagesGrpc.add(toImageGrpc(it)) }
-        return imagesGrpc
+        return RepeatedImageResponse.newBuilder().addAllData(imagesGrpc).build()
+    }
+
+    fun toCompressImageGrpcList(images: List<ImageProto>): RepeatedImageResponse {
+        return RepeatedImageResponse.newBuilder().addAllData(images).build()
     }
 
     fun fromImageGrpcList(imagesGrpc: List<ImageProto>, ad: Ad): List<Image> {

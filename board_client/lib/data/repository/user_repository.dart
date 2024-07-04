@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fixnum/fixnum.dart';
 
 import '../../generated/user.pb.dart';
 
@@ -14,6 +15,8 @@ abstract class UserRepository {
   String? getToken();
 
   User? getUser();
+
+  Future<User> getUserById(Int64 id);
 
   Future<bool> changeUser(User? user, String? token);
 

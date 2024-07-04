@@ -1,9 +1,13 @@
+import 'dart:typed_data';
+
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../bloc/image_bloc/image_bloc.dart';
 import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
 
@@ -20,6 +24,16 @@ class RowCard extends StatefulWidget {
 class _RowCardState extends State<RowCard> {
   final adRepository = GetIt.I<AdRepository>();
   bool isFav = true;
+
+  final _imageBloc = ImageBloc(
+    GetIt.I<AdRepository>(),
+  );
+
+  @override
+  void initState() {
+    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +54,30 @@ class _RowCardState extends State<RowCard> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10),
-                      child: Container(
-                        color: Colors.blueAccent,
-                        width: 100,
-                        height: 90,
+                      child: BlocBuilder<ImageBloc, ImageState>(
+                        bloc: _imageBloc,
+                        builder: (context, state) {
+                          if (state is ImageLoaded) {
+                            return Image.memory(
+                              width: 100,
+                              height: 90,
+                              fit: BoxFit.fitWidth,
+                              Uint8List.fromList(state.images.first),
+                            );
+                          }
+                          if (state is ImageLoadingFailure) {
+                            return Container(
+                              width: 100,
+                              height: 90,
+                              color: Colors.blueAccent,
+                            );
+                          }
+                          return const SizedBox(
+                              width: 100,
+                              height: 90,
+                              child: Center(
+                                  child: CircularProgressIndicator()));
+                        },
                       ),
                     ),
                     Markup.dividerW10,

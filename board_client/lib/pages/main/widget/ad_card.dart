@@ -4,9 +4,11 @@ import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../bloc/image_bloc/image_bloc.dart';
 import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
 
@@ -23,12 +25,22 @@ class AdCard extends StatefulWidget {
 class _AdCardState extends State<AdCard> {
   final adRepository = GetIt.I<AdRepository>();
 
+  final _imageBloc = ImageBloc(
+    GetIt.I<AdRepository>(),
+  );
+
+  @override
+  void initState() {
+    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 10,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: () {
             context.push("/ad/${widget.ad.id}");
@@ -38,10 +50,29 @@ class _AdCardState extends State<AdCard> {
               Flexible(
                 fit: FlexFit.tight,
                 flex: 5,
-                child: Image.memory(
-                  width: Const.cellWidth,
-                  fit: BoxFit.fitWidth,
-                  Uint8List.fromList(widget.ad.images.first.chunk),
+                child: BlocBuilder<ImageBloc, ImageState>(
+                  bloc: _imageBloc,
+                  builder: (context, state) {
+                    if (state is ImageLoaded) {
+                      return PageView.builder(
+                        itemCount: state.images.length,
+                        pageSnapping: true,
+                        itemBuilder: (context, pagePosition) {
+                          return Image.memory(
+                            width: Const.cellWidth,
+                            fit: BoxFit.fitWidth,
+                            Uint8List.fromList(state.images.first),
+                          );
+                        },
+                      );
+                    }
+                    if (state is ImageLoadingFailure) {
+                      return Container(
+                        color: Colors.blueAccent,
+                      );
+                    }
+                    return Center(child: CircularProgressIndicator());
+                  },
                 ),
               ),
               Flexible(
@@ -55,7 +86,7 @@ class _AdCardState extends State<AdCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Styles.Text16(widget.ad.title),
+                            Styles.Text16((widget.ad.title.length<30?widget.ad.title:"${widget.ad.title.substring(0,30)}...")),
                             Styles.TitleText16(
                                 "${widget.ad.price} ${SC.RUBLES}"),
                             Styles.Text12(selectAddress()),
@@ -95,6 +126,9 @@ class _AdCardState extends State<AdCard> {
     if (widget.ad.user.address.startsWith("К")) {
       return "Кампус";
     }
-    return "Город";
+    if (widget.ad.user.address.startsWith("Г") || widget.ad.user.address.startsWith("Д")) {
+      return "Город";
+    }
+    return "Не указан";
   }
 }

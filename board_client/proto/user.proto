@@ -6,12 +6,17 @@ service UserAPI {
     rpc GetSignUp (SignupRequest) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserData (JwtProto) returns (UserResponse);
+    rpc GetUserById (GetByUserIdRequest) returns (UserResponse);
     rpc ChangeUserData (SetUser) returns (IsSuccess);
     rpc DeleteUser (JwtProto) returns (IsSuccess);
 }
 
 message IsSuccess {
     bool login = 1;
+}
+
+message GetByUserIdRequest {
+    uint64 id = 1;
 }
 
 message LoginRequest {
@@ -45,10 +50,11 @@ message JwtProto {
 
 message User {
     uint64 id = 1;
-    string username = 2;
-    string password = 3;
-    string email = 4;
-    string phone = 5;
-    string address = 6;
-    string avatar = 7;
+    string name = 2;
+    string username = 3;
+    string password = 4;
+    string email = 5;
+    string phone = 6;
+    string address = 7;
+    bytes avatar = 8;
 }

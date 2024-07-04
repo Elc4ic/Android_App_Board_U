@@ -71,18 +71,19 @@ const ChangeAdRequest$json = {
   '1': 'ChangeAdRequest',
   '2': [
     {'1': 'ad', '3': 1, '4': 1, '5': 11, '6': '.board.Ad', '10': 'ad'},
-    {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
+    {'1': 'images', '3': 2, '4': 3, '5': 11, '6': '.board.ImageProto', '10': 'images'},
+    {'1': 'token', '3': 3, '4': 1, '5': 9, '10': 'token'},
   ],
 };
 
 /// Descriptor for `ChangeAdRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List changeAdRequestDescriptor = $convert.base64Decode(
-    'Cg9DaGFuZ2VBZFJlcXVlc3QSGQoCYWQYASABKAsyCS5ib2FyZC5BZFICYWQSFAoFdG9rZW4YAi'
-    'ABKAlSBXRva2Vu');
+    'Cg9DaGFuZ2VBZFJlcXVlc3QSGQoCYWQYASABKAsyCS5ib2FyZC5BZFICYWQSKQoGaW1hZ2VzGA'
+    'IgAygLMhEuYm9hcmQuSW1hZ2VQcm90b1IGaW1hZ2VzEhQKBXRva2VuGAMgASgJUgV0b2tlbg==');
 
-@$core.Deprecated('Use setFavoriteRequestDescriptor instead')
-const SetFavoriteRequest$json = {
-  '1': 'SetFavoriteRequest',
+@$core.Deprecated('Use getByIdWithBoolRequestDescriptor instead')
+const GetByIdWithBoolRequest$json = {
+  '1': 'GetByIdWithBoolRequest',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
     {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
@@ -90,10 +91,10 @@ const SetFavoriteRequest$json = {
   ],
 };
 
-/// Descriptor for `SetFavoriteRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List setFavoriteRequestDescriptor = $convert.base64Decode(
-    'ChJTZXRGYXZvcml0ZVJlcXVlc3QSDgoCaWQYASABKANSAmlkEhQKBXRva2VuGAIgASgJUgV0b2'
-    'tlbhIUCgV2YWx1ZRgDIAEoCFIFdmFsdWU=');
+/// Descriptor for `GetByIdWithBoolRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List getByIdWithBoolRequestDescriptor = $convert.base64Decode(
+    'ChZHZXRCeUlkV2l0aEJvb2xSZXF1ZXN0Eg4KAmlkGAEgASgDUgJpZBIUCgV0b2tlbhgCIAEoCV'
+    'IFdG9rZW4SFAoFdmFsdWUYAyABKAhSBXZhbHVl');
 
 @$core.Deprecated('Use paginatedAdDescriptor instead')
 const PaginatedAd$json = {
@@ -152,7 +153,6 @@ const Ad$json = {
     {'1': 'is_fav', '3': 5, '4': 1, '5': 8, '10': 'isFav'},
     {'1': 'is_active', '3': 6, '4': 1, '5': 8, '10': 'isActive'},
     {'1': 'views', '3': 7, '4': 1, '5': 5, '10': 'views'},
-    {'1': 'images', '3': 8, '4': 3, '5': 11, '6': '.board.ImageProto', '10': 'images'},
     {'1': 'created', '3': 10, '4': 1, '5': 9, '10': 'created'},
     {'1': 'user', '3': 11, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
     {'1': 'category', '3': 12, '4': 1, '5': 11, '6': '.board.Category', '10': 'category'},
@@ -164,9 +164,8 @@ final $typed_data.Uint8List adDescriptor = $convert.base64Decode(
     'CgJBZBIOCgJpZBgBIAEoA1ICaWQSFAoFdGl0bGUYAiABKAlSBXRpdGxlEhQKBXByaWNlGAMgAS'
     'gDUgVwcmljZRIgCgtkZXNjcmlwdGlvbhgEIAEoCVILZGVzY3JpcHRpb24SFQoGaXNfZmF2GAUg'
     'ASgIUgVpc0ZhdhIbCglpc19hY3RpdmUYBiABKAhSCGlzQWN0aXZlEhQKBXZpZXdzGAcgASgFUg'
-    'V2aWV3cxIpCgZpbWFnZXMYCCADKAsyES5ib2FyZC5JbWFnZVByb3RvUgZpbWFnZXMSGAoHY3Jl'
-    'YXRlZBgKIAEoCVIHY3JlYXRlZBIfCgR1c2VyGAsgASgLMgsuYm9hcmQuVXNlclIEdXNlchIrCg'
-    'hjYXRlZ29yeRgMIAEoCzIPLmJvYXJkLkNhdGVnb3J5UghjYXRlZ29yeQ==');
+    'V2aWV3cxIYCgdjcmVhdGVkGAogASgJUgdjcmVhdGVkEh8KBHVzZXIYCyABKAsyCy5ib2FyZC5V'
+    'c2VyUgR1c2VyEisKCGNhdGVnb3J5GAwgASgLMg8uYm9hcmQuQ2F0ZWdvcnlSCGNhdGVnb3J5');
 
 @$core.Deprecated('Use repeatedAdResponseDescriptor instead')
 const RepeatedAdResponse$json = {
@@ -179,6 +178,19 @@ const RepeatedAdResponse$json = {
 /// Descriptor for `RepeatedAdResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List repeatedAdResponseDescriptor = $convert.base64Decode(
     'ChJSZXBlYXRlZEFkUmVzcG9uc2USHQoEZGF0YRgBIAMoCzIJLmJvYXJkLkFkUgRkYXRh');
+
+@$core.Deprecated('Use repeatedImageResponseDescriptor instead')
+const RepeatedImageResponse$json = {
+  '1': 'RepeatedImageResponse',
+  '2': [
+    {'1': 'data', '3': 1, '4': 3, '5': 11, '6': '.board.ImageProto', '10': 'data'},
+  ],
+};
+
+/// Descriptor for `RepeatedImageResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List repeatedImageResponseDescriptor = $convert.base64Decode(
+    'ChVSZXBlYXRlZEltYWdlUmVzcG9uc2USJQoEZGF0YRgBIAMoCzIRLmJvYXJkLkltYWdlUHJvdG'
+    '9SBGRhdGE=');
 
 @$core.Deprecated('Use getAllCategoriesResponseDescriptor instead')
 const GetAllCategoriesResponse$json = {

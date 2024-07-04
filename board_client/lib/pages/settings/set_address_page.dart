@@ -63,7 +63,9 @@ class _SetAddressPageState extends State<SetAddressPage> {
                         step = 2;
                         campus = "";
                         gorod = "";
-                        block = null;
+                        gorodf = "";
+                        campusf = "";
+                        block = "";
                       });
                     },
                     value: loc,
@@ -78,7 +80,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     ),
                   ),
                 ),
-                Markup.dividerW10,
+                Markup.dividerH10,
                 Visibility(
                   visible: step > 1 && type == 1,
                   child: DropdownButtonFormField(
@@ -93,7 +95,9 @@ class _SetAddressPageState extends State<SetAddressPage> {
                         campus = newValue;
                         campusf = newValue;
                         step = 3;
-                        block = null;
+                        gorod = "";
+                        gorodf = "";
+                        block = "";
                       });
                     },
                     value: campus,
@@ -108,7 +112,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     ),
                   ),
                 ),
-                Markup.dividerW10,
                 Visibility(
                   visible: step > 1 && type == 2,
                   child: DropdownButtonFormField(
@@ -123,6 +126,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                         gorod = newValue;
                         gorodf = newValue;
                         campus = "";
+                        campusf = "";
                         block = "";
                         step = 3;
                       });
@@ -139,12 +143,12 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     ),
                   ),
                 ),
-                Markup.dividerW10,
+                Markup.dividerH10,
                 Visibility(
                   visible: step > 2,
                   child: TextFormField(
                     controller: _blockController,
-                    keyboardType: TextInputType.text,
+                    keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Квартира",
                       border: OutlineInputBorder(
@@ -172,13 +176,13 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     ),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 ElevatedButton(
                   onPressed: () async {
                     var user = userRepository.getUser();
                     user?.address = (type == 3)
                         ? _addressController.text
-                        : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} кв.${_blockController.text}${_addressController.text}";
+                        : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} кв.${_blockController.text}";
                     await userRepository.changeUser(
                         user, userRepository.getToken());
                     context.go(SC.SETTINGS_PAGE);

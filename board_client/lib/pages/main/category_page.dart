@@ -9,6 +9,7 @@ import '../../data/repository/category_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
 import '../../widgets/widgets.dart';
+import 'main_page.dart';
 
 class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key, required this.categoryIndex});
@@ -35,8 +36,7 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     double widthNow = Markup.widthNow(context);
     return Scaffold(
-      appBar: header,
-      body: SelectionArea(
+      body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(

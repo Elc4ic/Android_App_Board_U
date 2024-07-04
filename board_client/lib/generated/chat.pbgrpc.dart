@@ -16,33 +16,33 @@ import 'package:grpc/service_api.dart' as $grpc;
 import 'package:protobuf/protobuf.dart' as $pb;
 
 import 'ad.pb.dart' as $1;
-import 'chat.pb.dart' as $3;
+import 'chat.pb.dart' as $2;
 import 'user.pb.dart' as $0;
 
 export 'chat.pb.dart';
 
 @$pb.GrpcServiceName('board.ChatAPI')
 class ChatAPIClient extends $grpc.Client {
-  static final _$startChat = $grpc.ClientMethod<$3.StartRequest, $3.StartResponse>(
+  static final _$startChat = $grpc.ClientMethod<$2.StartRequest, $2.StartResponse>(
       '/board.ChatAPI/StartChat',
-      ($3.StartRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $3.StartResponse.fromBuffer(value));
-  static final _$deleteChat = $grpc.ClientMethod<$3.DeleteChatRequest, $1.Empty>(
+      ($2.StartRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $2.StartResponse.fromBuffer(value));
+  static final _$deleteChat = $grpc.ClientMethod<$2.DeleteChatRequest, $1.Empty>(
       '/board.ChatAPI/DeleteChat',
-      ($3.DeleteChatRequest value) => value.writeToBuffer(),
+      ($2.DeleteChatRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.Empty.fromBuffer(value));
-  static final _$getChatsPreview = $grpc.ClientMethod<$0.JwtProto, $3.RepeatedChatPreview>(
+  static final _$getChatsPreview = $grpc.ClientMethod<$0.JwtProto, $2.RepeatedChatPreview>(
       '/board.ChatAPI/GetChatsPreview',
       ($0.JwtProto value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $3.RepeatedChatPreview.fromBuffer(value));
-  static final _$sendMessage = $grpc.ClientMethod<$3.SendMessageRequest, $3.Message>(
+      ($core.List<$core.int> value) => $2.RepeatedChatPreview.fromBuffer(value));
+  static final _$sendMessage = $grpc.ClientMethod<$2.SendMessageRequest, $2.Message>(
       '/board.ChatAPI/SendMessage',
-      ($3.SendMessageRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $3.Message.fromBuffer(value));
-  static final _$getAllMessage = $grpc.ClientMethod<$3.GetAllMessagesRequest, $3.GetAllMessagesResponse>(
+      ($2.SendMessageRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $2.Message.fromBuffer(value));
+  static final _$getAllMessage = $grpc.ClientMethod<$2.GetAllMessagesRequest, $2.GetAllMessagesResponse>(
       '/board.ChatAPI/GetAllMessage',
-      ($3.GetAllMessagesRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $3.GetAllMessagesResponse.fromBuffer(value));
+      ($2.GetAllMessagesRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $2.GetAllMessagesResponse.fromBuffer(value));
 
   ChatAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -50,23 +50,23 @@ class ChatAPIClient extends $grpc.Client {
       : super(channel, options: options,
         interceptors: interceptors);
 
-  $grpc.ResponseFuture<$3.StartResponse> startChat($3.StartRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$2.StartResponse> startChat($2.StartRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$startChat, request, options: options);
   }
 
-  $grpc.ResponseFuture<$1.Empty> deleteChat($3.DeleteChatRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$1.Empty> deleteChat($2.DeleteChatRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$deleteChat, request, options: options);
   }
 
-  $grpc.ResponseFuture<$3.RepeatedChatPreview> getChatsPreview($0.JwtProto request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$2.RepeatedChatPreview> getChatsPreview($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getChatsPreview, request, options: options);
   }
 
-  $grpc.ResponseStream<$3.Message> sendMessage($async.Stream<$3.SendMessageRequest> request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseStream<$2.Message> sendMessage($async.Stream<$2.SendMessageRequest> request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$sendMessage, request, options: options);
   }
 
-  $grpc.ResponseFuture<$3.GetAllMessagesResponse> getAllMessage($3.GetAllMessagesRequest request, {$grpc.CallOptions? options}) {
+  $grpc.ResponseFuture<$2.GetAllMessagesResponse> getAllMessage($2.GetAllMessagesRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getAllMessage, request, options: options);
   }
 }
@@ -76,62 +76,62 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
   $core.String get $name => 'board.ChatAPI';
 
   ChatAPIServiceBase() {
-    $addMethod($grpc.ServiceMethod<$3.StartRequest, $3.StartResponse>(
+    $addMethod($grpc.ServiceMethod<$2.StartRequest, $2.StartResponse>(
         'StartChat',
         startChat_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $3.StartRequest.fromBuffer(value),
-        ($3.StartResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$3.DeleteChatRequest, $1.Empty>(
+        ($core.List<$core.int> value) => $2.StartRequest.fromBuffer(value),
+        ($2.StartResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$2.DeleteChatRequest, $1.Empty>(
         'DeleteChat',
         deleteChat_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $3.DeleteChatRequest.fromBuffer(value),
+        ($core.List<$core.int> value) => $2.DeleteChatRequest.fromBuffer(value),
         ($1.Empty value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$0.JwtProto, $3.RepeatedChatPreview>(
+    $addMethod($grpc.ServiceMethod<$0.JwtProto, $2.RepeatedChatPreview>(
         'GetChatsPreview',
         getChatsPreview_Pre,
         false,
         false,
         ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
-        ($3.RepeatedChatPreview value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$3.SendMessageRequest, $3.Message>(
+        ($2.RepeatedChatPreview value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$2.SendMessageRequest, $2.Message>(
         'SendMessage',
         sendMessage,
         true,
         true,
-        ($core.List<$core.int> value) => $3.SendMessageRequest.fromBuffer(value),
-        ($3.Message value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$3.GetAllMessagesRequest, $3.GetAllMessagesResponse>(
+        ($core.List<$core.int> value) => $2.SendMessageRequest.fromBuffer(value),
+        ($2.Message value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$2.GetAllMessagesRequest, $2.GetAllMessagesResponse>(
         'GetAllMessage',
         getAllMessage_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $3.GetAllMessagesRequest.fromBuffer(value),
-        ($3.GetAllMessagesResponse value) => value.writeToBuffer()));
+        ($core.List<$core.int> value) => $2.GetAllMessagesRequest.fromBuffer(value),
+        ($2.GetAllMessagesResponse value) => value.writeToBuffer()));
   }
 
-  $async.Future<$3.StartResponse> startChat_Pre($grpc.ServiceCall call, $async.Future<$3.StartRequest> request) async {
+  $async.Future<$2.StartResponse> startChat_Pre($grpc.ServiceCall call, $async.Future<$2.StartRequest> request) async {
     return startChat(call, await request);
   }
 
-  $async.Future<$1.Empty> deleteChat_Pre($grpc.ServiceCall call, $async.Future<$3.DeleteChatRequest> request) async {
+  $async.Future<$1.Empty> deleteChat_Pre($grpc.ServiceCall call, $async.Future<$2.DeleteChatRequest> request) async {
     return deleteChat(call, await request);
   }
 
-  $async.Future<$3.RepeatedChatPreview> getChatsPreview_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
+  $async.Future<$2.RepeatedChatPreview> getChatsPreview_Pre($grpc.ServiceCall call, $async.Future<$0.JwtProto> request) async {
     return getChatsPreview(call, await request);
   }
 
-  $async.Future<$3.GetAllMessagesResponse> getAllMessage_Pre($grpc.ServiceCall call, $async.Future<$3.GetAllMessagesRequest> request) async {
+  $async.Future<$2.GetAllMessagesResponse> getAllMessage_Pre($grpc.ServiceCall call, $async.Future<$2.GetAllMessagesRequest> request) async {
     return getAllMessage(call, await request);
   }
 
-  $async.Future<$3.StartResponse> startChat($grpc.ServiceCall call, $3.StartRequest request);
-  $async.Future<$1.Empty> deleteChat($grpc.ServiceCall call, $3.DeleteChatRequest request);
-  $async.Future<$3.RepeatedChatPreview> getChatsPreview($grpc.ServiceCall call, $0.JwtProto request);
-  $async.Stream<$3.Message> sendMessage($grpc.ServiceCall call, $async.Stream<$3.SendMessageRequest> request);
-  $async.Future<$3.GetAllMessagesResponse> getAllMessage($grpc.ServiceCall call, $3.GetAllMessagesRequest request);
+  $async.Future<$2.StartResponse> startChat($grpc.ServiceCall call, $2.StartRequest request);
+  $async.Future<$1.Empty> deleteChat($grpc.ServiceCall call, $2.DeleteChatRequest request);
+  $async.Future<$2.RepeatedChatPreview> getChatsPreview($grpc.ServiceCall call, $0.JwtProto request);
+  $async.Stream<$2.Message> sendMessage($grpc.ServiceCall call, $async.Stream<$2.SendMessageRequest> request);
+  $async.Future<$2.GetAllMessagesResponse> getAllMessage($grpc.ServiceCall call, $2.GetAllMessagesRequest request);
 }

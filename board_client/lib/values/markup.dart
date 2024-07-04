@@ -3,6 +3,7 @@ part of 'values.dart';
 class Markup {
   //sizes
   static const double size_12 = 12.0;
+  static const double size_14 = 14.0;
   static const double size_16 = 16.0;
   static const double size_18 = 18.0;
   static const double size_24 = 24.0;

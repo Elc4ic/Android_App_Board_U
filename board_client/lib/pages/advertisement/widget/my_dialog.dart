@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../values/values.dart';
 
-Future<void> myDialog(BuildContext context,Function() function) async {
+Future<void> myDialog(BuildContext context,Function() function,String text) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
@@ -14,7 +14,7 @@ Future<void> myDialog(BuildContext context,Function() function) async {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Styles.Text16("Вы уверенны?"),
+            Styles.Text16(text),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
