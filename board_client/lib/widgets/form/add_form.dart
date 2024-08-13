@@ -71,12 +71,6 @@ class _AddAdFormState extends State<AddAdForm> {
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: SC.TITLE,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
               validator:
                   RequiredValidator(errorText: 'Please enter title').call,
@@ -87,12 +81,6 @@ class _AddAdFormState extends State<AddAdForm> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: SC.PRICE,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
               validator:
                   RequiredValidator(errorText: 'Please enter price').call,
@@ -101,15 +89,9 @@ class _AddAdFormState extends State<AddAdForm> {
             TextFormField(
               maxLines: 3,
               controller: _descController,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
                 labelText: SC.DECSRIPTION,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
             ),
             Markup.dividerH10,
@@ -125,19 +107,13 @@ class _AddAdFormState extends State<AddAdForm> {
               },
               value: category,
               decoration: const InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
+                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)
               ),
             ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Styles.Text16(SC.PUBLISH_AD),
+              child: Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

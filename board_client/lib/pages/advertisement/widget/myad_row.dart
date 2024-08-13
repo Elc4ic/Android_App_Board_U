@@ -47,7 +47,6 @@ class _AdRowState extends State<AdRow> {
     return SizedBox(
       height: 120,
       child: Card(
-        color: widget.ad.isActive ? Colors.white : Colors.black12,
         child: InkWell(
           onTap: () {
             context.push("/ad/${widget.ad.id}");
@@ -78,7 +77,8 @@ class _AdRowState extends State<AdRow> {
                             if (state is ImageLoadingFailure) {
                               return Container();
                             }
-                            return const Center(child: CircularProgressIndicator());
+                            return const Center(
+                                child: CircularProgressIndicator());
                           },
                         ),
                       ),
@@ -87,15 +87,19 @@ class _AdRowState extends State<AdRow> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Styles.TitleText16("${widget.ad.price} P"),
-                        Styles.Text16("${(widget.ad.title.length>19)?widget.ad.title.substring(0,19):widget.ad.title}..."),
-                        Styles.Text12(
-                            widget.ad.isActive ? "активно" : "не активно"),
+                        Text("${widget.ad.price} P",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(
+                            "${(widget.ad.title.length > 19) ? widget.ad.title.substring(0, 19) : widget.ad.title}...",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(widget.ad.isActive ? "активно" : "не активно",
+                            style: Theme.of(context).textTheme.bodySmall),
                         Row(
                           children: [
                             const Icon(Icons.remove_red_eye),
                             Markup.dividerW5,
-                            Styles.Text12(widget.ad.views.toString()),
+                            Text(widget.ad.views.toString(),
+                                style: Theme.of(context).textTheme.bodySmall),
                           ],
                         )
                       ],
@@ -118,7 +122,7 @@ class _AdRowState extends State<AdRow> {
                       await adRepository.muteAd(widget.ad.id, widget.token);
                       context.pop();
                       widget.adListBloc.add(LoadMyAd());
-                    },"Вы уверенны, что хотите скрыть объявление?"),
+                    }, "Вы уверенны, что хотите скрыть объявление?"),
                   ),
                   IconButton(
                     tooltip: SC.CLOSE,
@@ -127,7 +131,7 @@ class _AdRowState extends State<AdRow> {
                       await adRepository.deleteAd(widget.ad.id, widget.token);
                       context.pop();
                       widget.adListBloc.add(LoadMyAd());
-                    },"Вы уверенны, что хотите удалить объявление?"),
+                    }, "Вы уверенны, что хотите удалить объявление?"),
                   ),
                 ],
               )

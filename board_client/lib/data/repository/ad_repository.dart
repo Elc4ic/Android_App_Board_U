@@ -5,8 +5,8 @@ import '../../generated/image.pb.dart';
 import '../../generated/user.pb.dart';
 
 abstract class AdRepository {
-  Future<PaginatedAd> getManyAd(
-      String search, int page, int pageSize, String? token);
+  Future<PaginatedAd> getManyAd(String search, int priceMax, int priceMin,
+      String address,Category? category, int page, int pageSize, String? token);
 
   Future<Ad> getOneAd(Int64 id, String? token);
 
@@ -24,5 +24,5 @@ abstract class AdRepository {
 
   Future<RepeatedAdResponse> getByUserId(Int64 id);
 
-  Future<List<List<int>>> loadImages(Int64 id, String? token,bool preview);
+  Future<List<List<int>>> loadImages(Int64 id, String? token, bool preview);
 }

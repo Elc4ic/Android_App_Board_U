@@ -5,6 +5,7 @@ import board.UserOuterClass
 import com.example.boardserver.entity.Favorites
 import com.example.boardserver.repository.*
 import com.example.boardserver.utils.AdUtils
+import com.example.boardserver.utils.FilterUtils
 import com.example.boardserver.utils.ImageUtils
 import com.example.boardserver.utils.JwtProvider
 import com.google.protobuf.kotlin.toByteString
@@ -13,6 +14,7 @@ import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.transaction.annotation.Transactional
 
 
@@ -31,11 +33,13 @@ class AdService(
         request: AdOuterClass.GetManyAdRequest?,
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
-
         val userId = jwtProvider.validateJwt(request!!.token)
         val pagingSort: Pageable = PageRequest.of(request.page.toInt(), request.limit.toInt())
-        /*val adPage = adRepository.findWithSearchAndActive(pagingSort, request.query)*/
-        val adPage = adRepository.findAllByIsActive(pagingSort, true)
+
+        val adPage = adRepository.findAll(
+            Specification.where(FilterUtils.adSpecification(request)),
+            pagingSort
+        )
         val total = adRepository.count()
         val pageCount = total / request.limit + 1
         val ads = mutableListOf<AdOuterClass.Ad>()

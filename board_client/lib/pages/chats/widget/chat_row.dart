@@ -50,7 +50,7 @@ class _ChatRowState extends State<ChatRow> {
             GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
             context.pop();
             widget.chatBloc.add(LoadChatList());
-          },"Вы уверенны, что хотите удалить чат?"),
+          }, "Вы уверенны, что хотите удалить чат?"),
           onTap: () {
             context.push("/chat/${widget.chat.id}");
           },
@@ -84,8 +84,8 @@ class _ChatRowState extends State<ChatRow> {
                           return const SizedBox(
                               width: 100,
                               height: 90,
-                              child: Center(
-                                  child: CircularProgressIndicator()));
+                              child:
+                                  Center(child: CircularProgressIndicator()));
                         },
                       ),
                     ),
@@ -96,18 +96,21 @@ class _ChatRowState extends State<ChatRow> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Styles.Text12(
-                                "05.06.2024  ${widget.chat.target.username}"),
+                            Text("05.06.2024  ${widget.chat.target.username}",
+                                style: Theme.of(context).textTheme.bodySmall),
                           ],
                         ),
                         Row(
                           children: [
-                            Styles.Text16(widget.chat.ad.title),
-                            Styles.TitleText16("  ${widget.chat.ad.price}P"),
+                            Text(widget.chat.ad.title,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text("  ${widget.chat.ad.price}P",
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ],
                         ),
                         Markup.dividerH10,
-                        Styles.Text12("Последнее сообщение"),
+                        Text("Последнее сообщение",
+                            style: Theme.of(context).textTheme.bodySmall),
                       ],
                     )
                   ],

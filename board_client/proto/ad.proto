@@ -26,10 +26,18 @@ service CategoryAPI {
 message Empty {}
 
 message GetManyAdRequest {
-    string query = 1;
+    FilterQuery filter = 1;
     int64 limit = 2 [jstype = JS_NUMBER];
     int64 page = 3 [jstype = JS_NUMBER];
     string token = 4;
+}
+
+message FilterQuery {
+    string search = 1;
+    int64 price_max = 2 [jstype = JS_NUMBER];
+    int64 price_min = 3 [jstype = JS_NUMBER];
+    string address = 4;
+    Category category = 5;
 }
 
 message GetByIdRequest {

@@ -72,12 +72,12 @@ class _AddAdFormState extends State<LoginForm> {
               onPressed: () {
                 context.push(SC.SIGNUP_PAGE);
               },
-              child: Styles.Text12(SC.SIGN_UP),
+              child: Text(SC.SIGN_UP, style: Theme.of(context).textTheme.bodySmall),
             ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Styles.Text16(SC.LOGIN),
+              child: Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

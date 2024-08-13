@@ -124,7 +124,8 @@ class _AddAdFormState extends State<SignUpForm> {
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Styles.Text16(SC.SIGNING_UP),
+              child: Text(SC.SIGNING_UP,
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

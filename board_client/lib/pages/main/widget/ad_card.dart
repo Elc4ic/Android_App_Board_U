@@ -71,7 +71,7 @@ class _AdCardState extends State<AdCard> {
                         color: Colors.blueAccent,
                       );
                     }
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   },
                 ),
               ),
@@ -86,10 +86,15 @@ class _AdCardState extends State<AdCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Styles.Text16((widget.ad.title.length<30?widget.ad.title:"${widget.ad.title.substring(0,30)}...")),
-                            Styles.TitleText16(
-                                "${widget.ad.price} ${SC.RUBLES}"),
-                            Styles.Text12(selectAddress()),
+                            Text(
+                                widget.ad.title.length < 30
+                                    ? widget.ad.title
+                                    : "${widget.ad.title.substring(0, 30)}...",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text("${widget.ad.price} ${SC.RUBLES}",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text(selectAddress(),
+                                style: Theme.of(context).textTheme.bodySmall),
                           ],
                         ),
                       ),
@@ -126,7 +131,8 @@ class _AdCardState extends State<AdCard> {
     if (widget.ad.user.address.startsWith("К")) {
       return "Кампус";
     }
-    if (widget.ad.user.address.startsWith("Г") || widget.ad.user.address.startsWith("Д")) {
+    if (widget.ad.user.address.startsWith("Г") ||
+        widget.ad.user.address.startsWith("Д")) {
       return "Город";
     }
     return "Не указан";

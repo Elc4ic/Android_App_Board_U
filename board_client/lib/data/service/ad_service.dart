@@ -30,10 +30,22 @@ class AdService implements AdRepository {
 
   @override
   Future<PaginatedAd> getManyAd(
-      String search, int page, int pageSize, String? token) async {
+      String search,
+      int priceMax,
+      int priceMin,
+      String address,
+      Category? category,
+      int page,
+      int pageSize,
+      String? token) async {
     final response = _client.getManyAd(
       GetManyAdRequest(
-          query: search,
+          filter: FilterQuery(
+              search: search,
+              priceMax: fnum.Int64(priceMax),
+              priceMin: fnum.Int64(priceMin),
+              address: address,
+              category: category),
           limit: fnum.Int64(pageSize),
           page: fnum.Int64(page),
           token: token),

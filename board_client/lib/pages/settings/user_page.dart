@@ -59,7 +59,7 @@ class _UserPageState extends State<UserPage> {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 200,
+                        height: 250,
                         child: Padding(
                           padding: Markup.padding_all_8,
                           child: Column(
@@ -76,9 +76,14 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                 ),
                               ),
-                              Styles.Text24(state.user.name),
-                              Styles.Text16(state.user.address),
-                              Styles.Text16(state.user.phone),
+                              Text(state.user.name,
+                                  style: Theme.of(context).textTheme.bodyLarge),
+                              Text(state.user.address,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
+                              Text(state.user.phone,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
                               Markup.dividerH5,
                               const Divider(height: 3),
                             ],
@@ -110,7 +115,8 @@ class _UserPageState extends State<UserPage> {
                         child: SizedBox(
                           height: 100,
                           child: Center(
-                            child: Styles.Text16(SC.SEARCH_NOTHING),
+                            child: Text(SC.SEARCH_NOTHING,
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
                         ),
                       );

@@ -7,22 +7,27 @@ class LightColorConst {
   static const Color card = Color(0xffe1f1ff);
 }
 
-class DarkColorConst {
+class DColorConst {
   static const Color main = Color(0xff509EEF);
   static const Color background = Color(0xff012b5b);
   static const Color text = Color(0xfff9fcff);
   static const Color card = Color(0xff00468c);
 }
 
+class MyColorConst {
+  static const Color main = Color(0xfff3f3f3);
+  static const Color background = Color(0xffededed);
+  static const Color text = Color(0xff161c20);
+  static const Color card = Color(0xff92b0c4);
+}
+/*8aa3b3*/
 ColorScheme dark = const ColorScheme(
-    brightness: Brightness.dark,
-    primary: DarkColorConst.main,
-    onPrimary: DarkColorConst.main,
-    secondary: DarkColorConst.card,
-    onSecondary: DarkColorConst.main,
-    error: DarkColorConst.main,
-    onError: DarkColorConst.main,
-    background: DarkColorConst.background,
-    onBackground: DarkColorConst.main,
-    surface: DarkColorConst.main,
-    onSurface: DarkColorConst.text);
+    brightness: Brightness.light,
+    primary: MyColorConst.main,
+    onPrimary: MyColorConst.text,
+    secondary: MyColorConst.card,
+    onSecondary: MyColorConst.text,
+    error: MyColorConst.main,
+    onError: MyColorConst.main,
+    surface: MyColorConst.main,
+    onSurface: MyColorConst.text);

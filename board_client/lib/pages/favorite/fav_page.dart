@@ -17,7 +17,7 @@ class FavPage extends StatefulWidget {
   State<FavPage> createState() => _FavPageState();
 }
 
-class _FavPageState extends State<FavPage>{
+class _FavPageState extends State<FavPage> {
   var userRepository = GetIt.I<UserRepository>();
 
   final _adListBloc = AdListBloc(
@@ -50,7 +50,8 @@ class _FavPageState extends State<FavPage>{
                         child: SizedBox(
                           height: 100,
                           child: Center(
-                            child: Styles.Text16(SC.SEARCH_NOTHING),
+                            child: Text(SC.SEARCH_NOTHING,
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
                         ),
                       )

@@ -43,7 +43,7 @@ class _CategoryPageState extends State<CategoryPage> {
               child: SizedBox(
                 height: 40,
                 child: Center(
-                  child: Styles.Text24(category.name),
+                  child: Text(category.name, style: Theme.of(context).textTheme.bodyLarge),
                 ),
               ),
             ),
@@ -56,7 +56,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       child: SizedBox(
                         height: 100,
                         child: Center(
-                          child: Styles.Text16(SC.SEARCH_NOTHING),
+                          child: Text(SC.SEARCH_NOTHING, style: Theme.of(context).textTheme.bodyMedium),
                         ),
                       ),
                     );

@@ -36,7 +36,7 @@ class _LoginCheckerState extends State<LoginChecker> {
           onPressed: () {
             context.push(SC.LOGIN_PAGE);
           },
-          child: Styles.Text16(SC.LOGIN),
+          child: Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
         ),
       );
     }

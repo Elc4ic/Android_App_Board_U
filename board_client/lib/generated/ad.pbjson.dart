@@ -26,7 +26,7 @@ final $typed_data.Uint8List emptyDescriptor = $convert.base64Decode(
 const GetManyAdRequest$json = {
   '1': 'GetManyAdRequest',
   '2': [
-    {'1': 'query', '3': 1, '4': 1, '5': 9, '10': 'query'},
+    {'1': 'filter', '3': 1, '4': 1, '5': 11, '6': '.board.FilterQuery', '10': 'filter'},
     {
       '1': 'limit',
       '3': 2,
@@ -49,9 +49,42 @@ const GetManyAdRequest$json = {
 
 /// Descriptor for `GetManyAdRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getManyAdRequestDescriptor = $convert.base64Decode(
-    'ChBHZXRNYW55QWRSZXF1ZXN0EhQKBXF1ZXJ5GAEgASgJUgVxdWVyeRIYCgVsaW1pdBgCIAEoA0'
-    'ICMAJSBWxpbWl0EhYKBHBhZ2UYAyABKANCAjACUgRwYWdlEhQKBXRva2VuGAQgASgJUgV0b2tl'
-    'bg==');
+    'ChBHZXRNYW55QWRSZXF1ZXN0EioKBmZpbHRlchgBIAEoCzISLmJvYXJkLkZpbHRlclF1ZXJ5Ug'
+    'ZmaWx0ZXISGAoFbGltaXQYAiABKANCAjACUgVsaW1pdBIWCgRwYWdlGAMgASgDQgIwAlIEcGFn'
+    'ZRIUCgV0b2tlbhgEIAEoCVIFdG9rZW4=');
+
+@$core.Deprecated('Use filterQueryDescriptor instead')
+const FilterQuery$json = {
+  '1': 'FilterQuery',
+  '2': [
+    {'1': 'search', '3': 1, '4': 1, '5': 9, '10': 'search'},
+    {
+      '1': 'price_max',
+      '3': 2,
+      '4': 1,
+      '5': 3,
+      '8': {'6': 2},
+      '10': 'priceMax',
+    },
+    {
+      '1': 'price_min',
+      '3': 3,
+      '4': 1,
+      '5': 3,
+      '8': {'6': 2},
+      '10': 'priceMin',
+    },
+    {'1': 'address', '3': 4, '4': 1, '5': 9, '10': 'address'},
+    {'1': 'category', '3': 5, '4': 1, '5': 11, '6': '.board.Category', '10': 'category'},
+  ],
+};
+
+/// Descriptor for `FilterQuery`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List filterQueryDescriptor = $convert.base64Decode(
+    'CgtGaWx0ZXJRdWVyeRIWCgZzZWFyY2gYASABKAlSBnNlYXJjaBIfCglwcmljZV9tYXgYAiABKA'
+    'NCAjACUghwcmljZU1heBIfCglwcmljZV9taW4YAyABKANCAjACUghwcmljZU1pbhIYCgdhZGRy'
+    'ZXNzGAQgASgJUgdhZGRyZXNzEisKCGNhdGVnb3J5GAUgASgLMg8uYm9hcmQuQ2F0ZWdvcnlSCG'
+    'NhdGVnb3J5');
 
 @$core.Deprecated('Use getByIdRequestDescriptor instead')
 const GetByIdRequest$json = {

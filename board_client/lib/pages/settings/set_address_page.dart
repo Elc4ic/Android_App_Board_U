@@ -187,7 +187,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                         user, userRepository.getToken());
                     context.go(SC.SETTINGS_PAGE);
                   },
-                  child: Styles.Text16("Сохранить"),
+                  child: Text("Сохранить", style: Theme.of(context).textTheme.bodyMedium),
                 ),
               ],
             ),

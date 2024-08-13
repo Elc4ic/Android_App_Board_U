@@ -75,8 +75,8 @@ class _RowCardState extends State<RowCard> {
                           return const SizedBox(
                               width: 100,
                               height: 90,
-                              child: Center(
-                                  child: CircularProgressIndicator()));
+                              child:
+                                  Center(child: CircularProgressIndicator()));
                         },
                       ),
                     ),
@@ -84,8 +84,10 @@ class _RowCardState extends State<RowCard> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Styles.TitleText16("${widget.ad.price} P"),
-                        Styles.Text16(widget.ad.title),
+                        Text("${widget.ad.price} P",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text(widget.ad.title,
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     )
                   ],

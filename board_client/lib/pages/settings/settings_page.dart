@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -27,57 +26,80 @@ class _SettingsPageState extends State<SettingsPage> {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(40),
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Image.memory(
-                    fit: BoxFit.fitWidth,
-                    Uint8List.fromList(user?.avatar ?? [1, 1]),
+              child: SizedBox(
+                height: 240,
+                child: Padding(
+                  padding: Markup.padding_all_8,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: Markup.padding_all_16,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(40),
+                          child: Image.memory(
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.fitWidth,
+                            Uint8List.fromList(user!.avatar),
+                          ),
+                        ),
+                      ),
+                      Text(user.name,
+                          style: Theme.of(context).textTheme.bodyLarge),
+                      Text(user.address,
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Text(user.phone,
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      Markup.dividerH5,
+                      const Divider(height: 3),
+                    ],
                   ),
                 ),
               ),
             ),
             SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Styles.Text16("Имя: ${user?.name}"),
-                  Markup.dividerW5,
-                  Styles.Text16("Логин: ${user?.username}"),
-                  Markup.dividerW5,
-                  Styles.Text16("Телефон: ${user?.phone}"),
-                  Markup.dividerW5,
-                  Styles.Text16("Адресс: ${user?.address}"),
-                ],
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ElevatedButton(
-                onPressed: () => changeDialog(context),
-                child: Styles.Text16("Изменить имя"),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ElevatedButton(
-                onPressed: () => avatarDialog(context),
-                child: Styles.Text16("Изменить аватар"),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ElevatedButton(
-                onPressed: () {
-                  context.push("/setaddress");
-                },
-                child: Styles.Text16("Настроить адресс"),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: ElevatedButton(
-                onPressed: () {
-                  userRepository.logout();
-                },
-                child: Styles.Text16("logout"),
+              child: Padding(
+                padding: Markup.padding_h_8,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => changeDialog(context),
+                        child: Text("Изменить имя",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => avatarDialog(context),
+                        child: Text("Изменить аватар",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push("/setaddress");
+                        },
+                        child: Text("Настроить адресс",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          userRepository.logout();
+                        },
+                        child: Text("Выйти из аккаунта",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -101,7 +123,8 @@ Future<void> changeDialog(BuildContext context) async {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Styles.Text16("Введите новое имя"),
+            Text("Введите новое имя",
+                style: Theme.of(context).textTheme.bodyMedium),
             TextFormField(
               controller: nameController,
               keyboardType: TextInputType.text,
@@ -126,7 +149,8 @@ Future<void> changeDialog(BuildContext context) async {
                         user, userRepository.getToken());
                     context.pop();
                   },
-                  child: Styles.Text16("Ок"),
+                  child:
+                      Text("Ок", style: Theme.of(context).textTheme.bodyMedium),
                 ),
               ],
             ),
@@ -150,7 +174,8 @@ Future<void> avatarDialog(BuildContext context) async {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Styles.Text16("Выберите новый аватар"),
+            Text("Выберите новый аватар",
+                style: Theme.of(context).textTheme.bodyMedium),
             Padding(
               padding: Markup.padding_all_16,
               child: Container(
@@ -160,8 +185,8 @@ Future<void> avatarDialog(BuildContext context) async {
                     border: Border.all(width: 2)),
                 child: InkWell(
                   onTap: () async {
-                    final picked = await ImagePicker().pickImage(
-                        source: ImageSource.gallery, imageQuality: 40);
+                    final picked = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery);
                     if (picked != null) {
                       var user = userRepository.getUser();
                       var image = await NavItems.imageFromFile(picked);

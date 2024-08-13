@@ -51,14 +51,14 @@ class Empty extends $pb.GeneratedMessage {
 
 class GetManyAdRequest extends $pb.GeneratedMessage {
   factory GetManyAdRequest({
-    $core.String? query,
+    FilterQuery? filter,
     $fixnum.Int64? limit,
     $fixnum.Int64? page,
     $core.String? token,
   }) {
     final $result = create();
-    if (query != null) {
-      $result.query = query;
+    if (filter != null) {
+      $result.filter = filter;
     }
     if (limit != null) {
       $result.limit = limit;
@@ -76,7 +76,7 @@ class GetManyAdRequest extends $pb.GeneratedMessage {
   factory GetManyAdRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetManyAdRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'query')
+    ..aOM<FilterQuery>(1, _omitFieldNames ? '' : 'filter', subBuilder: FilterQuery.create)
     ..aInt64(2, _omitFieldNames ? '' : 'limit')
     ..aInt64(3, _omitFieldNames ? '' : 'page')
     ..aOS(4, _omitFieldNames ? '' : 'token')
@@ -105,13 +105,15 @@ class GetManyAdRequest extends $pb.GeneratedMessage {
   static GetManyAdRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get query => $_getSZ(0);
+  FilterQuery get filter => $_getN(0);
   @$pb.TagNumber(1)
-  set query($core.String v) { $_setString(0, v); }
+  set filter(FilterQuery v) { setField(1, v); }
   @$pb.TagNumber(1)
-  $core.bool hasQuery() => $_has(0);
+  $core.bool hasFilter() => $_has(0);
   @$pb.TagNumber(1)
-  void clearQuery() => clearField(1);
+  void clearFilter() => clearField(1);
+  @$pb.TagNumber(1)
+  FilterQuery ensureFilter() => $_ensure(0);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get limit => $_getI64(1);
@@ -139,6 +141,114 @@ class GetManyAdRequest extends $pb.GeneratedMessage {
   $core.bool hasToken() => $_has(3);
   @$pb.TagNumber(4)
   void clearToken() => clearField(4);
+}
+
+class FilterQuery extends $pb.GeneratedMessage {
+  factory FilterQuery({
+    $core.String? search,
+    $fixnum.Int64? priceMax,
+    $fixnum.Int64? priceMin,
+    $core.String? address,
+    Category? category,
+  }) {
+    final $result = create();
+    if (search != null) {
+      $result.search = search;
+    }
+    if (priceMax != null) {
+      $result.priceMax = priceMax;
+    }
+    if (priceMin != null) {
+      $result.priceMin = priceMin;
+    }
+    if (address != null) {
+      $result.address = address;
+    }
+    if (category != null) {
+      $result.category = category;
+    }
+    return $result;
+  }
+  FilterQuery._() : super();
+  factory FilterQuery.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory FilterQuery.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'FilterQuery', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'search')
+    ..aInt64(2, _omitFieldNames ? '' : 'priceMax')
+    ..aInt64(3, _omitFieldNames ? '' : 'priceMin')
+    ..aOS(4, _omitFieldNames ? '' : 'address')
+    ..aOM<Category>(5, _omitFieldNames ? '' : 'category', subBuilder: Category.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  FilterQuery clone() => FilterQuery()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  FilterQuery copyWith(void Function(FilterQuery) updates) => super.copyWith((message) => updates(message as FilterQuery)) as FilterQuery;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static FilterQuery create() => FilterQuery._();
+  FilterQuery createEmptyInstance() => create();
+  static $pb.PbList<FilterQuery> createRepeated() => $pb.PbList<FilterQuery>();
+  @$core.pragma('dart2js:noInline')
+  static FilterQuery getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<FilterQuery>(create);
+  static FilterQuery? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get search => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set search($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSearch() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSearch() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get priceMax => $_getI64(1);
+  @$pb.TagNumber(2)
+  set priceMax($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasPriceMax() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearPriceMax() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get priceMin => $_getI64(2);
+  @$pb.TagNumber(3)
+  set priceMin($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPriceMin() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPriceMin() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get address => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set address($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasAddress() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearAddress() => clearField(4);
+
+  @$pb.TagNumber(5)
+  Category get category => $_getN(4);
+  @$pb.TagNumber(5)
+  set category(Category v) { setField(5, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasCategory() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearCategory() => clearField(5);
+  @$pb.TagNumber(5)
+  Category ensureCategory() => $_ensure(4);
 }
 
 class GetByIdRequest extends $pb.GeneratedMessage {

@@ -9,22 +9,7 @@ class NavItems {
     SC.SETTINGS_PAGE,
   ];
 
-  static List<Widget> generateCategory(
-      List<Category> category, BuildContext context) {
-    return List.generate(
-      category.length,
-      (index) => CustomContainerButton(
-        text: Styles.Text12(category[index].name),
-        backcolor: Colors.blueAccent,
-        onTap: () {
-          context.push("${SC.MAIN_PAGE}/$index");
-        },
-        radius: Markup.size_12,
-      ),
-    ).toList();
-  }
-
-  static List<Widget> wrapFiles(List<XFile> files) {
+  static List<Widget> wrapFiles(List<XFile> files,BuildContext context) {
     return List.generate(
       files.length,
       (index) => Container(
@@ -32,7 +17,7 @@ class NavItems {
             borderRadius: BorderRadius.circular(Markup.size_12),
             border: Border.all(width: 2)),
         padding: Markup.padding_all_4,
-        child: Styles.Text12(files[index].name),
+        child: Text(files[index].name, style: Theme.of(context).textTheme.bodySmall),
       ),
     ).toList();
   }
@@ -64,6 +49,7 @@ class NavItems {
     );
     return result;
   }
+
   static Future<Uint8List> avatarToWebp(Uint8List list) async {
     final result = await FlutterImageCompress.compressWithList(
       list,

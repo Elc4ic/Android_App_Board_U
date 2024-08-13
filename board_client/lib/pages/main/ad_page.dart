@@ -71,7 +71,7 @@ class _AdPageState extends State<AdPage> {
                 body: ListView(
                   children: [
                     SizedBox(
-                      height: 420,
+                      height: 412,
                       child: BlocBuilder<ImageBloc, ImageState>(
                         bloc: _imageBloc,
                         builder: (context, state) {
@@ -99,10 +99,12 @@ class _AdPageState extends State<AdPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 15,
+                                  height: 12,
                                   child: Center(
-                                    child:
-                                        Styles.Text12("$imageCount/$imageMax"),
+                                    child: Text("$imageCount/$imageMax",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall),
                                   ),
                                 ),
                               ],
@@ -123,42 +125,90 @@ class _AdPageState extends State<AdPage> {
                       ),
                     ),
                     Padding(
-                      padding: Markup.padding_all_8,
+                      padding: Markup.padding_h_8,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Styles.TitleText24("${state.ad.price} ${SC.RUBLES}"),
-                          Styles.TitleText24(state.ad.title),
-                          Styles.TitleText16("Описание:"),
-                          Styles.Text16(state.ad.description),
+                          Text("${state.ad.price} ${SC.RUBLES}",
+                              style: Theme.of(context).textTheme.bodyLarge),
+                          Text(state.ad.title,
+                              style: Theme.of(context).textTheme.bodyLarge),
+                          Text("Описание:",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Text(state.ad.description,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Markup.dividerH10,
+                          Text(state.ad.created,
+                              style: Theme.of(context).textTheme.bodyMedium),
                           Markup.dividerH10,
                           Card(
-                            child: InkWell(
-                              onTap: () {
-                                context
-                                    .push("${SC.USER_PAGE}/${state.ad.user.id}");
-                              },
-                              child: Column(children: [
-                                Styles.Text12("Адреc: ${state.ad.user.address}"),
-                                Styles.Text12(
-                                    "Пользователь: ${state.ad.user.name}"),
-                              ]),
+                            child: Container(
+                              padding: Markup.padding_all_8,
+                              width: double.infinity,
+                              child: InkWell(
+                                onTap: () {
+                                  context.push(
+                                      "${SC.USER_PAGE}/${state.ad.user.id}");
+                                },
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: Markup.padding_all_8,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(20),
+                                        child: Image.memory(
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.fitWidth,
+                                          Uint8List.fromList(state.ad.user.avatar),
+                                        ),
+                                      ),
+                                    ),
+                                    Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              state.ad.user.name,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyMedium),
+                                          Text(state.ad.user.address,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall),
+                                        ]),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           Markup.dividerH10,
                           Row(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
-                              ElevatedButton(
-                                onPressed: () {},
-                                child: Styles.Text12("Позвонить"),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  child: Text("Позвонить",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
+                                ),
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  final chatId = await chatRepository.startChat(
-                                      state.ad, token);
-                                  context.push("/chat/$chatId");
-                                },
-                                child: Styles.Text12("Написать"),
+                              Markup.dividerW10,
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    final chatId = await chatRepository
+                                        .startChat(state.ad, token);
+                                    context.push("/chat/$chatId");
+                                  },
+                                  child: Text("Написать",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
+                                ),
                               ),
                             ],
                           )

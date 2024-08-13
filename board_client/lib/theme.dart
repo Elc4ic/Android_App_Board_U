@@ -1,28 +1,83 @@
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-ThemeData mainTheme(BuildContext context) {
-  return ThemeData(
-    pageTransitionsTheme: PageTransitionsTheme(
-      builders: {
-        Theme.of(context).platform: NoAnimationPageTransitionsBuilder(),
-      },
-    ),
-    primarySwatch: Colors.indigo,
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        textStyle: const TextStyle(
-          color: Colors.white,
+ThemeData mainTheme(BuildContext context) => ThemeData(
+      colorScheme: dark,
+      textTheme: TextTheme(
+        bodyLarge: GoogleFonts.montserrat(fontSize: Markup.size_20),
+        bodyMedium: GoogleFonts.montserrat(fontSize: Markup.size_16),
+        bodySmall: GoogleFonts.montserrat(fontSize: Markup.size_12),
+
+        titleLarge: GoogleFonts.montserrat(fontSize: Markup.size_24),
+        titleMedium: GoogleFonts.montserrat(fontSize: Markup.size_16),
+        titleSmall: GoogleFonts.montserrat(fontSize: Markup.size_14),
+
+        labelLarge: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w800,
+          fontSize: Markup.size_24,
+        ),
+        labelMedium: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w800,
+          fontSize: Markup.size_16,
+        ),
+        labelSmall: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w800,
+          fontSize: Markup.size_12,
         ),
       ),
-    ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      selectedLabelStyle: Styles.navBarText(),
-      unselectedItemColor: Colors.black,
-      selectedItemColor: Colors.black,
-    ),
-  );
-}
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        selectedLabelStyle: GoogleFonts.montserrat(
+          fontSize: Markup.size_14,
+        ),
+        unselectedItemColor: LightColorConst.text,
+        selectedItemColor: LightColorConst.text,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: MyColorConst.card,
+          foregroundColor: MyColorConst.text,
+        ),
+      ),
+      cardTheme: const CardTheme(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(10),
+          ),
+          side: BorderSide(
+            color: MyColorConst.text,
+          ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        labelStyle: GoogleFonts.montserrat(
+          fontSize: Markup.size_16,
+        ),
+        floatingLabelStyle: GoogleFonts.montserrat(
+          fontSize: Markup.size_12,
+          color: MyColorConst.text,
+        ),
+        helperStyle: GoogleFonts.montserrat(
+          fontSize: Markup.size_16,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        )
+      ),
+      searchBarTheme: SearchBarThemeData(
+      ),
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          Theme.of(context).platform: NoAnimationPageTransitionsBuilder(),
+        },
+      ),
+    );
 
 class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
   @override

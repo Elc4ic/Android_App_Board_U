@@ -33,8 +33,8 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adRepository.getManyAd(
-          event.search, event.page, event.pageSize, userRepository.getToken());
+      final ads = await adRepository.getManyAd(event.search, event.priceMax, event.priceMin,
+          event.address,event.category, event.page, event.pageSize, userRepository.getToken());
       if (event.clear) {
         adList.clear();
       }
@@ -82,9 +82,9 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
   }
 
   Future<void> _load_user(
-      LoadUserAd event,
-      Emitter<AdListState> emit,
-      ) async {
+    LoadUserAd event,
+    Emitter<AdListState> emit,
+  ) async {
     try {
       if (state is! AdListLoaded) {
         emit(AdListLoading());

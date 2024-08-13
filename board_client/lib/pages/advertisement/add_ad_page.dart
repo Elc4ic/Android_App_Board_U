@@ -41,7 +41,7 @@ class _AddAdPageState extends State<AddAdPage> {
               Wrap(
                 spacing: 5,
                 runSpacing: 5,
-                children: NavItems.wrapFiles(files),
+                children: NavItems.wrapFiles(files, context),
               ),
               AddAdForm(result: files),
             ],
@@ -52,7 +52,8 @@ class _AddAdPageState extends State<AddAdPage> {
   }
 
   Future _imagePick() async {
-    final picked = await ImagePicker().pickImage(source: ImageSource.gallery,imageQuality: 40);
+    final picked = await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 40);
     setState(() {
       if (picked != null) {
         files.add(picked);

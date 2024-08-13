@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../values/values.dart';
 
-Future<void> myDialog(BuildContext context,Function() function,String text) async {
+Future<void> myDialog(
+    BuildContext context, Function() function, String text) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
@@ -14,13 +15,14 @@ Future<void> myDialog(BuildContext context,Function() function,String text) asyn
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Styles.Text16(text),
+            Text(text, style: Theme.of(context).textTheme.bodyMedium),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
                   onPressed: function,
-                  child: Styles.Text16("Ок"),
+                  child:
+                      Text("Ок", style: Theme.of(context).textTheme.bodySmall),
                 ),
               ],
             ),
