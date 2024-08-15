@@ -34,6 +34,10 @@ class _FavPageState extends State<FavPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Избранное",
+            style: Theme.of(context).textTheme.bodyLarge),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {

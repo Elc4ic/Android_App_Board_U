@@ -6,7 +6,7 @@ import '../../generated/user.pb.dart';
 
 abstract class AdRepository {
   Future<PaginatedAd> getManyAd(String search, int priceMax, int priceMin,
-      String address,Category? category, int page, int pageSize, String? token);
+      String address,Category? category,String query, int page, int pageSize, String? token);
 
   Future<Ad> getOneAd(Int64 id, String? token);
 

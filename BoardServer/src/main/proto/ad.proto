@@ -38,6 +38,7 @@ message FilterQuery {
     int64 price_min = 3 [jstype = JS_NUMBER];
     string address = 4;
     Category category = 5;
+    string query = 6;
 }
 
 message GetByIdRequest {

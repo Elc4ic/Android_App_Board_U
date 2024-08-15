@@ -30,13 +30,8 @@ class _AdCardState extends State<AdCard> {
   );
 
   @override
-  void initState() {
-    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
     return Card(
       elevation: 10,
       child: ClipRRect(
@@ -54,21 +49,16 @@ class _AdCardState extends State<AdCard> {
                   bloc: _imageBloc,
                   builder: (context, state) {
                     if (state is ImageLoaded) {
-                      return PageView.builder(
-                        itemCount: state.images.length,
-                        pageSnapping: true,
-                        itemBuilder: (context, pagePosition) {
-                          return Image.memory(
-                            width: Const.cellWidth,
-                            fit: BoxFit.fitWidth,
-                            Uint8List.fromList(state.images.first),
-                          );
-                        },
+                      Uint8List bytes = Uint8List.fromList(state.images.first);
+                      return Image.memory(
+                        width: Const.cellWidth,
+                        fit: BoxFit.fitWidth,
+                        bytes,
                       );
                     }
                     if (state is ImageLoadingFailure) {
                       return Container(
-                        color: Colors.blueAccent,
+                        color: Colors.black12,
                       );
                     }
                     return const Center(child: CircularProgressIndicator());

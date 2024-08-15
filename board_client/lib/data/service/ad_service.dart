@@ -35,6 +35,7 @@ class AdService implements AdRepository {
       int priceMin,
       String address,
       Category? category,
+      String query,
       int page,
       int pageSize,
       String? token) async {
@@ -45,7 +46,8 @@ class AdService implements AdRepository {
               priceMax: fnum.Int64(priceMax),
               priceMin: fnum.Int64(priceMin),
               address: address,
-              category: category),
+              category: category,
+              query: query),
           limit: fnum.Int64(pageSize),
           page: fnum.Int64(page),
           token: token),

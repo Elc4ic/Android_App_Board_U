@@ -33,8 +33,16 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adRepository.getManyAd(event.search, event.priceMax, event.priceMin,
-          event.address,event.category, event.page, event.pageSize, userRepository.getToken());
+      final ads = await adRepository.getManyAd(
+          event.search,
+          event.priceMax,
+          event.priceMin,
+          event.address,
+          event.category,
+          event.query,
+          event.page,
+          event.pageSize,
+          userRepository.getToken());
       if (event.clear) {
         adList.clear();
       }

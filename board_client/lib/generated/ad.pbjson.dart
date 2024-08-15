@@ -76,6 +76,7 @@ const FilterQuery$json = {
     },
     {'1': 'address', '3': 4, '4': 1, '5': 9, '10': 'address'},
     {'1': 'category', '3': 5, '4': 1, '5': 11, '6': '.board.Category', '10': 'category'},
+    {'1': 'query', '3': 6, '4': 1, '5': 9, '10': 'query'},
   ],
 };
 
@@ -84,7 +85,7 @@ final $typed_data.Uint8List filterQueryDescriptor = $convert.base64Decode(
     'CgtGaWx0ZXJRdWVyeRIWCgZzZWFyY2gYASABKAlSBnNlYXJjaBIfCglwcmljZV9tYXgYAiABKA'
     'NCAjACUghwcmljZU1heBIfCglwcmljZV9taW4YAyABKANCAjACUghwcmljZU1pbhIYCgdhZGRy'
     'ZXNzGAQgASgJUgdhZGRyZXNzEisKCGNhdGVnb3J5GAUgASgLMg8uYm9hcmQuQ2F0ZWdvcnlSCG'
-    'NhdGVnb3J5');
+    'NhdGVnb3J5EhQKBXF1ZXJ5GAYgASgJUgVxdWVyeQ==');
 
 @$core.Deprecated('Use getByIdRequestDescriptor instead')
 const GetByIdRequest$json = {

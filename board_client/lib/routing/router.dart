@@ -4,7 +4,6 @@ import 'package:board_client/pages/favorite/fav_page.dart';
 import 'package:board_client/pages/login/login_page.dart';
 import 'package:board_client/pages/login/login_redirect_page.dart';
 import 'package:board_client/pages/login/sign_up_page.dart';
-import 'package:board_client/pages/main/category_page.dart';
 import 'package:board_client/pages/main/main_page.dart';
 import 'package:board_client/pages/settings/set_address_page.dart';
 import 'package:board_client/pages/settings/settings_page.dart';
@@ -80,15 +79,6 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/home',
               builder: (context, state) => const MainPage(),
-              routes: [
-                GoRoute(
-                  path: ':category',
-                  builder: (context, state) {
-                    final index = state.pathParameters['category']!;
-                    return CategoryPage(categoryIndex: int.parse(index));
-                  },
-                ),
-              ],
             ),
           ],
         ),

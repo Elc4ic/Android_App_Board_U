@@ -9,7 +9,6 @@ import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
 import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
-import '../../generated/user.pb.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
 import '../../widgets/widgets.dart';

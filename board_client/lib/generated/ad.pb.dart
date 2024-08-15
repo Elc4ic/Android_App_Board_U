@@ -150,6 +150,7 @@ class FilterQuery extends $pb.GeneratedMessage {
     $fixnum.Int64? priceMin,
     $core.String? address,
     Category? category,
+    $core.String? query,
   }) {
     final $result = create();
     if (search != null) {
@@ -167,6 +168,9 @@ class FilterQuery extends $pb.GeneratedMessage {
     if (category != null) {
       $result.category = category;
     }
+    if (query != null) {
+      $result.query = query;
+    }
     return $result;
   }
   FilterQuery._() : super();
@@ -179,6 +183,7 @@ class FilterQuery extends $pb.GeneratedMessage {
     ..aInt64(3, _omitFieldNames ? '' : 'priceMin')
     ..aOS(4, _omitFieldNames ? '' : 'address')
     ..aOM<Category>(5, _omitFieldNames ? '' : 'category', subBuilder: Category.create)
+    ..aOS(6, _omitFieldNames ? '' : 'query')
     ..hasRequiredFields = false
   ;
 
@@ -249,6 +254,15 @@ class FilterQuery extends $pb.GeneratedMessage {
   void clearCategory() => clearField(5);
   @$pb.TagNumber(5)
   Category ensureCategory() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  $core.String get query => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set query($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasQuery() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearQuery() => clearField(6);
 }
 
 class GetByIdRequest extends $pb.GeneratedMessage {

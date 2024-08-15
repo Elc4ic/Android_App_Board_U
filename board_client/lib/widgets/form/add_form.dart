@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:archive/archive.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/values/values.dart';

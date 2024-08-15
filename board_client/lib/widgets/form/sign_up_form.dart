@@ -72,8 +72,11 @@ class _AddAdFormState extends State<SignUpForm> {
               ),
               validator: MultiValidator(
                 [
+                  PatternValidator(
+                      r'(^[\+7]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)',
+                      errorText: 'Введите телефонный номер'),
                   RequiredValidator(errorText: 'Введите телефонный номер'),
-                  MinLengthValidator(11, errorText: 'Введите телефонный номер'),
+                  MinLengthValidator(10, errorText: 'Введите телефонный номер'),
                 ],
               ).call,
             ),

@@ -4,6 +4,7 @@ import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
@@ -14,10 +15,12 @@ import '../../data/repository/user_repository.dart';
 import '../../generated/ad.pb.dart';
 
 String commonSearch = "";
-int? priceMax;
-int? priceMin;
+int priceMax = 0;
+int priceMin = 0;
+
 String commonAddress = "";
 Category? commonCategory;
+String commonQuery = "По умолчанию";
 int page = 0;
 const pageSize = 10;
 
@@ -41,15 +44,8 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 1), () {
-      _adListBloc.add(LoadAdList(
-          commonSearch,
-          commonAddress,
-          priceMax ?? 1000000,
-          priceMin ?? 0,
-          page,
-          pageSize,
-          true,
-          commonCategory));
+      _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
+          priceMin, page, pageSize, true, commonCategory, commonQuery));
       _catListBloc.add(LoadCategories());
     });
 
@@ -68,15 +64,8 @@ class _MainPageState extends State<MainPage> {
               setState(() {
                 page = 0;
               });
-              _adListBloc.add(LoadAdList(
-                  commonSearch,
-                  commonAddress,
-                  priceMax ?? 1000000,
-                  priceMin ?? 0,
-                  page,
-                  pageSize,
-                  true,
-                  commonCategory));
+              _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
+                  priceMin, page, pageSize, true, commonCategory, commonQuery));
               _catListBloc.add(LoadCategories());
             },
             child: CustomScrollView(
@@ -138,12 +127,13 @@ class _MainPageState extends State<MainPage> {
                             _adListBloc.add(LoadAdList(
                                 commonSearch,
                                 commonAddress,
-                                priceMax ?? 1000000,
-                                priceMin ?? 0,
+                                priceMax,
+                                priceMin,
                                 page,
                                 pageSize,
                                 false,
-                                commonCategory));
+                                commonCategory,
+                                commonQuery));
                           },
                         ),
                       );
@@ -163,12 +153,13 @@ class _MainPageState extends State<MainPage> {
                     _adListBloc.add(LoadAdList(
                         commonSearch,
                         commonAddress,
-                        priceMax ?? 1000000,
-                        priceMin ?? 0,
+                        priceMax,
+                        priceMin,
                         page,
                         pageSize,
                         false,
-                        commonCategory));
+                        commonCategory,
+                        commonQuery));
                   },
                 )),
               ],
@@ -187,15 +178,8 @@ List<Widget> generateCategory(
     (index) => ElevatedButton(
         onPressed: () {
           commonCategory = categories[index];
-          adListBloc.add(LoadAdList(
-              commonSearch,
-              commonAddress,
-              priceMax ?? 10000000,
-              priceMin ?? 0,
-              page,
-              pageSize,
-              true,
-              commonCategory));
+          adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
+              priceMin, page, pageSize, true, commonCategory, commonQuery));
         },
         child: Text(categories[index].name,
             style: Theme.of(context).textTheme.bodySmall)),
@@ -222,12 +206,13 @@ PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
                 adListBloc.add(LoadAdList(
                     commonSearch,
                     commonAddress,
-                    priceMax ?? 1000000,
-                    priceMin ?? 0,
+                    priceMax,
+                    priceMin,
                     page,
                     pageSize,
                     true,
-                    commonCategory));
+                    commonCategory,
+                    commonQuery));
               },
               leading: const Icon(Icons.search),
               trailing: [
@@ -252,11 +237,12 @@ Future<void> filterDialog(
   final maxController = TextEditingController();
   final minController = TextEditingController();
   final addressController = TextEditingController();
-  maxController.text = priceMax.toString();
-  minController.text = priceMin.toString();
+  maxController.text = priceMax == 0 ? "" : priceMax.toString();
+  minController.text = priceMin == 0 ? "" : priceMin.toString();
   addressController.text = commonAddress;
   final categoryRepository = GetIt.I<CategoryRepository>();
   List<Category>? categories = categoryRepository.getCategories();
+  List<String> query = Const.query;
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
@@ -264,7 +250,7 @@ Future<void> filterDialog(
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 300,
-        height: 350,
+        height: 400,
         child: Column(
           children: [
             Text("Цена", style: Theme.of(context).textTheme.titleMedium),
@@ -278,6 +264,12 @@ Future<void> filterDialog(
                     decoration: const InputDecoration(
                       labelText: "от",
                     ),
+                    validator: MultiValidator(
+                      [
+                        PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",
+                            errorText: 'Введите целое положительное число'),
+                      ],
+                    ).call,
                   ),
                 ),
                 Markup.dividerW10,
@@ -288,6 +280,12 @@ Future<void> filterDialog(
                     decoration: const InputDecoration(
                       labelText: "до",
                     ),
+                    validator: MultiValidator(
+                      [
+                        PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",
+                            errorText: 'Введите целое положительное число'),
+                      ],
+                    ).call,
                   ),
                 ),
               ],
@@ -315,24 +313,64 @@ Future<void> filterDialog(
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
             ),
+            DropdownButtonFormField(
+              items: query.map((String orderBy) {
+                return DropdownMenuItem(
+                  value: orderBy,
+                  child: Text(orderBy),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                commonQuery = newValue!;
+              },
+              value: commonQuery,
+              decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
+            ),
             Spacer(),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    priceMax = int.parse(maxController.text);
-                    priceMin = int.parse(minController.text);
+                    priceMax = 0;
+                    priceMin = 0;
+                    commonAddress = "";
+                    commonCategory = null;
+                    adListBloc.add(LoadAdList(
+                        commonSearch,
+                        commonAddress,
+                        priceMax,
+                        priceMin,
+                        page,
+                        pageSize,
+                        true,
+                        commonCategory,
+                        commonQuery));
+                    Navigator.pop(context);
+                  },
+                  child: Text("Сбросить",
+                      style: Theme.of(context).textTheme.titleMedium),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (maxController.text.isNotEmpty) {
+                      priceMax = int.parse(maxController.text);
+                    }
+                    if (minController.text.isNotEmpty) {
+                      priceMin = int.parse(minController.text);
+                    }
                     commonAddress = addressController.text;
                     adListBloc.add(LoadAdList(
                         commonSearch,
                         commonAddress,
-                        priceMax ?? 10000000,
-                        priceMin ?? 0,
+                        priceMax,
+                        priceMin,
                         page,
                         pageSize,
                         true,
-                        commonCategory));
+                        commonCategory,
+                        commonQuery));
                     Navigator.pop(context);
                   },
                   child: Text("Ок",

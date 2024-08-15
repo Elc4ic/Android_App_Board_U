@@ -12,12 +12,14 @@ class LoadAdList extends AdListEvent {
     this.page,
     this.pageSize,
     this.clear,
-    this.category, {
+    this.category,
+    this.query, {
     this.completer,
   });
 
   final String search;
   final String address;
+  final String query;
   final int page;
   final int priceMax;
   final int priceMin;
