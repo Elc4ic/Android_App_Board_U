@@ -72,7 +72,7 @@ class _AddAdFormState extends State<AddAdForm> {
                 labelText: SC.TITLE,
               ),
               validator:
-                  RequiredValidator(errorText: 'Please enter title').call,
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
             TextFormField(
@@ -82,7 +82,7 @@ class _AddAdFormState extends State<AddAdForm> {
                 labelText: SC.PRICE,
               ),
               validator:
-                  RequiredValidator(errorText: 'Please enter price').call,
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
             TextFormField(

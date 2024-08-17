@@ -29,5 +29,5 @@ ColorScheme dark = const ColorScheme(
     onSecondary: MyColorConst.text,
     error: MyColorConst.main,
     onError: MyColorConst.main,
-    surface: MyColorConst.main,
+    surface: MyColorConst.card,
     onSurface: MyColorConst.text);

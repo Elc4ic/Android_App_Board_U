@@ -130,6 +130,8 @@ const User$json = {
     {'1': 'phone', '3': 6, '4': 1, '5': 9, '10': 'phone'},
     {'1': 'address', '3': 7, '4': 1, '5': 9, '10': 'address'},
     {'1': 'avatar', '3': 8, '4': 1, '5': 12, '10': 'avatar'},
+    {'1': 'rating_all', '3': 9, '4': 1, '5': 5, '10': 'ratingAll'},
+    {'1': 'rating_num', '3': 10, '4': 1, '5': 5, '10': 'ratingNum'},
   ],
 };
 
@@ -138,5 +140,66 @@ final $typed_data.Uint8List userDescriptor = $convert.base64Decode(
     'CgRVc2VyEg4KAmlkGAEgASgEUgJpZBISCgRuYW1lGAIgASgJUgRuYW1lEhoKCHVzZXJuYW1lGA'
     'MgASgJUgh1c2VybmFtZRIaCghwYXNzd29yZBgEIAEoCVIIcGFzc3dvcmQSFAoFZW1haWwYBSAB'
     'KAlSBWVtYWlsEhQKBXBob25lGAYgASgJUgVwaG9uZRIYCgdhZGRyZXNzGAcgASgJUgdhZGRyZX'
-    'NzEhYKBmF2YXRhchgIIAEoDFIGYXZhdGFy');
+    'NzEhYKBmF2YXRhchgIIAEoDFIGYXZhdGFyEh0KCnJhdGluZ19hbGwYCSABKAVSCXJhdGluZ0Fs'
+    'bBIdCgpyYXRpbmdfbnVtGAogASgFUglyYXRpbmdOdW0=');
+
+@$core.Deprecated('Use commentDescriptor instead')
+const Comment$json = {
+  '1': 'Comment',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'rating', '3': 2, '4': 1, '5': 5, '10': 'rating'},
+    {'1': 'text', '3': 3, '4': 1, '5': 9, '10': 'text'},
+    {'1': 'convicted', '3': 4, '4': 1, '5': 11, '6': '.board.User', '10': 'convicted'},
+    {'1': 'owner', '3': 5, '4': 1, '5': 11, '6': '.board.User', '10': 'owner'},
+    {'1': 'created', '3': 6, '4': 1, '5': 9, '10': 'created'},
+  ],
+};
+
+/// Descriptor for `Comment`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List commentDescriptor = $convert.base64Decode(
+    'CgdDb21tZW50Eg4KAmlkGAEgASgDUgJpZBIWCgZyYXRpbmcYAiABKAVSBnJhdGluZxISCgR0ZX'
+    'h0GAMgASgJUgR0ZXh0EikKCWNvbnZpY3RlZBgEIAEoCzILLmJvYXJkLlVzZXJSCWNvbnZpY3Rl'
+    'ZBIhCgVvd25lchgFIAEoCzILLmJvYXJkLlVzZXJSBW93bmVyEhgKB2NyZWF0ZWQYBiABKAlSB2'
+    'NyZWF0ZWQ=');
+
+@$core.Deprecated('Use commentProtoDescriptor instead')
+const CommentProto$json = {
+  '1': 'CommentProto',
+  '2': [
+    {'1': 'comment', '3': 1, '4': 1, '5': 11, '6': '.board.Comment', '10': 'comment'},
+    {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
+  ],
+};
+
+/// Descriptor for `CommentProto`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List commentProtoDescriptor = $convert.base64Decode(
+    'CgxDb21tZW50UHJvdG8SKAoHY29tbWVudBgBIAEoCzIOLmJvYXJkLkNvbW1lbnRSB2NvbW1lbn'
+    'QSFAoFdG9rZW4YAiABKAlSBXRva2Vu');
+
+@$core.Deprecated('Use commentsResponseDescriptor instead')
+const CommentsResponse$json = {
+  '1': 'CommentsResponse',
+  '2': [
+    {'1': 'comments', '3': 1, '4': 3, '5': 11, '6': '.board.Comment', '10': 'comments'},
+  ],
+};
+
+/// Descriptor for `CommentsResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List commentsResponseDescriptor = $convert.base64Decode(
+    'ChBDb21tZW50c1Jlc3BvbnNlEioKCGNvbW1lbnRzGAEgAygLMg4uYm9hcmQuQ29tbWVudFIIY2'
+    '9tbWVudHM=');
+
+@$core.Deprecated('Use idAndJwtDescriptor instead')
+const IdAndJwt$json = {
+  '1': 'IdAndJwt',
+  '2': [
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
+  ],
+};
+
+/// Descriptor for `IdAndJwt`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List idAndJwtDescriptor = $convert.base64Decode(
+    'CghJZEFuZEp3dBIOCgJpZBgBIAEoA1ICaWQSFAoFdG9rZW4YAiABKAlSBXRva2Vu');
 

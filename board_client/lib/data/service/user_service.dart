@@ -109,4 +109,31 @@ class UserService implements UserRepository {
     final user = await _client.getUserById(GetByUserIdRequest(id: id));
     return user.user;
   }
+
+  @override
+  Future<bool> addComment(Comment comment, String? token) async {
+    final response =
+        await _client.addComment(CommentProto(comment: comment, token: token));
+    return response.login;
+  }
+
+  @override
+  Future<bool> deleteComment(Int64 id, String? token) async {
+    final response =
+        await _client.deleteComment(IdAndJwt(id: id, token: token));
+    return response.login;
+  }
+
+  @override
+  Future<List<Comment>> getComments(Int64 id) async {
+    final comments = await _client.getComments(GetByUserIdRequest(id: id));
+    return comments.comments;
+  }
+
+  @override
+  Future<List<Comment>> getUserComments(Int64 id, String? token) async {
+    final comments =
+        await _client.getUserComments(IdAndJwt(id: id, token: token));
+    return comments.comments;
+  }
 }

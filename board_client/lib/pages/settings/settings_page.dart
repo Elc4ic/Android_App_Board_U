@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
           slivers: [
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 240,
+                height: 260,
                 child: Padding(
                   padding: Markup.padding_all_8,
                   child: Column(
@@ -42,6 +43,25 @@ class _SettingsPageState extends State<SettingsPage> {
                             fit: BoxFit.fitWidth,
                             Uint8List.fromList(user!.avatar),
                           ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.push("${SC.COMMENT_PAGE}/${user.id}");
+                        },
+                        child: RatingBar.builder(
+                          initialRating: user.ratingAll / user.ratingNum,
+                          minRating: 1,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemPadding:
+                              const EdgeInsets.symmetric(horizontal: 4.0),
+                          itemBuilder: (context, _) => const Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                          onRatingUpdate: (double value) {},
                         ),
                       ),
                       Text(user.name,

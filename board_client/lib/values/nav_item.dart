@@ -55,7 +55,7 @@ class NavItems {
       list,
       minHeight: 100,
       minWidth: 100,
-      quality: 10,
+      quality: 30,
       format: CompressFormat.webp,
     );
     return result;

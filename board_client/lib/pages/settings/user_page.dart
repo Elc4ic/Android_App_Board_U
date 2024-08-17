@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -75,14 +76,39 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                 ),
                               ),
+                              RatingBar.builder(
+                                initialRating:
+                                state.user.ratingAll / state.user.ratingNum,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                                itemBuilder: (context, _) =>
+                                const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                onRatingUpdate: (double value) {},
+                              ),
                               Text(state.user.name,
-                                  style: Theme.of(context).textTheme.bodyLarge),
+                                  style: Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyLarge),
                               Text(state.user.address,
                                   style:
-                                      Theme.of(context).textTheme.bodyMedium),
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyMedium),
                               Text(state.user.phone,
                                   style:
-                                      Theme.of(context).textTheme.bodyMedium),
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyMedium),
                               Markup.dividerH5,
                               const Divider(height: 3),
                             ],
@@ -115,7 +141,10 @@ class _UserPageState extends State<UserPage> {
                           height: 100,
                           child: Center(
                             child: Text(SC.SEARCH_NOTHING,
-                                style: Theme.of(context).textTheme.bodyMedium),
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyMedium),
                           ),
                         ),
                       );
@@ -125,9 +154,10 @@ class _UserPageState extends State<UserPage> {
                       width: widthNow,
                       items: List.generate(
                           state.adList.length,
-                          (index) => AdCard(
-                              ad: state.adList[index],
-                              token: userRepository.getToken())).toList(),
+                              (index) =>
+                              AdCard(
+                                  ad: state.adList[index],
+                                  token: userRepository.getToken())).toList(),
                     );
                   }
                   if (state is AdListLoadingFailure) {

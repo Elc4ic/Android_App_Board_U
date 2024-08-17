@@ -50,7 +50,7 @@ class _AddAdFormState extends State<LoginForm> {
                 ),
               ),
               validator:
-                  RequiredValidator(errorText: 'Please enter login').call,
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
             TextFormField(
@@ -66,7 +66,7 @@ class _AddAdFormState extends State<LoginForm> {
                 ),
               ),
               validator:
-                  RequiredValidator(errorText: 'Please enter password').call,
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             TextButton(
               onPressed: () {

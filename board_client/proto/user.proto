@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package board;
 
+
 service UserAPI {
     rpc GetSignUp (SignupRequest) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
@@ -9,6 +10,10 @@ service UserAPI {
     rpc GetUserById (GetByUserIdRequest) returns (UserResponse);
     rpc ChangeUserData (SetUser) returns (IsSuccess);
     rpc DeleteUser (JwtProto) returns (IsSuccess);
+    rpc AddComment (CommentProto) returns (IsSuccess);
+    rpc DeleteComment (IdAndJwt) returns (IsSuccess);
+    rpc GetComments (GetByUserIdRequest) returns (CommentsResponse);
+    rpc GetUserComments (IdAndJwt) returns (CommentsResponse);
 }
 
 message IsSuccess {
@@ -48,6 +53,7 @@ message JwtProto {
     string token = 1;
 }
 
+
 message User {
     uint64 id = 1;
     string name = 2;
@@ -57,4 +63,28 @@ message User {
     string phone = 6;
     string address = 7;
     bytes avatar = 8;
+    int32 rating_all = 9;
+    int32 rating_num = 10;
+}
+
+message Comment {
+    int64 id = 1;
+    int32 rating = 2;
+    string text = 3;
+    User convicted = 4;
+    User owner = 5;
+    string created = 6;
+}
+
+message CommentProto {
+    Comment comment = 1;
+    string token = 2;
+}
+message CommentsResponse {
+    repeated Comment comments = 1;
+}
+
+message IdAndJwt {
+    int64 id = 1;
+    string token = 2;
 }

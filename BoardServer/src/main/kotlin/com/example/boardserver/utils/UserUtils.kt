@@ -15,7 +15,9 @@ object UserUtils {
             email = user.email,
             address = user.address,
             avatar = user.avatar.toByteArray(),
-            phone = user.phone
+            phone = user.phone,
+            ratingAll = user.ratingAll,
+            ratingNum = user.ratingNum
         )
     }
 
@@ -29,6 +31,8 @@ object UserUtils {
             .setPhone(user.phone)
             .setAddress(user.address)
             .setAvatar(user.avatar.toByteString())
+            .setRatingAll(user.ratingAll)
+            .setRatingNum(user.ratingNum)
             .build()
     }
 

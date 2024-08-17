@@ -25,4 +25,12 @@ abstract class UserRepository {
   Future<bool> login(String username, String password);
 
   Future<bool> signUp(String username, String password, String phone);
+
+  Future<bool> addComment(Comment comment, String? token);
+
+  Future<bool> deleteComment(Int64 id, String? token);
+
+  Future<List<Comment>> getComments(Int64 id);
+
+  Future<List<Comment>> getUserComments(Int64 id, String? token);
 }

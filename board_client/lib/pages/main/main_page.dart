@@ -261,9 +261,6 @@ Future<void> filterDialog(
                   child: TextFormField(
                     controller: minController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "от",
-                    ),
                     validator: MultiValidator(
                       [
                         PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",
@@ -277,9 +274,6 @@ Future<void> filterDialog(
                   child: TextFormField(
                     controller: maxController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: "до",
-                    ),
                     validator: MultiValidator(
                       [
                         PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",

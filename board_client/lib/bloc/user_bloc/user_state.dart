@@ -15,6 +15,19 @@ class UserLoaded extends UserState {
   final User user;
 }
 
+class CommentsLoaded extends UserState {
+  CommentsLoaded({required this.user, required this.comments});
+
+  final List<Comment> comments;
+  final User user;
+}
+
+class UserCommentsLoaded extends UserState {
+  UserCommentsLoaded({required this.comments});
+
+  final List<Comment> comments;
+}
+
 class UserLoadingFailure extends UserState {
   UserLoadingFailure({
     this.exception,

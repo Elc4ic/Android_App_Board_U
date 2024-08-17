@@ -15,6 +15,8 @@ import 'package:fixnum/fixnum.dart';
 import '../pages/chats/message_page.dart';
 import '../pages/main/ad_page.dart';
 import '../pages/advertisement/my_ads_page.dart';
+import '../pages/settings/add_comment_page.dart';
+import '../pages/settings/comment_page.dart';
 import '../pages/settings/user_page.dart';
 import 'not_found_page.dart';
 
@@ -27,6 +29,13 @@ GoRouter router = GoRouter(
       builder: (context, state) {
         final id = state.pathParameters['id']!;
         return AdPage(idAd: Int64(int.parse(id)));
+      },
+    ),
+    GoRoute(
+      path: '/comments/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return CommentPage(userId: Int64(int.parse(id)));
       },
     ),
     GoRoute(
@@ -48,9 +57,16 @@ GoRouter router = GoRouter(
     GoRoute(
       path: '/add',
       builder: (context, state) {
-        return const AddAdPage(token: "sscsc");
+        return const AddAdPage();
       },
     ),
+    GoRoute(
+      path: '/addcomment',
+      builder: (context, state) {
+        return const AddCommentPage();
+      },
+    ),
+
     GoRoute(
       path: '/setaddress',
       builder: (context, state) {

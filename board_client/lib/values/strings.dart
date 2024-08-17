@@ -28,6 +28,11 @@ class SC {
   static const String REQUARIED = "Заполните все необходимые поля";
   static const String VALID = "Введите подходящие данные";
 
+  //comment
+  static const String COMMENT = "Прокомментировать";
+  static const String ADD_COMMENT = "Добавить комментарий";
+
+
   //navbar
   static const String MAIN_LABEL = "Главная";
   static const String FAVORITE_LABEL = "Избранные";
@@ -41,6 +46,17 @@ class SC {
   static const String HIDE = "Скрыть";
   static const String CLOSE = "Закрыть";
 
+  //error
+  static const String REQUIRED_ERROR = "Это поле обязательно для заполнения";
+  static const String PHONE_ERROR = "Введите телефонный номер";
+  static const String MIN_LENGHT_8_ERROR = "Минимальная длина 8 символов";
+  static const String NO_SPEC_SIMBOLS_ERROR = "Нет 2 специальных символов (#!@\$%^&*-)";
+
+  //patterns
+  static const String PHONE_PATTERN = r'(^[\+7]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)';
+  static const String PASSWORD_PATTERN = r'(?=.*?[#!@$%^&*-])';
+
+
   //routes
   static const String MAIN_PAGE = "/home";
   static const String FAVORITE_PAGE = "/favorites";
@@ -53,4 +69,6 @@ class SC {
   static const String CHANGE_PAGE = "/my/change";
   static const String LOGIN_PAGE = "/login";
   static const String SIGNUP_PAGE = "/signup";
+  static const String COMMENT_PAGE = "/comments";
+  static const String ADD_COMMENT_PAGE = "/addcomment";
 }

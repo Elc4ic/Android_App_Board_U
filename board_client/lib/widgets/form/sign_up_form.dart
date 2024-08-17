@@ -72,11 +72,9 @@ class _AddAdFormState extends State<SignUpForm> {
               ),
               validator: MultiValidator(
                 [
-                  PatternValidator(
-                      r'(^[\+7]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)',
-                      errorText: 'Введите телефонный номер'),
-                  RequiredValidator(errorText: 'Введите телефонный номер'),
-                  MinLengthValidator(10, errorText: 'Введите телефонный номер'),
+                  PatternValidator(SC.PHONE_PATTERN, errorText: SC.PHONE_ERROR),
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
+                  MinLengthValidator(10, errorText: SC.PHONE_ERROR),
                 ],
               ).call,
             ),
@@ -95,9 +93,8 @@ class _AddAdFormState extends State<SignUpForm> {
               ),
               validator: MultiValidator(
                 [
-                  RequiredValidator(errorText: 'Please enter login'),
-                  MinLengthValidator(8,
-                      errorText: 'Login must be atlist 8 digit'),
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
+                  MinLengthValidator(8, errorText: SC.MIN_LENGHT_8_ERROR),
                 ],
               ).call,
             ),
@@ -115,12 +112,10 @@ class _AddAdFormState extends State<SignUpForm> {
               ),
               validator: MultiValidator(
                 [
-                  RequiredValidator(errorText: 'Please enter password'),
-                  MinLengthValidator(8,
-                      errorText: 'Password must be atlist 8 digit'),
-                  PatternValidator(r'(?=.*?[#!@$%^&*-])',
-                      errorText:
-                          'Password must be atlist one special character')
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
+                  MinLengthValidator(8, errorText: SC.MIN_LENGHT_8_ERROR),
+                  PatternValidator(SC.PASSWORD_PATTERN,
+                      errorText: SC.NO_SPEC_SIMBOLS_ERROR)
                 ],
               ).call,
             ),

@@ -13,6 +13,7 @@ import '../../bloc/image_bloc/image_bloc.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/chat_repository.dart';
 import '../../data/repository/user_repository.dart';
+import '../../widgets/mini_profile.dart';
 import '../../widgets/widgets.dart';
 
 class AdPage extends StatefulWidget {
@@ -93,7 +94,8 @@ class _AdPageState extends State<AdPage> {
                                     },
                                     onPageChanged: (pagePosition) {
                                       setState(() {
-                                        imageCount = pagePosition + 1;
+                                        imageCount = pagePosition +
+                                            ((state.images.isEmpty) ? 1 : 0);
                                       });
                                     },
                                   ),
@@ -141,48 +143,7 @@ class _AdPageState extends State<AdPage> {
                           Text(state.ad.created,
                               style: Theme.of(context).textTheme.bodyMedium),
                           Markup.dividerH10,
-                          Card(
-                            child: Container(
-                              padding: Markup.padding_all_8,
-                              width: double.infinity,
-                              child: InkWell(
-                                onTap: () {
-                                  context.push(
-                                      "${SC.USER_PAGE}/${state.ad.user.id}");
-                                },
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: Markup.padding_all_8,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(20),
-                                        child: Image.memory(
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.fitWidth,
-                                          Uint8List.fromList(state.ad.user.avatar),
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              state.ad.user.name,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium),
-                                          Text(state.ad.user.address,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodySmall),
-                                        ]),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                          MiniProfile(user: state.ad.user),
                           Markup.dividerH10,
                           Row(
                             mainAxisSize: MainAxisSize.max,

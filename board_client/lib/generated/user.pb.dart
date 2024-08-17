@@ -500,6 +500,8 @@ class User extends $pb.GeneratedMessage {
     $core.String? phone,
     $core.String? address,
     $core.List<$core.int>? avatar,
+    $core.int? ratingAll,
+    $core.int? ratingNum,
   }) {
     final $result = create();
     if (id != null) {
@@ -526,6 +528,12 @@ class User extends $pb.GeneratedMessage {
     if (avatar != null) {
       $result.avatar = avatar;
     }
+    if (ratingAll != null) {
+      $result.ratingAll = ratingAll;
+    }
+    if (ratingNum != null) {
+      $result.ratingNum = ratingNum;
+    }
     return $result;
   }
   User._() : super();
@@ -541,6 +549,8 @@ class User extends $pb.GeneratedMessage {
     ..aOS(6, _omitFieldNames ? '' : 'phone')
     ..aOS(7, _omitFieldNames ? '' : 'address')
     ..a<$core.List<$core.int>>(8, _omitFieldNames ? '' : 'avatar', $pb.PbFieldType.OY)
+    ..a<$core.int>(9, _omitFieldNames ? '' : 'ratingAll', $pb.PbFieldType.O3)
+    ..a<$core.int>(10, _omitFieldNames ? '' : 'ratingNum', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -636,6 +646,322 @@ class User extends $pb.GeneratedMessage {
   $core.bool hasAvatar() => $_has(7);
   @$pb.TagNumber(8)
   void clearAvatar() => clearField(8);
+
+  @$pb.TagNumber(9)
+  $core.int get ratingAll => $_getIZ(8);
+  @$pb.TagNumber(9)
+  set ratingAll($core.int v) { $_setSignedInt32(8, v); }
+  @$pb.TagNumber(9)
+  $core.bool hasRatingAll() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearRatingAll() => clearField(9);
+
+  @$pb.TagNumber(10)
+  $core.int get ratingNum => $_getIZ(9);
+  @$pb.TagNumber(10)
+  set ratingNum($core.int v) { $_setSignedInt32(9, v); }
+  @$pb.TagNumber(10)
+  $core.bool hasRatingNum() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearRatingNum() => clearField(10);
+}
+
+class Comment extends $pb.GeneratedMessage {
+  factory Comment({
+    $fixnum.Int64? id,
+    $core.int? rating,
+    $core.String? text,
+    User? convicted,
+    User? owner,
+    $core.String? created,
+  }) {
+    final $result = create();
+    if (id != null) {
+      $result.id = id;
+    }
+    if (rating != null) {
+      $result.rating = rating;
+    }
+    if (text != null) {
+      $result.text = text;
+    }
+    if (convicted != null) {
+      $result.convicted = convicted;
+    }
+    if (owner != null) {
+      $result.owner = owner;
+    }
+    if (created != null) {
+      $result.created = created;
+    }
+    return $result;
+  }
+  Comment._() : super();
+  factory Comment.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Comment.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Comment', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'rating', $pb.PbFieldType.O3)
+    ..aOS(3, _omitFieldNames ? '' : 'text')
+    ..aOM<User>(4, _omitFieldNames ? '' : 'convicted', subBuilder: User.create)
+    ..aOM<User>(5, _omitFieldNames ? '' : 'owner', subBuilder: User.create)
+    ..aOS(6, _omitFieldNames ? '' : 'created')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Comment clone() => Comment()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Comment copyWith(void Function(Comment) updates) => super.copyWith((message) => updates(message as Comment)) as Comment;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Comment create() => Comment._();
+  Comment createEmptyInstance() => create();
+  static $pb.PbList<Comment> createRepeated() => $pb.PbList<Comment>();
+  @$core.pragma('dart2js:noInline')
+  static Comment getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Comment>(create);
+  static Comment? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get rating => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set rating($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasRating() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRating() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get text => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set text($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasText() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearText() => clearField(3);
+
+  @$pb.TagNumber(4)
+  User get convicted => $_getN(3);
+  @$pb.TagNumber(4)
+  set convicted(User v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasConvicted() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearConvicted() => clearField(4);
+  @$pb.TagNumber(4)
+  User ensureConvicted() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  User get owner => $_getN(4);
+  @$pb.TagNumber(5)
+  set owner(User v) { setField(5, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasOwner() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearOwner() => clearField(5);
+  @$pb.TagNumber(5)
+  User ensureOwner() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  $core.String get created => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set created($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasCreated() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearCreated() => clearField(6);
+}
+
+class CommentProto extends $pb.GeneratedMessage {
+  factory CommentProto({
+    Comment? comment,
+    $core.String? token,
+  }) {
+    final $result = create();
+    if (comment != null) {
+      $result.comment = comment;
+    }
+    if (token != null) {
+      $result.token = token;
+    }
+    return $result;
+  }
+  CommentProto._() : super();
+  factory CommentProto.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CommentProto.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CommentProto', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aOM<Comment>(1, _omitFieldNames ? '' : 'comment', subBuilder: Comment.create)
+    ..aOS(2, _omitFieldNames ? '' : 'token')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CommentProto clone() => CommentProto()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CommentProto copyWith(void Function(CommentProto) updates) => super.copyWith((message) => updates(message as CommentProto)) as CommentProto;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CommentProto create() => CommentProto._();
+  CommentProto createEmptyInstance() => create();
+  static $pb.PbList<CommentProto> createRepeated() => $pb.PbList<CommentProto>();
+  @$core.pragma('dart2js:noInline')
+  static CommentProto getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CommentProto>(create);
+  static CommentProto? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Comment get comment => $_getN(0);
+  @$pb.TagNumber(1)
+  set comment(Comment v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasComment() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearComment() => clearField(1);
+  @$pb.TagNumber(1)
+  Comment ensureComment() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.String get token => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set token($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasToken() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearToken() => clearField(2);
+}
+
+class CommentsResponse extends $pb.GeneratedMessage {
+  factory CommentsResponse({
+    $core.Iterable<Comment>? comments,
+  }) {
+    final $result = create();
+    if (comments != null) {
+      $result.comments.addAll(comments);
+    }
+    return $result;
+  }
+  CommentsResponse._() : super();
+  factory CommentsResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CommentsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CommentsResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..pc<Comment>(1, _omitFieldNames ? '' : 'comments', $pb.PbFieldType.PM, subBuilder: Comment.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CommentsResponse clone() => CommentsResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CommentsResponse copyWith(void Function(CommentsResponse) updates) => super.copyWith((message) => updates(message as CommentsResponse)) as CommentsResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CommentsResponse create() => CommentsResponse._();
+  CommentsResponse createEmptyInstance() => create();
+  static $pb.PbList<CommentsResponse> createRepeated() => $pb.PbList<CommentsResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CommentsResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CommentsResponse>(create);
+  static CommentsResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<Comment> get comments => $_getList(0);
+}
+
+class IdAndJwt extends $pb.GeneratedMessage {
+  factory IdAndJwt({
+    $fixnum.Int64? id,
+    $core.String? token,
+  }) {
+    final $result = create();
+    if (id != null) {
+      $result.id = id;
+    }
+    if (token != null) {
+      $result.token = token;
+    }
+    return $result;
+  }
+  IdAndJwt._() : super();
+  factory IdAndJwt.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory IdAndJwt.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'IdAndJwt', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'token')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  IdAndJwt clone() => IdAndJwt()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  IdAndJwt copyWith(void Function(IdAndJwt) updates) => super.copyWith((message) => updates(message as IdAndJwt)) as IdAndJwt;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static IdAndJwt create() => IdAndJwt._();
+  IdAndJwt createEmptyInstance() => create();
+  static $pb.PbList<IdAndJwt> createRepeated() => $pb.PbList<IdAndJwt>();
+  @$core.pragma('dart2js:noInline')
+  static IdAndJwt getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<IdAndJwt>(create);
+  static IdAndJwt? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get id => $_getI64(0);
+  @$pb.TagNumber(1)
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get token => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set token($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasToken() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearToken() => clearField(2);
 }
 
 

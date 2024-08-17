@@ -5,9 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../values/values.dart';
 
 class AddAdPage extends StatefulWidget {
-  const AddAdPage({super.key, required this.token});
-
-  final String token;
+  const AddAdPage({super.key});
 
   @override
   State<AddAdPage> createState() => _AddAdPageState();

@@ -50,7 +50,6 @@ object FilterUtils {
                 "Дешевые" -> {query.orderBy(criteriaBuilder.asc(root.get<Ad>("created")))}
                 "По умолчанию" -> {}
                 "Популярные" -> {query.orderBy(criteriaBuilder.desc(root.get<Ad>("views")))}
-                "По рейтингу" -> {query.orderBy(criteriaBuilder.desc(root.get<Ad>("user").get<User>("name"))) }
                 else -> {}
             }
             criteriaBuilder.and(andPredicate, orPredicate)

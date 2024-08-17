@@ -31,7 +31,7 @@ class Const {
   static const String HOST = "77.246.159.112";
   static const int PORT = 9090;
 
-  static const List<String> query = ["Старые","Новые","Дорогие","Дешевые","По умолчанию","Популярные","По рейтингу"];
+  static const List<String> query = ["Старые","Новые","Дорогие","Дешевые","По умолчанию","Популярные"];
 }
 
 class Address {

@@ -45,6 +45,22 @@ class UserAPIClient extends $grpc.Client {
       '/board.UserAPI/DeleteUser',
       ($0.JwtProto value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
+  static final _$addComment = $grpc.ClientMethod<$0.CommentProto, $0.IsSuccess>(
+      '/board.UserAPI/AddComment',
+      ($0.CommentProto value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
+  static final _$deleteComment = $grpc.ClientMethod<$0.IdAndJwt, $0.IsSuccess>(
+      '/board.UserAPI/DeleteComment',
+      ($0.IdAndJwt value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.IsSuccess.fromBuffer(value));
+  static final _$getComments = $grpc.ClientMethod<$0.GetByUserIdRequest, $0.CommentsResponse>(
+      '/board.UserAPI/GetComments',
+      ($0.GetByUserIdRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.CommentsResponse.fromBuffer(value));
+  static final _$getUserComments = $grpc.ClientMethod<$0.IdAndJwt, $0.CommentsResponse>(
+      '/board.UserAPI/GetUserComments',
+      ($0.IdAndJwt value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.CommentsResponse.fromBuffer(value));
 
   UserAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -74,6 +90,22 @@ class UserAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.IsSuccess> deleteUser($0.JwtProto request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$deleteUser, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.IsSuccess> addComment($0.CommentProto request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$addComment, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.IsSuccess> deleteComment($0.IdAndJwt request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$deleteComment, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CommentsResponse> getComments($0.GetByUserIdRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getComments, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CommentsResponse> getUserComments($0.IdAndJwt request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getUserComments, request, options: options);
   }
 }
 
@@ -124,6 +156,34 @@ abstract class UserAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.JwtProto.fromBuffer(value),
         ($0.IsSuccess value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.CommentProto, $0.IsSuccess>(
+        'AddComment',
+        addComment_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.CommentProto.fromBuffer(value),
+        ($0.IsSuccess value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.IdAndJwt, $0.IsSuccess>(
+        'DeleteComment',
+        deleteComment_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.IdAndJwt.fromBuffer(value),
+        ($0.IsSuccess value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.GetByUserIdRequest, $0.CommentsResponse>(
+        'GetComments',
+        getComments_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.GetByUserIdRequest.fromBuffer(value),
+        ($0.CommentsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.IdAndJwt, $0.CommentsResponse>(
+        'GetUserComments',
+        getUserComments_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.IdAndJwt.fromBuffer(value),
+        ($0.CommentsResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.IsSuccess> getSignUp_Pre($grpc.ServiceCall call, $async.Future<$0.SignupRequest> request) async {
@@ -150,10 +210,30 @@ abstract class UserAPIServiceBase extends $grpc.Service {
     return deleteUser(call, await request);
   }
 
+  $async.Future<$0.IsSuccess> addComment_Pre($grpc.ServiceCall call, $async.Future<$0.CommentProto> request) async {
+    return addComment(call, await request);
+  }
+
+  $async.Future<$0.IsSuccess> deleteComment_Pre($grpc.ServiceCall call, $async.Future<$0.IdAndJwt> request) async {
+    return deleteComment(call, await request);
+  }
+
+  $async.Future<$0.CommentsResponse> getComments_Pre($grpc.ServiceCall call, $async.Future<$0.GetByUserIdRequest> request) async {
+    return getComments(call, await request);
+  }
+
+  $async.Future<$0.CommentsResponse> getUserComments_Pre($grpc.ServiceCall call, $async.Future<$0.IdAndJwt> request) async {
+    return getUserComments(call, await request);
+  }
+
   $async.Future<$0.IsSuccess> getSignUp($grpc.ServiceCall call, $0.SignupRequest request);
   $async.Future<$0.LoginResponse> getLogin($grpc.ServiceCall call, $0.LoginRequest request);
   $async.Future<$0.UserResponse> getUserData($grpc.ServiceCall call, $0.JwtProto request);
   $async.Future<$0.UserResponse> getUserById($grpc.ServiceCall call, $0.GetByUserIdRequest request);
   $async.Future<$0.IsSuccess> changeUserData($grpc.ServiceCall call, $0.SetUser request);
   $async.Future<$0.IsSuccess> deleteUser($grpc.ServiceCall call, $0.JwtProto request);
+  $async.Future<$0.IsSuccess> addComment($grpc.ServiceCall call, $0.CommentProto request);
+  $async.Future<$0.IsSuccess> deleteComment($grpc.ServiceCall call, $0.IdAndJwt request);
+  $async.Future<$0.CommentsResponse> getComments($grpc.ServiceCall call, $0.GetByUserIdRequest request);
+  $async.Future<$0.CommentsResponse> getUserComments($grpc.ServiceCall call, $0.IdAndJwt request);
 }
