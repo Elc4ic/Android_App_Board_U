@@ -77,9 +77,9 @@ class _AdCardState extends State<AdCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                widget.ad.title.length < 30
+                                widget.ad.title.length < 26
                                     ? widget.ad.title
-                                    : "${widget.ad.title.substring(0, 30)}...",
+                                    : "${widget.ad.title.substring(0, 24)}...",
                                 style: Theme.of(context).textTheme.bodyMedium),
                             Text("${widget.ad.price} ${SC.RUBLES}",
                                 style: Theme.of(context).textTheme.bodyMedium),

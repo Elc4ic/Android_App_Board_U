@@ -16,6 +16,7 @@ class Markup {
   static const EdgeInsets padding_all_4 = EdgeInsets.all(4);
   static const EdgeInsets padding_all_2 = EdgeInsets.all(2);
   static const EdgeInsets padding_t_l_8 = EdgeInsets.only(left: 8, top: 8);
+  static const EdgeInsets padding_h_16_v_4 = EdgeInsets.symmetric(vertical: 4,horizontal: 16);
   static const EdgeInsets padding_h_8 = EdgeInsets.symmetric(horizontal: 8);
   static const EdgeInsets padding_all_16 = EdgeInsets.all(16);
 
@@ -31,5 +32,20 @@ class Markup {
 
   static double validWidth(double width) {
     return width > 1700 ? 1700 : width;
+  }
+
+  static String capitalize(String str) {
+    return "${str[0].toUpperCase()}${str.substring(1).toLowerCase()}";
+  }
+
+  static String dateNow() {
+    DateTime now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      now.hour,
+      now.minute
+    ).toString().replaceAll(RegExp(r'\.0+'), '').replaceAll(RegExp(r'\:0+'), '');
   }
 }

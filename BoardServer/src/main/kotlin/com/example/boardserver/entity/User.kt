@@ -20,6 +20,6 @@ class User(
     @JdbcType(value = VarbinaryJdbcType::class)
     @Column(columnDefinition = "bytea")
     val avatar: ByteArray,
-    val ratingAll: Int = 0,
-    val ratingNum: Int = 0
+    var ratingAll: Int = 0,
+    var ratingNum: Int = 0
 )

@@ -86,7 +86,9 @@ class _RowCardState extends State<RowCard> {
                       children: [
                         Text("${widget.ad.price} P",
                             style: Theme.of(context).textTheme.bodyMedium),
-                        Text(widget.ad.title,
+                        Text( (widget.ad.title.length > 21)
+                            ? "${widget.ad.title.substring(0, 20)}..."
+                            : widget.ad.title,
                             style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     )

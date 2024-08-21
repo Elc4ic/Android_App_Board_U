@@ -22,13 +22,15 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final user = userRepository.getUser();
+    int rating = user?.ratingAll ?? 0;
+    int n = user?.ratingNum ?? 0;
     return Scaffold(
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 260,
+                height: 280,
                 child: Padding(
                   padding: Markup.padding_all_8,
                   child: Column(
@@ -41,34 +43,35 @@ class _SettingsPageState extends State<SettingsPage> {
                             width: 100,
                             height: 100,
                             fit: BoxFit.fitWidth,
-                            Uint8List.fromList(user!.avatar),
+                            Uint8List.fromList(
+                                user != null ? user.avatar : [255]),
                           ),
                         ),
                       ),
                       TextButton(
                         onPressed: () {
-                          context.push("${SC.COMMENT_PAGE}/${user.id}");
+                          if (user != null) {
+                            context.push("${SC.COMMENT_PAGE}/${user.id}");
+                          }
                         },
-                        child: RatingBar.builder(
-                          initialRating: user.ratingAll / user.ratingNum,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemPadding:
-                              const EdgeInsets.symmetric(horizontal: 4.0),
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          onRatingUpdate: (double value) {},
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("${rating / n}",
+                                style: Theme.of(context).textTheme.titleMedium),
+                            const Icon(
+                              size: 30,
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                          ],
                         ),
                       ),
-                      Text(user.name,
+                      Text(user?.name ?? "-",
                           style: Theme.of(context).textTheme.bodyLarge),
-                      Text(user.address,
+                      Text(user?.address ?? "-",
                           style: Theme.of(context).textTheme.bodyMedium),
-                      Text(user.phone,
+                      Text(user?.phone ?? "-",
                           style: Theme.of(context).textTheme.bodyMedium),
                       Markup.dividerH5,
                       const Divider(height: 3),

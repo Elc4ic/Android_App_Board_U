@@ -65,7 +65,7 @@ class _MessagePageState extends State<MessagePage> {
     final req = SendMessageRequest(
         message: message,
         receiver: chat?.target.id,
-        data: DateTime.now().toString(),
+        data: Markup.dateNow(),
         chatId: fnum.Int64(widget.chatId));
     streamController.sink.add(req);
   }
@@ -94,7 +94,7 @@ class _MessagePageState extends State<MessagePage> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Failed to get messages: $error'),
+          content: Text('Ошибка: $error'),
         ),
       );
     } finally {
@@ -126,7 +126,7 @@ class _MessagePageState extends State<MessagePage> {
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(
-            "${chat?.target.username.replaceRange(0, 1, chat!.target.username[0].toUpperCase())}'s"),
+            "${chat?.target.username}"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -155,7 +155,7 @@ class _MessagePageState extends State<MessagePage> {
                         )
                       : const Center(
                           child: Text(
-                              "No message found,start conversion with 'hi' "),
+                              "Начните с приветствия"),
                         ),
           Container(
             padding: Markup.padding_all_8,
@@ -176,7 +176,7 @@ class _MessagePageState extends State<MessagePage> {
                         _sendMessage();
                       },
                       icon: const Icon(Icons.send)),
-                  hintText: 'Писать сюда нельзя (сломается)'),
+                  hintText: 'Сообщение'),
               onChanged: (value) {
                 if (value.isNotEmpty) {}
               },

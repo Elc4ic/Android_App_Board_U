@@ -18,29 +18,28 @@ class CommentForm extends StatefulWidget {
 }
 
 class _CommentFormState extends State<CommentForm> {
+  final userRepository = GetIt.I<UserRepository>();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _textController = TextEditingController();
+  double rating = 0;
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState?.validate() ?? false || rating != 0) {
+      Future.delayed(const Duration(seconds: 1), () async {
+        await userRepository.addComment(Comment(
+          text: _textController.text,
+          rating: rating.toInt(),
+          convicted: widget.user,
+          owner: userRepository.getUser(),
+          created: Markup.dateNow(),
+        ), userRepository.getToken());
+      });
+      context.pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final userRepository = GetIt.I<UserRepository>();
-
-    final _formKey = GlobalKey<FormState>();
-    double rating = 0;
-    final TextEditingController _textController = TextEditingController();
-
-    Future<void> _submitForm() async {
-      if (_formKey.currentState?.validate() ?? false || rating != 0) {
-        Future.delayed(const Duration(seconds: 1), () async {
-          await userRepository.addComment(Comment(
-            text: _textController.text,
-            rating: rating.toInt(),
-            convicted: widget.user,
-            owner: userRepository.getUser(),
-            created: DateTime.now().toString(),
-          ), userRepository.getToken());
-        });
-        context.pop();
-      }
-    }
-
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(

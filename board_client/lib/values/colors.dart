@@ -19,6 +19,7 @@ class MyColorConst {
   static const Color background = Color(0xffededed);
   static const Color text = Color(0xff161c20);
   static const Color card = Color(0xff92b0c4);
+  static const Color error = Color(0xfff31d59);
 }
 /*8aa3b3*/
 ColorScheme dark = const ColorScheme(
@@ -27,7 +28,7 @@ ColorScheme dark = const ColorScheme(
     onPrimary: MyColorConst.text,
     secondary: MyColorConst.card,
     onSecondary: MyColorConst.text,
-    error: MyColorConst.main,
-    onError: MyColorConst.main,
-    surface: MyColorConst.card,
+    error: MyColorConst.error,
+    onError: MyColorConst.text,
+    surface: MyColorConst.background,
     onSurface: MyColorConst.text);

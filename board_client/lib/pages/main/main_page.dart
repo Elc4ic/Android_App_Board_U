@@ -249,8 +249,8 @@ Future<void> filterDialog(
       backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
-        width: 300,
-        height: 400,
+        width: 320,
+        height: 500,
         child: Column(
           children: [
             Text("Цена", style: Theme.of(context).textTheme.titleMedium),
@@ -293,6 +293,8 @@ Future<void> filterDialog(
                 labelText: "адрес",
               ),
             ),
+            Markup.dividerH10,
+            Text("Категория", style: Theme.of(context).textTheme.titleMedium),
             DropdownButtonFormField(
               items: categories?.map((Category category) {
                 return DropdownMenuItem(
@@ -307,6 +309,8 @@ Future<void> filterDialog(
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
             ),
+            Markup.dividerH10,
+            Text("Сортировка", style: Theme.of(context).textTheme.titleMedium),
             DropdownButtonFormField(
               items: query.map((String orderBy) {
                 return DropdownMenuItem(

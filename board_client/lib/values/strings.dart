@@ -56,6 +56,10 @@ class SC {
   static const String PHONE_PATTERN = r'(^[\+7]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)';
   static const String PASSWORD_PATTERN = r'(?=.*?[#!@$%^&*-])';
 
+  //ads
+  static const String ACTIVE = "Активно";
+  static const String UNACTIVE = "Не активно";
+
 
   //routes
   static const String MAIN_PAGE = "/home";

@@ -1,0 +1,12 @@
+INSERT INTO category (name, path) VALUES ('Техника', 'electronics');
+INSERT INTO category (name, path) VALUES ('Обувь', 'shoes');
+INSERT INTO category (name, path) VALUES ('Одежда', 'clothing');
+INSERT INTO category (name, path) VALUES ('Спорт', 'sports');
+INSERT INTO category (name, path) VALUES ('Продукты', 'food');
+INSERT INTO category (name, path) VALUES ('Учебные материалы', 'books');
+INSERT INTO category (name, path) VALUES ('Услуги', 'service');
+INSERT INTO category (name, path) VALUES ('Хобби', 'hobby');
+INSERT INTO category (name, path) VALUES ('Работа', 'work');
+INSERT INTO category (name, path) VALUES ('Запросы', 'orders');
+INSERT INTO category (name, path) VALUES ('Акксесуары', 'accessories');
+INSERT INTO category (name, path) VALUES ('Поездки', 'trips');

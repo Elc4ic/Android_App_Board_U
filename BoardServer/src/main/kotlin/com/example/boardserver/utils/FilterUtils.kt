@@ -47,7 +47,7 @@ object FilterUtils {
                 "Старые" -> {query.orderBy(criteriaBuilder.asc(root.get<Ad>("created"))) }
                 "Новые" -> {query.orderBy(criteriaBuilder.desc(root.get<Ad>("created")))}
                 "Дорогие" -> {query.orderBy(criteriaBuilder.desc(root.get<Ad>("price")))}
-                "Дешевые" -> {query.orderBy(criteriaBuilder.asc(root.get<Ad>("created")))}
+                "Дешевые" -> {query.orderBy(criteriaBuilder.asc(root.get<Ad>("price")))}
                 "По умолчанию" -> {}
                 "Популярные" -> {query.orderBy(criteriaBuilder.desc(root.get<Ad>("views")))}
                 else -> {}

@@ -96,19 +96,17 @@ class _ChatRowState extends State<ChatRow> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("05.06.2024  ${widget.chat.target.username}",
-                                style: Theme.of(context).textTheme.bodySmall),
+                            Text(widget.chat.target.username,
+                                style: Theme.of(context).textTheme.labelSmall),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Text(widget.chat.ad.title,
-                                style: Theme.of(context).textTheme.bodyMedium),
-                            Text("  ${widget.chat.ad.price}P",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ],
-                        ),
-                        Markup.dividerH10,
+                        Text(widget.chat.ad.title.length < 22
+                            ? widget.chat.ad.title
+                            : "${widget.chat.ad.title.substring(0, 21)}...",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text("${widget.chat.ad.price}P",
+                            style: Theme.of(context).textTheme.titleMedium),
+                        Markup.dividerH5,
                         Text("Последнее сообщение",
                             style: Theme.of(context).textTheme.bodySmall),
                       ],

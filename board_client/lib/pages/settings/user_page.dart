@@ -59,13 +59,13 @@ class _UserPageState extends State<UserPage> {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
                       child: SizedBox(
-                        height: 250,
+                        height: 255,
                         child: Padding(
                           padding: Markup.padding_all_8,
                           child: Column(
                             children: [
                               Padding(
-                                padding: Markup.padding_all_16,
+                                padding: Markup.padding_all_8,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(40),
                                   child: Image.memory(
@@ -76,21 +76,17 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                 ),
                               ),
-                              RatingBar.builder(
-                                initialRating:
-                                state.user.ratingAll / state.user.ratingNum,
-                                minRating: 1,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                                itemBuilder: (context, _) =>
-                                const Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                onRatingUpdate: (double value) {},
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text("${state.user.ratingAll / state.user.ratingNum}",
+                                      style: Theme.of(context).textTheme.titleMedium),
+                                  const Icon(
+                                    size: 30,
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                ],
                               ),
                               Text(state.user.name,
                                   style: Theme

@@ -19,8 +19,7 @@ class MiniProfile extends StatelessWidget {
         width: double.infinity,
         child: InkWell(
           onTap: () {
-            context.push(
-                "${SC.USER_PAGE}/${user.id}");
+            context.push("${SC.USER_PAGE}/${user.id}");
           },
           child: Row(
             children: [
@@ -37,22 +36,64 @@ class MiniProfile extends StatelessWidget {
                 ),
               ),
               Column(
-                  crossAxisAlignment:
-                  CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        user.name,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium),
-                    Text(user.address,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall),
-                  ]),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(user.name,
+                      style: Theme.of(context).textTheme.labelMedium),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("${user.ratingAll / user.ratingNum}",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      const Icon(
+                        size: 20,
+                        Icons.star,
+                        color: Colors.amber,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class MiniProfileButton extends StatelessWidget {
+  const MiniProfileButton({super.key, required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        context.push("${SC.USER_PAGE}/${user.id}");
+      },
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.memory(
+                width: 40,
+                height: 40,
+                fit: BoxFit.cover,
+                Uint8List.fromList(user.avatar),
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(user.name, style: Theme.of(context).textTheme.labelMedium),
+            ],
+          ),
+        ],
       ),
     );
   }

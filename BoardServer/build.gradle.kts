@@ -58,6 +58,8 @@ dependencies {
     implementation("net.devh:grpc-server-spring-boot-starter:${grpcServerVersion}")
     //annotation
     implementation("javax.annotation:javax.annotation-api:1.3.2")
+    //flyway
+    implementation("org.flywaydb:flyway-core")
     //jwt
     implementation("io.jsonwebtoken:jjwt:0.12.1")
     //database

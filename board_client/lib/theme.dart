@@ -6,23 +6,23 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
       colorScheme: dark,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.montserrat(fontSize: Markup.size_20),
-        bodyMedium: GoogleFonts.montserrat(fontSize: Markup.size_16),
+        bodyMedium: GoogleFonts.montserrat(fontSize: Markup.size_14),
         bodySmall: GoogleFonts.montserrat(fontSize: Markup.size_12),
 
-        titleLarge: GoogleFonts.montserrat(fontSize: Markup.size_24),
-        titleMedium: GoogleFonts.montserrat(fontSize: Markup.size_16),
-        titleSmall: GoogleFonts.montserrat(fontSize: Markup.size_14),
+        titleLarge: GoogleFonts.montserrat(fontWeight: FontWeight.w700,fontSize: Markup.size_24),
+        titleMedium: GoogleFonts.montserrat(fontWeight: FontWeight.w700,fontSize: Markup.size_14),
+        titleSmall: GoogleFonts.montserrat(fontWeight: FontWeight.w700,fontSize: Markup.size_12),
 
         labelLarge: GoogleFonts.montserrat(
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.bold,
           fontSize: Markup.size_24,
         ),
         labelMedium: GoogleFonts.montserrat(
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.bold,
           fontSize: Markup.size_16,
         ),
         labelSmall: GoogleFonts.montserrat(
-          fontWeight: FontWeight.w800,
+          fontWeight: FontWeight.bold,
           fontSize: Markup.size_12,
         ),
       ),

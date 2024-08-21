@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'package:board_client/pages/chats/widget/sent_message.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/chat.pb.dart';

@@ -41,12 +41,12 @@ class _AddAdFormState extends State<AddAdForm> {
       Future.delayed(const Duration(seconds: 1), () async {
         await adRepository.addAd(
           Ad(
-              title: _titleController.text,
+              title: Markup.capitalize(_titleController.text),
               price: fnum.Int64(int.parse(_priceController.text)),
-              description: _descController.text,
+              description: Markup.capitalize(_descController.text),
               user: userRepository.getUser(),
               category: category,
-              created: DateTime.now().toString()),
+              created: Markup.dateNow(),),
           images,
           userRepository.getToken(),
         );

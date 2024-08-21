@@ -110,11 +110,16 @@ class UserService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
+            val convicted = userRepository.findById(request.comment.convicted.id).get()
+            val owner = userRepository.findById(request.comment.owner.id).get()
+            convicted.ratingAll += request.comment.rating
+            convicted.ratingNum++
+            userRepository.save(convicted)
             commentRepository.save(
                 CommentUtils.fromCommentGrpc(
                     request.comment,
-                    UserUtils.fromUserGrpc(request.comment.owner),
-                    UserUtils.fromUserGrpc(request.comment.convicted)
+                    owner,
+                    convicted
                 )
             )
             responseObserver?.onNext(
