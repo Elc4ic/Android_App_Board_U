@@ -43,7 +43,7 @@ class MiniProfile extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("${user.ratingAll / user.ratingNum}",
+                      Text(Markup.countRating(user.ratingAll, user.ratingNum),
                           style: Theme.of(context).textTheme.bodyMedium),
                       const Icon(
                         size: 20,
@@ -94,6 +94,63 @@ class MiniProfileButton extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({super.key, required this.user});
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 280,
+      child: Padding(
+        padding: Markup.padding_all_8,
+        child: Column(
+          children: [
+            Padding(
+              padding: Markup.padding_all_16,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Image.memory(
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.fitWidth,
+                  Uint8List.fromList(user.avatar),
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                context.push("${SC.COMMENT_PAGE}/${user.id}");
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(Markup.countRating(user.ratingAll, user.ratingNum),
+                      style: Theme.of(context).textTheme.titleMedium),
+                  const Icon(
+                    size: 30,
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                ],
+              ),
+            ),
+            Text(user.name ?? "-",
+                style: Theme.of(context).textTheme.bodyLarge),
+            Text(user.address ?? "-",
+                style: Theme.of(context).textTheme.bodyMedium),
+            Text(user.phone ?? "-",
+                style: Theme.of(context).textTheme.bodyMedium),
+            Markup.dividerH5,
+            const Divider(height: 3),
+          ],
+        ),
       ),
     );
   }

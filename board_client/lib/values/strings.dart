@@ -31,6 +31,8 @@ class SC {
   //comment
   static const String COMMENT = "Прокомментировать";
   static const String ADD_COMMENT = "Добавить комментарий";
+  static const String EDIT_COMMENT = "Изменить комментарий";
+  static const String TITLE_COMMENT = "Комментарий";
 
 
   //navbar
@@ -51,14 +53,28 @@ class SC {
   static const String PHONE_ERROR = "Введите телефонный номер";
   static const String MIN_LENGHT_8_ERROR = "Минимальная длина 8 символов";
   static const String NO_SPEC_SIMBOLS_ERROR = "Нет 2 специальных символов (#!@\$%^&*-)";
+  static const String NOT_NUM_ERROR = "Введите целое положительное число";
 
   //patterns
   static const String PHONE_PATTERN = r'(^[\+7]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$)';
   static const String PASSWORD_PATTERN = r'(?=.*?[#!@$%^&*-])';
+  static const String NUM_PATTERN = r"(?<![-.])\b[0-9]+\b(?!\.[0-9])";
+
 
   //ads
   static const String ACTIVE = "Активно";
   static const String UNACTIVE = "Не активно";
+  static const String DELETE_AD = "Вы уверенны, что хотите удалить объявление?";
+
+  //address
+  static const String ADDRESS = "Адрес";
+  static const String ROOM = "Комната";
+
+  //chat
+  static const String CHAT = "Чат";
+  static const String WELCOME = "Начните с приветствия";
+  static const String MESSAGE = 'Сообщение';
+  static const String DELETE_MESSAGE = 'Удалить сообщение?';
 
 
   //routes

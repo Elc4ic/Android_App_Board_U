@@ -28,9 +28,11 @@ abstract class UserRepository {
 
   Future<bool> addComment(Comment comment, String? token);
 
+  Future<bool> editComment(Comment comment,int rating_prev, String? token);
+
   Future<bool> deleteComment(Int64 id, String? token);
 
   Future<List<Comment>> getComments(Int64 id);
 
-  Future<List<Comment>> getUserComments(Int64 id, String? token);
+  Future<List<Comment>> getUserComments(String? token);
 }

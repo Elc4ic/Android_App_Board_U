@@ -35,13 +35,8 @@ class _ChatRowState extends State<ChatRow> {
   );
 
   @override
-  void initState() {
-    _imageBloc.add(LoadImageList(widget.chat.ad.id, true, widget.token));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _imageBloc.add(LoadImageList(widget.chat.ad.id, true));
     return SizedBox(
       height: 120,
       child: Card(

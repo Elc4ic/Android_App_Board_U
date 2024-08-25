@@ -163,6 +163,22 @@ final $typed_data.Uint8List commentDescriptor = $convert.base64Decode(
     'ZBIhCgVvd25lchgFIAEoCzILLmJvYXJkLlVzZXJSBW93bmVyEhgKB2NyZWF0ZWQYBiABKAlSB2'
     'NyZWF0ZWQ=');
 
+@$core.Deprecated('Use editCommentRequestDescriptor instead')
+const EditCommentRequest$json = {
+  '1': 'EditCommentRequest',
+  '2': [
+    {'1': 'comment', '3': 1, '4': 1, '5': 11, '6': '.board.Comment', '10': 'comment'},
+    {'1': 'rating_prev', '3': 2, '4': 1, '5': 5, '10': 'ratingPrev'},
+    {'1': 'token', '3': 3, '4': 1, '5': 9, '10': 'token'},
+  ],
+};
+
+/// Descriptor for `EditCommentRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List editCommentRequestDescriptor = $convert.base64Decode(
+    'ChJFZGl0Q29tbWVudFJlcXVlc3QSKAoHY29tbWVudBgBIAEoCzIOLmJvYXJkLkNvbW1lbnRSB2'
+    'NvbW1lbnQSHwoLcmF0aW5nX3ByZXYYAiABKAVSCnJhdGluZ1ByZXYSFAoFdG9rZW4YAyABKAlS'
+    'BXRva2Vu');
+
 @$core.Deprecated('Use commentProtoDescriptor instead')
 const CommentProto$json = {
   '1': 'CommentProto',

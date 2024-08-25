@@ -25,12 +25,10 @@ class LoadComments extends UserEvent {
 
 class LoadUserComments extends UserEvent {
   LoadUserComments(
-    this.userId,
     this.token, {
     this.completer,
   });
 
-  final Int64 userId;
   final String? token;
   final Completer? completer;
 }

@@ -1,4 +1,4 @@
-import 'package:board_client/pages/settings/widget/comment_row.dart';
+import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -6,11 +6,11 @@ import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../bloc/user_bloc/user_bloc.dart';
-import '../../data/repository/user_repository.dart';
-import '../../generated/user.pb.dart';
-import '../../values/values.dart';
-import '../../widgets/widgets.dart';
+import '../../../bloc/user_bloc/user_bloc.dart';
+import '../../../data/repository/user_repository.dart';
+import '../../../generated/user.pb.dart';
+import '../../../values/values.dart';
+import '../../../widgets/widgets.dart';
 
 class CommentPage extends StatefulWidget {
   const CommentPage({super.key, required this.userId});
@@ -65,13 +65,13 @@ class _CommentPageState extends State<CommentPage> {
                   }
                   return ListView.builder(
                     padding: Markup.padding_all_4,
-                    itemCount: state.comments.length,
+                    itemCount: state.comments.length+1,
                     itemBuilder: (BuildContext context, int index) {
-                      /*if (index == 0) {
+                      if (index == 0) {
                         return firstInfo(state.user);
-                      } else {*/
-                        return CommentRow(comment: state.comments[index]);
-                      /*}*/
+                      } else {
+                        return CommentRow(comment: state.comments[index-1],isMine: false,userBloc: _commentBloc);
+                      }
                     },
                   );
                 }
@@ -89,21 +89,27 @@ class _CommentPageState extends State<CommentPage> {
           ),
         ),
       ),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          context.push(SC.ADD_COMMENT_PAGE);
-        },
-        child:
-            Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
+      bottomNavigationBar: Padding(
+        padding: Markup.padding_all_4,
+        child: ElevatedButton(
+          onPressed: () {
+            context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
+          },
+          child:
+              Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
+        ),
       ),
     );
   }
 
   Widget firstInfo(User user) {
     return Container(
-      height: 300,
-      child: Column(
+      height: 80,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Text(Markup.countRating(user.ratingAll, user.ratingNum),
+              style: Theme.of(context).textTheme.titleLarge),
           RatingBar.builder(
             initialRating: user.ratingAll / user.ratingNum,
             minRating: 1,
@@ -118,11 +124,10 @@ class _CommentPageState extends State<CommentPage> {
             onRatingUpdate: (double value) {},
             ignoreGestures: true,
           ),
-          Text("${user.ratingAll}/${user.ratingAll}",
-              style: Theme.of(context).textTheme.titleLarge),
-          Markup.dividerH10,
         ],
       ),
     );
   }
 }
+
+

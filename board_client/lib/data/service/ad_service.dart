@@ -94,9 +94,9 @@ class AdService implements AdRepository {
 
   @override
   Future<List<List<int>>> loadImages(
-      fnum.Int64 id, String? token, bool preview) async {
+      fnum.Int64 id, bool preview) async {
     final res = await _client.loadImage(
-        GetByIdWithBoolRequest(id: id, token: token, value: preview));
+        GetByIdWithBoolRequest(id: id, token: "dd", value: preview));
     final resList = <List<int>>[];
     for (final image in res.data) {
       resList.add(image.chunk);

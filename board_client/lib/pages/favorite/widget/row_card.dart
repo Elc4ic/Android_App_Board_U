@@ -30,13 +30,8 @@ class _RowCardState extends State<RowCard> {
   );
 
   @override
-  void initState() {
-    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    _imageBloc.add(LoadImageList(widget.ad.id, true));
     return SizedBox(
       height: 120,
       child: Card(

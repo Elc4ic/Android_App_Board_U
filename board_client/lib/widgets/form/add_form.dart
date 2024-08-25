@@ -1,7 +1,4 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:fixnum/fixnum.dart' as fnum;
+import 'package:fixnum/fixnum.dart';
 import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +13,9 @@ import '../../data/repository/category_repository.dart';
 import '../../data/repository/user_repository.dart';
 
 class AddAdForm extends StatefulWidget {
-  const AddAdForm({super.key, required this.result});
+  const AddAdForm({super.key, required this.result, this.ad});
 
+  final Ad? ad;
   final List<XFile> result;
 
   @override
@@ -33,6 +31,7 @@ class _AddAdFormState extends State<AddAdForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+
   Category? category;
 
   Future<void> _submitForm() async {
@@ -41,12 +40,14 @@ class _AddAdFormState extends State<AddAdForm> {
       Future.delayed(const Duration(seconds: 1), () async {
         await adRepository.addAd(
           Ad(
-              title: Markup.capitalize(_titleController.text),
-              price: fnum.Int64(int.parse(_priceController.text)),
-              description: Markup.capitalize(_descController.text),
-              user: userRepository.getUser(),
-              category: category,
-              created: Markup.dateNow(),),
+            id: widget.ad?.id,
+            title: Markup.capitalize(_titleController.text),
+            price: Int64(int.parse(_priceController.text)),
+            description: Markup.capitalize(_descController.text),
+            user: userRepository.getUser(),
+            category: category,
+            created: widget.ad == null ? Markup.dateNow() : widget.ad?.created,
+          ),
           images,
           userRepository.getToken(),
         );
@@ -57,6 +58,10 @@ class _AddAdFormState extends State<AddAdForm> {
 
   @override
   Widget build(BuildContext context) {
+    _titleController.text = widget.ad?.title ?? "";
+    _priceController.text = widget.ad?.price.toString() ?? "";
+    _descController.text = widget.ad?.description ?? "";
+    category = widget.ad?.category;
     List<Category>? categories = categoryRepository.getCategories();
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -71,8 +76,7 @@ class _AddAdFormState extends State<AddAdForm> {
               decoration: const InputDecoration(
                 labelText: SC.TITLE,
               ),
-              validator:
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
+              validator: RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
             TextFormField(
@@ -81,8 +85,12 @@ class _AddAdFormState extends State<AddAdForm> {
               decoration: const InputDecoration(
                 labelText: SC.PRICE,
               ),
-              validator:
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
+              validator: MultiValidator(
+                [
+                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
+                  PatternValidator(SC.NUM_PATTERN, errorText: SC.NOT_NUM_ERROR),
+                ],
+              ).call,
             ),
             Markup.dividerH10,
             TextFormField(
@@ -106,13 +114,14 @@ class _AddAdFormState extends State<AddAdForm> {
               },
               value: category,
               decoration: const InputDecoration(
-                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)
+                contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
               ),
             ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(SC.PUBLISH_AD,
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

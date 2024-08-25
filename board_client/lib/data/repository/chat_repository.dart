@@ -12,4 +12,6 @@ abstract class ChatRepository {
   Future<Int64> startChat(Ad ad,String? token);
 
   Future<void> deleteChat(Int64 chatId,String? token);
+
+  Future<void> deleteMessage(Int64 messageId,String? token);
 }

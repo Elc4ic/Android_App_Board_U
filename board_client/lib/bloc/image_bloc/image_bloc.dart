@@ -25,7 +25,7 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
         emit(ImageLoading());
       }
       final images =
-          await adRepository.loadImages(event.adId, event.token, event.preview);
+          await adRepository.loadImages(event.adId, event.preview);
       emit(ImageLoaded(images: images));
     } catch (e) {
       emit(ImageLoadingFailure(exception: e));

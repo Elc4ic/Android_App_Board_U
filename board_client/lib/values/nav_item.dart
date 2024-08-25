@@ -9,19 +9,6 @@ class NavItems {
     SC.SETTINGS_PAGE,
   ];
 
-  static List<Widget> wrapFiles(List<XFile> files,BuildContext context) {
-    return List.generate(
-      files.length,
-      (index) => Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Markup.size_12),
-            border: Border.all(width: 2)),
-        padding: Markup.padding_all_4,
-        child: Text(files[index].name, style: Theme.of(context).textTheme.bodySmall),
-      ),
-    ).toList();
-  }
-
   static void resetAllBranches(BuildContext context) {
     Navigator.of(context).popUntil((route) => route.isFirst);
   }

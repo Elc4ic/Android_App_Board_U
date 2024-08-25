@@ -30,8 +30,14 @@ class _AdCardState extends State<AdCard> {
   );
 
   @override
+  void dispose() {
+    _imageBloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
+    _imageBloc.add(LoadImageList(widget.ad.id, true));
     return Card(
       elevation: 10,
       child: ClipRRect(
@@ -51,6 +57,7 @@ class _AdCardState extends State<AdCard> {
                     if (state is ImageLoaded) {
                       Uint8List bytes = Uint8List.fromList(state.images.first);
                       return Image.memory(
+                        gaplessPlayback: true,
                         width: Const.cellWidth,
                         fit: BoxFit.fitWidth,
                         bytes,

@@ -5,42 +5,52 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 
-class CommentForm extends StatefulWidget {
-  const CommentForm({required this.user, super.key});
+class EditCommentForm extends StatefulWidget {
+  const EditCommentForm(
+      {super.key, required this.comment, required this.commentBloc});
 
-  final User? user;
+  final Comment comment;
+  final UserBloc commentBloc;
+
   @override
-  State<CommentForm> createState() => _CommentFormState();
+  State<EditCommentForm> createState() => _EditCommentFormState();
 }
 
-class _CommentFormState extends State<CommentForm> {
+class _EditCommentFormState extends State<EditCommentForm> {
   final userRepository = GetIt.I<UserRepository>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textController = TextEditingController();
   double rating = 0;
+  double ratingPrev = 0;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false || rating != 0) {
       Future.delayed(const Duration(seconds: 1), () async {
-        await userRepository.addComment(
+        await userRepository.editComment(
             Comment(
               text: _textController.text,
               rating: rating.toInt(),
-              convicted: widget.user,
-              owner: userRepository.getUser(),
-              created: Markup.dateNow(),
+              convicted: widget.comment.convicted,
+              owner: widget.comment.owner,
+              created: widget.comment.created,
             ),
+            ratingPrev.toInt(),
             userRepository.getToken());
       });
+      widget.commentBloc.add(LoadUserComments(userRepository.getToken()));
       context.pop();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    _textController.text = widget.comment.text ?? '';
+    rating = double.parse(widget.comment.rating.toString());
+    ratingPrev = rating;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -73,12 +83,32 @@ class _CommentFormState extends State<CommentForm> {
               ),
               validator: RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
-            Markup.dividerH10,
-            ElevatedButton(
-              onPressed: _submitForm,
-              child: Text(SC.ADD_COMMENT,
-                  style: Theme.of(context).textTheme.bodyMedium),
-            ),
+            Spacer(),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await userRepository.deleteComment(
+                          widget.comment.id, userRepository.getToken());
+                      widget.commentBloc
+                          .add(LoadUserComments(userRepository.getToken()));
+                      context.pop();
+                    },
+                    child: Text(SC.DELETE,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ),
+                ),
+                Markup.dividerW10,
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Text(SC.EDIT,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),

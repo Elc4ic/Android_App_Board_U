@@ -1,8 +1,6 @@
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -12,6 +10,7 @@ import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
+import '../../widgets/mini_profile.dart';
 import '../../widgets/widgets.dart';
 import '../main/widget/ad_card.dart';
 
@@ -49,6 +48,7 @@ class _UserPageState extends State<UserPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
+            _userBloc.add(LoadUser(widget.id));
             _adListBloc.add(LoadUserAd(widget.id));
           },
           child: CustomScrollView(
@@ -58,59 +58,7 @@ class _UserPageState extends State<UserPage> {
                 builder: (context, state) {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 255,
-                        child: Padding(
-                          padding: Markup.padding_all_8,
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: Markup.padding_all_8,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(40),
-                                  child: Image.memory(
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.fitWidth,
-                                    Uint8List.fromList(state.user.avatar),
-                                  ),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("${state.user.ratingAll / state.user.ratingNum}",
-                                      style: Theme.of(context).textTheme.titleMedium),
-                                  const Icon(
-                                    size: 30,
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                ],
-                              ),
-                              Text(state.user.name,
-                                  style: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyLarge),
-                              Text(state.user.address,
-                                  style:
-                                  Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyMedium),
-                              Text(state.user.phone,
-                                  style:
-                                  Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyMedium),
-                              Markup.dividerH5,
-                              const Divider(height: 3),
-                            ],
-                          ),
-                        ),
-                      ),
+                      child: Profile(user: state.user),
                     );
                   }
                   if (state is UserLoadingFailure) {
@@ -118,7 +66,7 @@ class _UserPageState extends State<UserPage> {
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _adListBloc.add(LoadUserAd(widget.id));
+                          _userBloc.add(LoadUser(widget.id));
                         },
                       ),
                     );
@@ -137,10 +85,7 @@ class _UserPageState extends State<UserPage> {
                           height: 100,
                           child: Center(
                             child: Text(SC.SEARCH_NOTHING,
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodyMedium),
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
                         ),
                       );
@@ -150,10 +95,9 @@ class _UserPageState extends State<UserPage> {
                       width: widthNow,
                       items: List.generate(
                           state.adList.length,
-                              (index) =>
-                              AdCard(
-                                  ad: state.adList[index],
-                                  token: userRepository.getToken())).toList(),
+                          (index) => AdCard(
+                              ad: state.adList[index],
+                              token: userRepository.getToken())).toList(),
                     );
                   }
                   if (state is AdListLoadingFailure) {

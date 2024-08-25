@@ -33,6 +33,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   var userRepository = GetIt.I<UserRepository>();
+  final _scrollController = ScrollController();
   final _adListBloc = AdListBloc(
     GetIt.I<AdRepository>(),
     GetIt.I<UserRepository>(),
@@ -48,7 +49,20 @@ class _MainPageState extends State<MainPage> {
           priceMin, page, pageSize, true, commonCategory, commonQuery));
       _catListBloc.add(LoadCategories());
     });
-
+    _scrollController.addListener(() {
+      double maxScroll = _scrollController.position.maxScrollExtent;
+      double currentScroll = _scrollController.position.pixels;
+      double delta = 50.0;
+      if (maxScroll - currentScroll <= delta) {
+        setState(() {
+          page++;
+        });
+        Future.delayed(const Duration(milliseconds: 500), () {
+          _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
+              priceMin, page, pageSize, false, commonCategory, commonQuery));
+        });
+      }
+    });
     super.initState();
   }
 
@@ -61,14 +75,13 @@ class _MainPageState extends State<MainPage> {
         body: SelectionArea(
           child: RefreshIndicator(
             onRefresh: () async {
-              setState(() {
-                page = 0;
-              });
+              page = 0;
               _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
                   priceMin, page, pageSize, true, commonCategory, commonQuery));
               _catListBloc.add(LoadCategories());
             },
             child: CustomScrollView(
+              controller: _scrollController,
               slivers: [
                 SliverToBoxAdapter(
                   child: BlocBuilder<CategoryListBloc, CategoryListState>(
@@ -142,26 +155,6 @@ class _MainPageState extends State<MainPage> {
                         child: Center(child: CircularProgressIndicator()));
                   },
                 ),
-                SliverToBoxAdapter(
-                    child: ElevatedButton(
-                  child: Text("Загрузить",
-                      style: Theme.of(context).textTheme.bodySmall),
-                  onPressed: () {
-                    setState(() {
-                      page++;
-                    });
-                    _adListBloc.add(LoadAdList(
-                        commonSearch,
-                        commonAddress,
-                        priceMax,
-                        priceMin,
-                        page,
-                        pageSize,
-                        false,
-                        commonCategory,
-                        commonQuery));
-                  },
-                )),
               ],
             ),
           ),
@@ -177,6 +170,7 @@ List<Widget> generateCategory(
     categories.length,
     (index) => ElevatedButton(
         onPressed: () {
+          page = 0;
           commonCategory = categories[index];
           adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
               priceMin, page, pageSize, true, commonCategory, commonQuery));
@@ -203,6 +197,7 @@ PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
                 commonSearch = value;
               },
               onSubmitted: (String value) {
+                page = 0;
                 adListBloc.add(LoadAdList(
                     commonSearch,
                     commonAddress,
@@ -237,8 +232,8 @@ Future<void> filterDialog(
   final maxController = TextEditingController();
   final minController = TextEditingController();
   final addressController = TextEditingController();
-  maxController.text = priceMax == 0 ? "" : priceMax.toString();
   minController.text = priceMin == 0 ? "" : priceMin.toString();
+  maxController.text = priceMax == 0 ? "" : priceMax.toString();
   addressController.text = commonAddress;
   final categoryRepository = GetIt.I<CategoryRepository>();
   List<Category>? categories = categoryRepository.getCategories();
@@ -263,8 +258,8 @@ Future<void> filterDialog(
                     keyboardType: TextInputType.number,
                     validator: MultiValidator(
                       [
-                        PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",
-                            errorText: 'Введите целое положительное число'),
+                        PatternValidator(SC.NUM_PATTERN,
+                            errorText: SC.NOT_NUM_ERROR),
                       ],
                     ).call,
                   ),
@@ -276,8 +271,8 @@ Future<void> filterDialog(
                     keyboardType: TextInputType.number,
                     validator: MultiValidator(
                       [
-                        PatternValidator(r"(?<![-.])\b[0-9]+\b(?!\.[0-9])",
-                            errorText: 'Введите целое положительное число'),
+                        PatternValidator(SC.NUM_PATTERN,
+                            errorText: SC.NOT_NUM_ERROR),
                       ],
                     ).call,
                   ),
@@ -289,9 +284,6 @@ Future<void> filterDialog(
             TextFormField(
               controller: addressController,
               keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: "адрес",
-              ),
             ),
             Markup.dividerH10,
             Text("Категория", style: Theme.of(context).textTheme.titleMedium),
@@ -325,12 +317,13 @@ Future<void> filterDialog(
               decoration: const InputDecoration(
                   contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton(
                   onPressed: () {
+                    page = 0;
                     priceMax = 0;
                     priceMin = 0;
                     commonAddress = "";
@@ -352,6 +345,7 @@ Future<void> filterDialog(
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    page = 0;
                     if (maxController.text.isNotEmpty) {
                       priceMax = int.parse(maxController.text);
                     }

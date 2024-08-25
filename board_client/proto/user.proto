@@ -11,9 +11,10 @@ service UserAPI {
     rpc ChangeUserData (SetUser) returns (IsSuccess);
     rpc DeleteUser (JwtProto) returns (IsSuccess);
     rpc AddComment (CommentProto) returns (IsSuccess);
+    rpc EditComment (EditCommentRequest) returns (IsSuccess);
     rpc DeleteComment (IdAndJwt) returns (IsSuccess);
     rpc GetComments (GetByUserIdRequest) returns (CommentsResponse);
-    rpc GetUserComments (IdAndJwt) returns (CommentsResponse);
+    rpc GetUserComments (JwtProto) returns (CommentsResponse);
 }
 
 message IsSuccess {
@@ -74,6 +75,12 @@ message Comment {
     User convicted = 4;
     User owner = 5;
     string created = 6;
+}
+
+message EditCommentRequest {
+    Comment comment = 1;
+    int32 rating_prev = 2;
+    string token = 3;
 }
 
 message CommentProto {

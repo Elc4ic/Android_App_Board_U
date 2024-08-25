@@ -45,7 +45,7 @@ class _AdPageState extends State<AdPage> {
   @override
   void initState() {
     _adBloc.add(LoadAd(id: widget.idAd, token: token));
-    _imageBloc.add(LoadImageList(widget.idAd, false, token));
+    _imageBloc.add(LoadImageList(widget.idAd, false));
     super.initState();
   }
 
@@ -87,9 +87,15 @@ class _AdPageState extends State<AdPage> {
                                     itemCount: state.images.length,
                                     pageSnapping: true,
                                     itemBuilder: (context, pagePosition) {
-                                      return Image.memory(
-                                        Uint8List.fromList(
-                                            state.images[pagePosition]),
+                                      return InkWell(
+                                        onTap: () {
+                                          zoomDialog(state.images[pagePosition],
+                                              context);
+                                        },
+                                        child: Image.memory(
+                                          Uint8List.fromList(
+                                              state.images[pagePosition]),
+                                        ),
                                       );
                                     },
                                     onPageChanged: (pagePosition) {
@@ -117,7 +123,7 @@ class _AdPageState extends State<AdPage> {
                               exception: state.exception,
                               onPressed: () {
                                 _imageBloc.add(
-                                    LoadImageList(widget.idAd, false, token));
+                                    LoadImageList(widget.idAd, false));
                               },
                             );
                           }
@@ -195,4 +201,37 @@ class _AdPageState extends State<AdPage> {
       ),
     );
   }
+}
+
+Future<void> zoomDialog(List<int> image, BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    builder: (context) => Dialog.fullscreen(
+      backgroundColor: Colors.black,
+      child: Column(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white),
+                onPressed: () => context.pop(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: InteractiveViewer(
+              panEnabled: false,
+              minScale: 1,
+              maxScale: 4,
+              child: Image.memory(
+                Uint8List.fromList(image),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }

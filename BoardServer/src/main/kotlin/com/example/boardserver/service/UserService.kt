@@ -132,10 +132,17 @@ class UserService(
     }
 
     override fun getUserComments(
-        request: UserOuterClass.IdAndJwt?,
+        request: UserOuterClass.JwtProto?,
         responseObserver: StreamObserver<UserOuterClass.CommentsResponse>?
     ) {
-        super.getUserComments(request, responseObserver)
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            val comments = commentRepository.findByOwnerId(userId)
+            responseObserver?.onNext(CommentUtils.toRepeatedCommentGrpc(comments))
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun deleteComment(
@@ -146,6 +153,10 @@ class UserService(
         if (userId != null) {
             val comment = commentRepository.findById(request.id).get()
             if (userId == comment.owner.id) {
+                val user = userRepository.findById(comment.convicted.id).get()
+                user.ratingAll -= comment.rating
+                user.ratingNum--
+                userRepository.save(user)
                 commentRepository.delete(comment)
                 responseObserver?.onNext(
                     UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
@@ -167,6 +178,33 @@ class UserService(
     ) {
         val comments = commentRepository.findByConvictedId(request!!.id)
         responseObserver?.onNext(CommentUtils.toRepeatedCommentGrpc(comments))
+        responseObserver?.onCompleted()
+    }
+
+    override fun editComment(
+        request: UserOuterClass.EditCommentRequest?,
+        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+    ) {
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            if (userId == request.comment.owner.id) {
+                val convicted = userRepository.findById(request.comment.convicted.id).get()
+                val owner = userRepository.findById(request.comment.owner.id).get()
+                convicted.ratingAll += request.comment.rating
+                convicted.ratingAll -= request.ratingPrev
+                userRepository.save(convicted)
+                commentRepository.save(CommentUtils.fromCommentGrpc(request.comment, owner, convicted))
+                responseObserver?.onNext(
+                    UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+                )
+            } else {
+                responseObserver?.onError(
+                    Status.INVALID_ARGUMENT.withDescription("Вы не владеёте этим комментарием").asException()
+                )
+            }
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
         responseObserver?.onCompleted()
     }
 }

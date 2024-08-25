@@ -11,6 +11,7 @@ service ChatAPI {
     rpc GetChatsPreview (JwtProto) returns (RepeatedChatPreview);
     rpc SendMessage (stream SendMessageRequest) returns (stream Message) {};
     rpc GetAllMessage (GetAllMessagesRequest) returns (GetAllMessagesResponse) {};
+    rpc DeleteMessage (DeleteChatRequest) returns (Empty);
 }
 
 

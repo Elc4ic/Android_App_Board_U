@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
+import 'package:fixnum/fixnum.dart';
 
 import '../../data/repository/ad_repository.dart';
-import '../../data/repository/user_repository.dart';
 import '../../generated/ad.pb.dart';
 
 part 'ad_event.dart';

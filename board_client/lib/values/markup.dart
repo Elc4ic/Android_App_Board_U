@@ -12,15 +12,16 @@ class Markup {
   static const double size_64 = 64.0;
 
   //padding
+  static const EdgeInsets padding_all_16 = EdgeInsets.all(16);
   static const EdgeInsets padding_all_8 = EdgeInsets.all(8);
   static const EdgeInsets padding_all_4 = EdgeInsets.all(4);
   static const EdgeInsets padding_all_2 = EdgeInsets.all(2);
   static const EdgeInsets padding_t_l_8 = EdgeInsets.only(left: 8, top: 8);
-  static const EdgeInsets padding_h_16_v_4 = EdgeInsets.symmetric(vertical: 4,horizontal: 16);
+  static const EdgeInsets padding_h_16_v_4 =
+      EdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static const EdgeInsets padding_h_8 = EdgeInsets.symmetric(horizontal: 8);
-  static const EdgeInsets padding_all_16 = EdgeInsets.all(16);
 
-  //deviders
+  //dividers
   static const Widget dividerH5 = SizedBox(height: 5);
   static const Widget dividerH10 = SizedBox(height: 10);
   static const Widget dividerW5 = SizedBox(width: 5);
@@ -35,17 +36,19 @@ class Markup {
   }
 
   static String capitalize(String str) {
-    return "${str[0].toUpperCase()}${str.substring(1).toLowerCase()}";
+    return "${str[0].toUpperCase()}${str.substring(1)}";
   }
 
   static String dateNow() {
     DateTime now = DateTime.now();
-    return DateTime(
-      now.year,
-      now.month,
-      now.day,
-      now.hour,
-      now.minute
-    ).toString().replaceAll(RegExp(r'\.0+'), '').replaceAll(RegExp(r'\:0+'), '');
+    return DateTime(now.year, now.month, now.day, now.hour, now.minute)
+        .toString()
+        .substring(0, 16);
+  }
+
+  static String countRating(int? r, int? n) {
+    int rating = r ?? 0;
+    int num = n ?? 0;
+    return (rating/num).toStringAsFixed(2);
   }
 }

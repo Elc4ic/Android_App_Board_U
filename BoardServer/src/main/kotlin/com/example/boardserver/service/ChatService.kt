@@ -91,9 +91,7 @@ class ChatService(
                 chat = ChatUtils.createChatGrpc(request.ad, request.ad.user, user)
                 chatRepository.save(chat)
             }
-            chat = chatRepository
-                .findByOwnerIdAndReceiverIdAndAdId(user.id, request.ad.user.id, request.ad.id)
-                .get()
+            chat = chatRepository.findByOwnerIdAndReceiverIdAndAdId(request.ad.user.id, user.id, request.ad.id).get()
             responseObserver?.onNext(Chat.StartResponse.newBuilder().setChatId(chat.id).build())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -107,6 +105,20 @@ class ChatService(
         if (userId != null) {
             messageRepository.deleteAllByChatId(request.chatId)
             chatRepository.deleteById(request.chatId)
+            responseObserver?.onNext(AdOuterClass.Empty.getDefaultInstance())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
+    }
+
+    override fun deleteMessage(
+        request: Chat.DeleteChatRequest?,
+        responseObserver: StreamObserver<AdOuterClass.Empty>?
+    ) {
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            messageRepository.deleteById(request.chatId)
             responseObserver?.onNext(AdOuterClass.Empty.getDefaultInstance())
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())

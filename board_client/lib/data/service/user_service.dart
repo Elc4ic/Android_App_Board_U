@@ -118,6 +118,13 @@ class UserService implements UserRepository {
   }
 
   @override
+  Future<bool> editComment(Comment comment, int rating_prev, String? token) async {
+    final response = await _client.editComment(
+        EditCommentRequest(comment: comment, ratingPrev: rating_prev, token: token));
+    return response.login;
+  }
+
+  @override
   Future<bool> deleteComment(Int64 id, String? token) async {
     final response =
         await _client.deleteComment(IdAndJwt(id: id, token: token));
@@ -131,9 +138,9 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<List<Comment>> getUserComments(Int64 id, String? token) async {
+  Future<List<Comment>> getUserComments(String? token) async {
     final comments =
-        await _client.getUserComments(IdAndJwt(id: id, token: token));
+        await _client.getUserComments(JwtProto(token: token));
     return comments.comments;
   }
 }

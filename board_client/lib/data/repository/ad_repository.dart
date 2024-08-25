@@ -24,5 +24,5 @@ abstract class AdRepository {
 
   Future<RepeatedAdResponse> getByUserId(Int64 id);
 
-  Future<List<List<int>>> loadImages(Int64 id, String? token, bool preview);
+  Future<List<List<int>>> loadImages(Int64 id, bool preview);
 }

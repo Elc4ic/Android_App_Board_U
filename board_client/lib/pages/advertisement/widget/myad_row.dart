@@ -37,13 +37,8 @@ class _AdRowState extends State<AdRow> {
   );
 
   @override
-  void initState() {
-    imageBloc.add(LoadImageList(widget.ad.id, true, widget.token));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    imageBloc.add(LoadImageList(widget.ad.id, true));
     return SizedBox(
       height: 120,
       child: Card(
@@ -116,25 +111,27 @@ class _AdRowState extends State<AdRow> {
                   IconButton(
                     tooltip: SC.EDIT,
                     icon: const Icon(Icons.mode_edit),
-                    onPressed: () => {},
+                    onPressed: () {
+                      context.push("/my/change/${widget.ad.id}");
+                    },
                   ),
                   IconButton(
                     tooltip: SC.HIDE,
                     icon: const Icon(Icons.closed_caption_disabled_outlined),
                     onPressed: () => myDialog(context, () async {
                       await adRepository.muteAd(widget.ad.id, widget.token);
-                      context.pop();
                       widget.adListBloc.add(LoadMyAd());
-                    }, "Вы уверенны, что хотите скрыть объявление?"),
+                      context.pop();
+                    }, "Вы уверенны, что хотите ${widget.ad.isActive ? "скрыть" : "показать"} объявление?"),
                   ),
                   IconButton(
                     tooltip: SC.CLOSE,
                     icon: const Icon(Icons.close),
                     onPressed: () => myDialog(context, () async {
                       await adRepository.deleteAd(widget.ad.id, widget.token);
-                      context.pop();
                       widget.adListBloc.add(LoadMyAd());
-                    }, "Вы уверенны, что хотите удалить объявление?"),
+                      context.pop();
+                    }, SC.DELETE_AD),
                   ),
                 ],
               )

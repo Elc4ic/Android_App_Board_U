@@ -1,13 +1,15 @@
-import 'dart:typed_data';
-
+import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:fixnum/fixnum.dart';
 
+import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
+import '../../widgets/widgets.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -18,114 +20,107 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   final userRepository = GetIt.I<UserRepository>();
+  Int64? userId;
+  final _userBloc = UserBloc(
+    GetIt.I<UserRepository>(),
+  );
+
+  @override
+  void initState(){
+    userId = userRepository.getUser()!.id;
+    _userBloc.add(LoadUser(userId!));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final user = userRepository.getUser();
-    int rating = user?.ratingAll ?? 0;
-    int n = user?.ratingNum ?? 0;
     return Scaffold(
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 280,
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _userBloc.add(LoadUser(userId!));
+          },
+          child: CustomScrollView(
+            slivers: [
+              BlocBuilder<UserBloc, UserState>(
+                bloc: _userBloc,
+                builder: (context, state) {
+                  if (state is UserLoaded) {
+                    return SliverToBoxAdapter(
+                      child: Profile(user: state.user),
+                    );
+                  }
+                  if (state is UserLoadingFailure) {
+                    return SliverFillRemaining(
+                      child: TryAgainWidget(
+                        exception: state.exception,
+                        onPressed: () {
+                          _userBloc.add(LoadUser(userId!));
+                        },
+                      ),
+                    );
+                  }
+                  return const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()));
+                },
+              ),
+              SliverToBoxAdapter(
                 child: Padding(
-                  padding: Markup.padding_all_8,
+                  padding: Markup.padding_h_8,
                   child: Column(
                     children: [
-                      Padding(
-                        padding: Markup.padding_all_16,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(40),
-                          child: Image.memory(
-                            width: 100,
-                            height: 100,
-                            fit: BoxFit.fitWidth,
-                            Uint8List.fromList(
-                                user != null ? user.avatar : [255]),
-                          ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => changeDialog(context),
+                          child: Text("Изменить имя",
+                              style: Theme.of(context).textTheme.bodyMedium),
                         ),
                       ),
-                      TextButton(
-                        onPressed: () {
-                          if (user != null) {
-                            context.push("${SC.COMMENT_PAGE}/${user.id}");
-                          }
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("${rating / n}",
-                                style: Theme.of(context).textTheme.titleMedium),
-                            const Icon(
-                              size: 30,
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                          ],
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => avatarDialog(context),
+                          child: Text("Изменить аватар",
+                              style: Theme.of(context).textTheme.bodyMedium),
                         ),
                       ),
-                      Text(user?.name ?? "-",
-                          style: Theme.of(context).textTheme.bodyLarge),
-                      Text(user?.address ?? "-",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Text(user?.phone ?? "-",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                      Markup.dividerH5,
-                      const Divider(height: 3),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.push("/setaddress");
+                          },
+                          child: Text("Настроить адресс",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            context.push("/usercomments");
+                          },
+                          child: Text("Отправленные комментарии",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            userRepository.logout();
+                          },
+                          child: Text("Выйти из аккаунта",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: Markup.padding_h_8,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => changeDialog(context),
-                        child: Text("Изменить имя",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => avatarDialog(context),
-                        child: Text("Изменить аватар",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push("/setaddress");
-                        },
-                        child: Text("Настроить адресс",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          userRepository.logout();
-                        },
-                        child: Text("Выйти из аккаунта",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

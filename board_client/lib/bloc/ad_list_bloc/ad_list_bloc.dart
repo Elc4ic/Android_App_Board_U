@@ -46,7 +46,9 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       if (event.clear) {
         adList.clear();
       }
-      adList = adList + ads.data;
+      for (var ad in ads.data) {
+        adList.add(ad);
+      }
       emit(AdListLoaded(adList: adList));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));

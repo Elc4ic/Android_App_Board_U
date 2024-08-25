@@ -34,6 +34,10 @@ class _MyAdsPageState extends State<MyAdsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Мои объявления",
+            style: Theme.of(context).textTheme.labelLarge),
+      ),
       body: SelectionArea(
         child: SafeArea(
           child: RefreshIndicator(

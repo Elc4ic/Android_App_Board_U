@@ -790,6 +790,86 @@ class Comment extends $pb.GeneratedMessage {
   void clearCreated() => clearField(6);
 }
 
+class EditCommentRequest extends $pb.GeneratedMessage {
+  factory EditCommentRequest({
+    Comment? comment,
+    $core.int? ratingPrev,
+    $core.String? token,
+  }) {
+    final $result = create();
+    if (comment != null) {
+      $result.comment = comment;
+    }
+    if (ratingPrev != null) {
+      $result.ratingPrev = ratingPrev;
+    }
+    if (token != null) {
+      $result.token = token;
+    }
+    return $result;
+  }
+  EditCommentRequest._() : super();
+  factory EditCommentRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory EditCommentRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'EditCommentRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
+    ..aOM<Comment>(1, _omitFieldNames ? '' : 'comment', subBuilder: Comment.create)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'ratingPrev', $pb.PbFieldType.O3)
+    ..aOS(3, _omitFieldNames ? '' : 'token')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  EditCommentRequest clone() => EditCommentRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  EditCommentRequest copyWith(void Function(EditCommentRequest) updates) => super.copyWith((message) => updates(message as EditCommentRequest)) as EditCommentRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static EditCommentRequest create() => EditCommentRequest._();
+  EditCommentRequest createEmptyInstance() => create();
+  static $pb.PbList<EditCommentRequest> createRepeated() => $pb.PbList<EditCommentRequest>();
+  @$core.pragma('dart2js:noInline')
+  static EditCommentRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<EditCommentRequest>(create);
+  static EditCommentRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Comment get comment => $_getN(0);
+  @$pb.TagNumber(1)
+  set comment(Comment v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasComment() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearComment() => clearField(1);
+  @$pb.TagNumber(1)
+  Comment ensureComment() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.int get ratingPrev => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set ratingPrev($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasRatingPrev() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRatingPrev() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get token => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set token($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasToken() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearToken() => clearField(3);
+}
+
 class CommentProto extends $pb.GeneratedMessage {
   factory CommentProto({
     Comment? comment,

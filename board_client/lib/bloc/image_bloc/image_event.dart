@@ -6,13 +6,11 @@ abstract class ImageEvent {}
 class LoadImageList extends ImageEvent {
   LoadImageList(
     this.adId,
-    this.preview,
-    this.token, {
+    this.preview, {
     this.completer,
   });
 
   final Int64 adId;
   final bool preview;
-  final String? token;
   final Completer? completer;
 }

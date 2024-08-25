@@ -36,7 +36,7 @@ class _FavPageState extends State<FavPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Избранное",
-            style: Theme.of(context).textTheme.bodyLarge),
+            style: Theme.of(context).textTheme.labelLarge),
       ),
       body: SafeArea(
         child: RefreshIndicator(

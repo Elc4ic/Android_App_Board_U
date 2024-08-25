@@ -150,7 +150,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     controller: _blockController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: "Квартира",
+                      labelText: "Комната",
                       border: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.blue),
                         borderRadius: BorderRadius.all(
@@ -182,7 +182,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     var user = userRepository.getUser();
                     user?.address = (type == 3)
                         ? _addressController.text
-                        : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} кв.${_blockController.text}";
+                        : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} ком.${_blockController.text}";
                     await userRepository.changeUser(
                         user, userRepository.getToken());
                     context.go(SC.SETTINGS_PAGE);

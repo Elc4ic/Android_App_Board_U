@@ -43,6 +43,10 @@ class ChatAPIClient extends $grpc.Client {
       '/board.ChatAPI/GetAllMessage',
       ($2.GetAllMessagesRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $2.GetAllMessagesResponse.fromBuffer(value));
+  static final _$deleteMessage = $grpc.ClientMethod<$2.DeleteChatRequest, $1.Empty>(
+      '/board.ChatAPI/DeleteMessage',
+      ($2.DeleteChatRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $1.Empty.fromBuffer(value));
 
   ChatAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -68,6 +72,10 @@ class ChatAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$2.GetAllMessagesResponse> getAllMessage($2.GetAllMessagesRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getAllMessage, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$1.Empty> deleteMessage($2.DeleteChatRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$deleteMessage, request, options: options);
   }
 }
 
@@ -111,6 +119,13 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $2.GetAllMessagesRequest.fromBuffer(value),
         ($2.GetAllMessagesResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$2.DeleteChatRequest, $1.Empty>(
+        'DeleteMessage',
+        deleteMessage_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $2.DeleteChatRequest.fromBuffer(value),
+        ($1.Empty value) => value.writeToBuffer()));
   }
 
   $async.Future<$2.StartResponse> startChat_Pre($grpc.ServiceCall call, $async.Future<$2.StartRequest> request) async {
@@ -129,9 +144,14 @@ abstract class ChatAPIServiceBase extends $grpc.Service {
     return getAllMessage(call, await request);
   }
 
+  $async.Future<$1.Empty> deleteMessage_Pre($grpc.ServiceCall call, $async.Future<$2.DeleteChatRequest> request) async {
+    return deleteMessage(call, await request);
+  }
+
   $async.Future<$2.StartResponse> startChat($grpc.ServiceCall call, $2.StartRequest request);
   $async.Future<$1.Empty> deleteChat($grpc.ServiceCall call, $2.DeleteChatRequest request);
   $async.Future<$2.RepeatedChatPreview> getChatsPreview($grpc.ServiceCall call, $0.JwtProto request);
   $async.Stream<$2.Message> sendMessage($grpc.ServiceCall call, $async.Stream<$2.SendMessageRequest> request);
   $async.Future<$2.GetAllMessagesResponse> getAllMessage($grpc.ServiceCall call, $2.GetAllMessagesRequest request);
+  $async.Future<$1.Empty> deleteMessage($grpc.ServiceCall call, $2.DeleteChatRequest request);
 }

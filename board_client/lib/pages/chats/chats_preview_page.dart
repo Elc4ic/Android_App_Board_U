@@ -33,6 +33,10 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Чаты",
+            style: Theme.of(context).textTheme.labelLarge),
+      ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
