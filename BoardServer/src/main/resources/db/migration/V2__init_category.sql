@@ -1,0 +1,12 @@
+INSERT INTO category VALUES (1,'Техника', 'electronics');
+INSERT INTO category VALUES (2,'Обувь', 'shoes');
+INSERT INTO category VALUES (3,'Одежда', 'clothing');
+INSERT INTO category VALUES (4,'Спорт', 'sports');
+INSERT INTO category VALUES (5,'Продукты', 'food');
+INSERT INTO category VALUES (6,'Учебные материалы', 'books');
+INSERT INTO category VALUES (7,'Услуги', 'service');
+INSERT INTO category VALUES (8,'Хобби', 'hobby');
+INSERT INTO category VALUES (9,'Работа', 'work');
+INSERT INTO category VALUES (10,'Запросы', 'orders');
+INSERT INTO category VALUES (11,'Акксесуары', 'accessories');
+INSERT INTO category VALUES (12,'Поездки', 'trips');

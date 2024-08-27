@@ -63,6 +63,7 @@ class _ChatRowState extends State<ChatRow> {
                         builder: (context, state) {
                           if (state is ImageLoaded) {
                             return Image.memory(
+                              gaplessPlayback: true,
                               width: 100,
                               height: 90,
                               fit: BoxFit.fitWidth,

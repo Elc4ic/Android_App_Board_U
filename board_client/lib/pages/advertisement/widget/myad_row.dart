@@ -66,6 +66,7 @@ class _AdRowState extends State<AdRow> {
                           builder: (context, state) {
                             if (state is ImageLoaded) {
                               return Image.memory(
+                                gaplessPlayback: true,
                                 fit: BoxFit.fitWidth,
                                 Uint8List.fromList(state.images.first),
                               );

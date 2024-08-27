@@ -9,18 +9,12 @@ class AdListLoading extends AdListState {}
 
 class AdListLoaded extends AdListState {
   AdListLoaded({
+    required this.hasMore,
     required this.adList,
   });
 
   final List<Ad> adList;
-}
-
-class AdListLoadMore extends AdListState {
-  AdListLoadMore({
-    required this.adList,
-  });
-
-  final List<Ad> adList;
+  final bool hasMore;
 }
 
 class AdListLoadingFailure extends AdListState {

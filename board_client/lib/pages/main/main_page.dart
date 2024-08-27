@@ -41,6 +41,7 @@ class _MainPageState extends State<MainPage> {
   final _catListBloc = CategoryListBloc(
     GetIt.I<CategoryRepository>(),
   );
+  var _isLoading = false;
 
   @override
   void initState() {
@@ -49,18 +50,18 @@ class _MainPageState extends State<MainPage> {
           priceMin, page, pageSize, true, commonCategory, commonQuery));
       _catListBloc.add(LoadCategories());
     });
-    _scrollController.addListener(() {
+    _scrollController.addListener(() async {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double delta = 50.0;
-      if (maxScroll - currentScroll <= delta) {
-        setState(() {
-          page++;
-        });
-        Future.delayed(const Duration(milliseconds: 500), () {
+      double delta = 100.0;
+      if (maxScroll - currentScroll <= delta && !_isLoading) {
+        _isLoading = true;
+        page++;
+        await Future.delayed(const Duration(milliseconds: 500), () {
           _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
               priceMin, page, pageSize, false, commonCategory, commonQuery));
         });
+        setState(() {});
       }
     });
     super.initState();
@@ -81,6 +82,7 @@ class _MainPageState extends State<MainPage> {
               _catListBloc.add(LoadCategories());
             },
             child: CustomScrollView(
+              physics: const ClampingScrollPhysics(),
               controller: _scrollController,
               slivers: [
                 SliverToBoxAdapter(
@@ -110,6 +112,7 @@ class _MainPageState extends State<MainPage> {
                   bloc: _adListBloc,
                   builder: (context, state) {
                     if (state is AdListLoaded) {
+                      _isLoading = (state.hasMore) ? false : true;
                       if (state.adList.isEmpty) {
                         return SliverToBoxAdapter(
                           child: SizedBox(
@@ -155,6 +158,26 @@ class _MainPageState extends State<MainPage> {
                         child: Center(child: CircularProgressIndicator()));
                   },
                 ),
+                /*SliverToBoxAdapter(
+                    child: ElevatedButton(
+                  child: Text("Загрузить ${page}",
+                      style: Theme.of(context).textTheme.bodySmall),
+                  onPressed: () {
+                    setState(() {
+                      page++;
+                    });
+                    _adListBloc.add(LoadAdList(
+                        commonSearch,
+                        commonAddress,
+                        priceMax,
+                        priceMin,
+                        page,
+                        pageSize,
+                        false,
+                        commonCategory,
+                        commonQuery));
+                  },
+                )),*/
               ],
             ),
           ),

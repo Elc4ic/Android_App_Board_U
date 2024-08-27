@@ -49,7 +49,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
       for (var ad in ads.data) {
         adList.add(ad);
       }
-      emit(AdListLoaded(adList: adList));
+      emit(AdListLoaded(adList: adList, hasMore: ads.data.isNotEmpty));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     } finally {
@@ -66,7 +66,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
         emit(AdListLoading());
       }
       final ads = await adRepository.getMyAds(userRepository.getToken());
-      emit(AdListLoaded(adList: ads.data));
+      emit(AdListLoaded(adList: ads.data, hasMore: true));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     } finally {
@@ -83,7 +83,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
         emit(AdListLoading());
       }
       final ads = await adRepository.getFavoriteAds(userRepository.getToken());
-      emit(AdListLoaded(adList: ads.data));
+      emit(AdListLoaded(adList: ads.data, hasMore: true));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     } finally {
@@ -100,7 +100,7 @@ class AdListBloc extends Bloc<AdListEvent, AdListState> {
         emit(AdListLoading());
       }
       final ads = await adRepository.getByUserId(event.id);
-      emit(AdListLoaded(adList: ads.data));
+      emit(AdListLoaded(adList: ads.data, hasMore: true));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     } finally {
