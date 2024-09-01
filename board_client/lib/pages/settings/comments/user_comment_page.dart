@@ -16,7 +16,6 @@ class UserCommentPage extends StatefulWidget {
 }
 
 class _UserCommentPageState extends State<UserCommentPage> {
-  String? token = GetIt.I<UserRepository>().getToken();
 
   final _commentBloc = UserBloc(
     GetIt.I<UserRepository>(),
@@ -24,7 +23,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
 
   @override
   void initState() {
-    _commentBloc.add(LoadUserComments(token));
+    _commentBloc.add(LoadUserComments());
     super.initState();
   }
 
@@ -34,7 +33,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _commentBloc.add(LoadUserComments(token));
+            _commentBloc.add(LoadUserComments());
           },
           child: Padding(
             padding: Markup.padding_all_16,
@@ -70,7 +69,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
                   return TryAgainWidget(
                     exception: state.exception,
                     onPressed: () {
-                      _commentBloc.add(LoadUserComments(token));
+                      _commentBloc.add(LoadUserComments());
                     },
                   );
                 }

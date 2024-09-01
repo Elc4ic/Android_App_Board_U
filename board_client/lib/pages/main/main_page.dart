@@ -114,7 +114,7 @@ class _MainPageState extends State<MainPage> {
                     if (state is AdListLoaded) {
                       _isLoading = (state.hasMore) ? false : true;
                       if (state.adList.isEmpty) {
-                        return SliverToBoxAdapter(
+                        return SliverFillRemaining(
                           child: SizedBox(
                             height: 100,
                             child: Center(
@@ -252,6 +252,7 @@ PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
 
 Future<void> filterDialog(
     BuildContext context, AdListBloc adListBloc, int page, int pageSize) async {
+  final formKey = GlobalKey<FormState>();
   final maxController = TextEditingController();
   final minController = TextEditingController();
   final addressController = TextEditingController();
@@ -263,137 +264,143 @@ Future<void> filterDialog(
   List<String> query = Const.query;
   return showDialog<void>(
     context: context,
-    builder: (context) => Dialog(
+    builder: (context) => Dialog.fullscreen(
       backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 320,
         height: 500,
-        child: Column(
-          children: [
-            Text("Цена", style: Theme.of(context).textTheme.titleMedium),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: minController,
-                    keyboardType: TextInputType.number,
-                    validator: MultiValidator(
-                      [
-                        PatternValidator(SC.NUM_PATTERN,
-                            errorText: SC.NOT_NUM_ERROR),
-                      ],
-                    ).call,
+        child: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Text("Цена", style: Theme.of(context).textTheme.titleMedium),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: minController,
+                      keyboardType: TextInputType.number,
+                      validator: MultiValidator(
+                        [
+                          PatternValidator(SC.NUM_PATTERN,
+                              errorText: SC.NOT_NUM_ERROR),
+                        ],
+                      ).call,
+                    ),
                   ),
-                ),
-                Markup.dividerW10,
-                Expanded(
-                  child: TextFormField(
-                    controller: maxController,
-                    keyboardType: TextInputType.number,
-                    validator: MultiValidator(
-                      [
-                        PatternValidator(SC.NUM_PATTERN,
-                            errorText: SC.NOT_NUM_ERROR),
-                      ],
-                    ).call,
+                  Markup.dividerW10,
+                  Expanded(
+                    child: TextFormField(
+                      controller: maxController,
+                      keyboardType: TextInputType.number,
+                      validator: MultiValidator(
+                        [
+                          PatternValidator(SC.NUM_PATTERN,
+                              errorText: SC.NOT_NUM_ERROR),
+                        ],
+                      ).call,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Markup.dividerH10,
-            Text("Адрес", style: Theme.of(context).textTheme.titleMedium),
-            TextFormField(
-              controller: addressController,
-              keyboardType: TextInputType.text,
-            ),
-            Markup.dividerH10,
-            Text("Категория", style: Theme.of(context).textTheme.titleMedium),
-            DropdownButtonFormField(
-              items: categories?.map((Category category) {
-                return DropdownMenuItem(
-                  value: category,
-                  child: Text(category.name),
-                );
-              }).toList(),
-              onChanged: (newValue) {
-                commonCategory = newValue;
-              },
-              value: commonCategory,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
-            ),
-            Markup.dividerH10,
-            Text("Сортировка", style: Theme.of(context).textTheme.titleMedium),
-            DropdownButtonFormField(
-              items: query.map((String orderBy) {
-                return DropdownMenuItem(
-                  value: orderBy,
-                  child: Text(orderBy),
-                );
-              }).toList(),
-              onChanged: (newValue) {
-                commonQuery = newValue!;
-              },
-              value: commonQuery,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    page = 0;
-                    priceMax = 0;
-                    priceMin = 0;
-                    commonAddress = "";
-                    commonCategory = null;
-                    adListBloc.add(LoadAdList(
-                        commonSearch,
-                        commonAddress,
-                        priceMax,
-                        priceMin,
-                        page,
-                        pageSize,
-                        true,
-                        commonCategory,
-                        commonQuery));
-                    Navigator.pop(context);
-                  },
-                  child: Text("Сбросить",
-                      style: Theme.of(context).textTheme.titleMedium),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    page = 0;
-                    if (maxController.text.isNotEmpty) {
-                      priceMax = int.parse(maxController.text);
-                    }
-                    if (minController.text.isNotEmpty) {
-                      priceMin = int.parse(minController.text);
-                    }
-                    commonAddress = addressController.text;
-                    adListBloc.add(LoadAdList(
-                        commonSearch,
-                        commonAddress,
-                        priceMax,
-                        priceMin,
-                        page,
-                        pageSize,
-                        true,
-                        commonCategory,
-                        commonQuery));
-                    Navigator.pop(context);
-                  },
-                  child: Text("Ок",
-                      style: Theme.of(context).textTheme.titleMedium),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+              Markup.dividerH10,
+              Text("Адрес", style: Theme.of(context).textTheme.titleMedium),
+              TextFormField(
+                controller: addressController,
+                keyboardType: TextInputType.text,
+              ),
+              Markup.dividerH10,
+              Text("Категория", style: Theme.of(context).textTheme.titleMedium),
+              DropdownButtonFormField(
+                items: categories?.map((Category category) {
+                  return DropdownMenuItem(
+                    value: category,
+                    child: Text(category.name),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  commonCategory = newValue;
+                },
+                value: commonCategory,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
+              ),
+              Markup.dividerH10,
+              Text("Сортировка", style: Theme.of(context).textTheme.titleMedium),
+              DropdownButtonFormField(
+                items: query.map((String orderBy) {
+                  return DropdownMenuItem(
+                    value: orderBy,
+                    child: Text(orderBy),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  commonQuery = newValue!;
+                },
+                value: commonQuery,
+                decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      page = 0;
+                      priceMax = 0;
+                      priceMin = 0;
+                      commonAddress = "";
+                      commonCategory = null;
+                      adListBloc.add(LoadAdList(
+                          commonSearch,
+                          commonAddress,
+                          priceMax,
+                          priceMin,
+                          page,
+                          pageSize,
+                          true,
+                          commonCategory,
+                          commonQuery));
+                      Navigator.pop(context);
+                    },
+                    child: Text("Сбросить",
+                        style: Theme.of(context).textTheme.titleMedium),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if(formKey.currentState!.validate()) {
+                        page = 0;
+                        if (maxController.text.isNotEmpty) {
+                          priceMax = int.parse(maxController.text);
+                        }
+                        if (minController.text.isNotEmpty) {
+                          priceMin = int.parse(minController.text);
+                        }
+                        commonAddress = addressController.text;
+                        adListBloc.add(LoadAdList(
+                            commonSearch,
+                            commonAddress,
+                            priceMax,
+                            priceMin,
+                            page,
+                            pageSize,
+                            true,
+                            commonCategory,
+                            commonQuery));
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text("Ок",
+                        style: Theme.of(context).textTheme.titleMedium),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     ),

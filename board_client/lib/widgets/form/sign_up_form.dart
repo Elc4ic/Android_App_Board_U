@@ -74,7 +74,8 @@ class _AddAdFormState extends State<SignUpForm> {
                 [
                   PatternValidator(SC.PHONE_PATTERN, errorText: SC.PHONE_ERROR),
                   RequiredValidator(errorText: SC.REQUIRED_ERROR),
-                  MinLengthValidator(10, errorText: SC.PHONE_ERROR),
+                  MinLengthValidator(11, errorText: SC.PHONE_ERROR),
+                  MaxLengthValidator(11, errorText: SC.PHONE_ERROR),
                 ],
               ).call,
             ),

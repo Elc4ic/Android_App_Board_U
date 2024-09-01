@@ -43,8 +43,8 @@ class _ChatRowState extends State<ChatRow> {
         child: InkWell(
           onLongPress: () => myDialog(context, () async {
             GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
-            context.pop();
             widget.chatBloc.add(LoadChatList());
+            context.pop();
           }, "Вы уверенны, что хотите удалить чат?"),
           onTap: () {
             context.push("/chat/${widget.chat.id}");

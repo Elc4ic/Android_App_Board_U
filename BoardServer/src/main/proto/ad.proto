@@ -20,7 +20,6 @@ service AdAPI {
 
 service CategoryAPI {
     rpc GetAllCategories (Empty) returns (GetAllCategoriesResponse);
-    rpc GetCategory (GetByIdRequest) returns (RepeatedAdResponse);
 }
 
 message Empty {}

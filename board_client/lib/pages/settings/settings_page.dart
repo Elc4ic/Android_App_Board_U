@@ -71,18 +71,24 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => changeDialog(context),
-                          child: Text("Изменить имя",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => avatarDialog(context),
-                          child: Text("Изменить аватар",
-                              style: Theme.of(context).textTheme.bodyMedium),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => changeDialog(context),
+                                child: Text("Изменить имя",
+                                    style: Theme.of(context).textTheme.bodyMedium),
+                              ),
+                            ),
+                            Markup.dividerW10,
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () => avatarDialog(context),
+                                child: Text("Изменить аватар",
+                                    style: Theme.of(context).textTheme.bodyMedium),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       SizedBox(
@@ -163,8 +169,7 @@ Future<void> changeDialog(BuildContext context) async {
                   onPressed: () async {
                     var user = userRepository.getUser();
                     user?.name = nameController.text;
-                    await userRepository.changeUser(
-                        user, userRepository.getToken());
+                    await userRepository.changeUser(user);
                     context.pop();
                   },
                   child:
@@ -209,8 +214,7 @@ Future<void> avatarDialog(BuildContext context) async {
                       var user = userRepository.getUser();
                       var image = await NavItems.imageFromFile(picked);
                       user?.avatar = await NavItems.avatarToWebp(image);
-                      await userRepository.changeUser(
-                          user, userRepository.getToken());
+                      await userRepository.changeUser(user);
                     }
                     context.pop();
                   },

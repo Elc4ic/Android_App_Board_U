@@ -118,6 +118,7 @@ class LoginRequest extends $pb.GeneratedMessage {
   factory LoginRequest({
     $core.String? username,
     $core.String? password,
+    $core.String? deviceToken,
   }) {
     final $result = create();
     if (username != null) {
@@ -125,6 +126,9 @@ class LoginRequest extends $pb.GeneratedMessage {
     }
     if (password != null) {
       $result.password = password;
+    }
+    if (deviceToken != null) {
+      $result.deviceToken = deviceToken;
     }
     return $result;
   }
@@ -135,6 +139,7 @@ class LoginRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'LoginRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'username')
     ..aOS(2, _omitFieldNames ? '' : 'password')
+    ..aOS(4, _omitFieldNames ? '' : 'deviceToken', protoName: 'deviceToken')
     ..hasRequiredFields = false
   ;
 
@@ -176,6 +181,15 @@ class LoginRequest extends $pb.GeneratedMessage {
   $core.bool hasPassword() => $_has(1);
   @$pb.TagNumber(2)
   void clearPassword() => clearField(2);
+
+  @$pb.TagNumber(4)
+  $core.String get deviceToken => $_getSZ(2);
+  @$pb.TagNumber(4)
+  set deviceToken($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasDeviceToken() => $_has(2);
+  @$pb.TagNumber(4)
+  void clearDeviceToken() => clearField(4);
 }
 
 class LoginResponse extends $pb.GeneratedMessage {

@@ -17,7 +17,7 @@ object UserUtils {
             avatar = user.avatar.toByteArray(),
             phone = user.phone,
             ratingAll = user.ratingAll,
-            ratingNum = user.ratingNum
+            ratingNum = user.ratingNum,
         )
     }
 

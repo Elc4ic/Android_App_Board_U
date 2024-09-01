@@ -10,6 +10,7 @@ import '../repository/user_repository.dart';
 
 class UserService implements UserRepository {
   static String? authToken;
+  static String? fmcToken;
   static User? appUser;
   late UserAPIClient _client;
 
@@ -30,22 +31,24 @@ class UserService implements UserRepository {
   }
 
   @override
-  User? getUser() => appUser;
-
-  @override
   Future<void> loadUser() async {
     final response = await _client.getUserData(JwtProto(token: authToken));
     appUser = response.user;
   }
 
   @override
+  User? getUser() => appUser;
+
+  @override
   String? getToken() => authToken;
+
+  @override
+  String? getFCMToken() => fmcToken;
 
   @override
   Future<bool> isAuthAvailable() async {
     final sharedPreferences = await getSharedPreferences();
     authToken = sharedPreferences.getString('token');
-    log("${authToken}token");
     if (authToken != null) {
       final response = await _client.getUserData(JwtProto(token: authToken));
       appUser = response.user;
@@ -72,7 +75,8 @@ class UserService implements UserRepository {
   @override
   Future<bool> login(String username, String password) async {
     try {
-      final request = LoginRequest(username: username, password: password);
+      final request = LoginRequest(
+          username: username, password: password, deviceToken: fmcToken);
       final response = await _client.getLogin(request);
       log(response.accessToken);
       await updateToken(response.accessToken);
@@ -98,9 +102,9 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<bool> changeUser(User? user, String? token) async {
+  Future<bool> changeUser(User? user) async {
     final response =
-        await _client.changeUserData(SetUser(user: user, token: token));
+        await _client.changeUserData(SetUser(user: user, token: authToken));
     return response.login;
   }
 
@@ -111,23 +115,23 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<bool> addComment(Comment comment, String? token) async {
-    final response =
-        await _client.addComment(CommentProto(comment: comment, token: token));
+  Future<bool> addComment(Comment comment) async {
+    final response = await _client
+        .addComment(CommentProto(comment: comment, token: authToken));
     return response.login;
   }
 
   @override
-  Future<bool> editComment(Comment comment, int rating_prev, String? token) async {
-    final response = await _client.editComment(
-        EditCommentRequest(comment: comment, ratingPrev: rating_prev, token: token));
+  Future<bool> editComment(Comment comment, int rating_prev) async {
+    final response = await _client.editComment(EditCommentRequest(
+        comment: comment, ratingPrev: rating_prev, token: authToken));
     return response.login;
   }
 
   @override
-  Future<bool> deleteComment(Int64 id, String? token) async {
+  Future<bool> deleteComment(Int64 id) async {
     final response =
-        await _client.deleteComment(IdAndJwt(id: id, token: token));
+        await _client.deleteComment(IdAndJwt(id: id, token: authToken));
     return response.login;
   }
 
@@ -138,9 +142,13 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<List<Comment>> getUserComments(String? token) async {
-    final comments =
-        await _client.getUserComments(JwtProto(token: token));
+  Future<List<Comment>> getUserComments() async {
+    final comments = await _client.getUserComments(JwtProto(token: authToken));
     return comments.comments;
+  }
+
+  @override
+  void initFMC(String? token) {
+    fmcToken = token;
   }
 }

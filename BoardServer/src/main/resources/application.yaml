@@ -6,7 +6,7 @@ spring:
     username: ${PG_USER}
     password: ${PG_PASSWORD}
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: validate
     properties:
@@ -19,8 +19,16 @@ spring:
       port: 9090
       maxInboundMessageSize: 32MB
       maxOutboundMessageSize: 32MB
+  flyway:
+    enabled: true
+    baselineOnMigrate: true
+    cleanOnValidationError: true
 
 jwt:
   secret:
     access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
     refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
+
+firebase:
+  serverKey: bBr4zHJSa1jGa3YibktQXBps_hSjy4wUMJx-LMXIJWE
+  secretKey: fHxdS8O7jIGJEK+a/tDDRJdGntBKO0t1UvwMjG0YKKW8Lq+JTg+wKJidf+1ycp33

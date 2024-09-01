@@ -33,6 +33,7 @@ class _AddAdFormState extends State<AddAdForm> {
   final TextEditingController _descController = TextEditingController();
 
   Category? category;
+  List<Category>? categories;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -57,12 +58,25 @@ class _AddAdFormState extends State<AddAdForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     _titleController.text = widget.ad?.title ?? "";
     _priceController.text = widget.ad?.price.toString() ?? "";
     _descController.text = widget.ad?.description ?? "";
     category = widget.ad?.category;
-    List<Category>? categories = categoryRepository.getCategories();
+    categories = categoryRepository.getCategories();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _priceController.dispose();
+    _descController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(

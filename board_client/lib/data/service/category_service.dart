@@ -8,7 +8,6 @@ import '../../values/values.dart';
 class CategoryService implements CategoryRepository {
   static List<Category>? categories;
   late CategoryAPIClient _client;
-  final pageSize = 10;
 
   CategoryService() {
     final channel = ClientChannel(
@@ -26,12 +25,6 @@ class CategoryService implements CategoryRepository {
     var response = await _client.getAllCategories(Empty());
     categories = response.categories;
     return response;
-  }
-
-  @override
-  Future<RepeatedAdResponse> getCategory(fnum.Int64 id) {
-    var request = GetByIdRequest(id: id, token: "cccscs");
-    return _client.getCategory(request);
   }
 
   @override

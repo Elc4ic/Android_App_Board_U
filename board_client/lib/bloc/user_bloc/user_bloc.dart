@@ -46,7 +46,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         emit(UserLoading());
       }
       final comments =
-          await userRepository.getUserComments(event.token);
+          await userRepository.getUserComments();
       emit(UserCommentsLoaded(comments: comments));
     } catch (e) {
       emit(UserLoadingFailure(exception: e));

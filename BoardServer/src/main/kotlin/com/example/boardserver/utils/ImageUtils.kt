@@ -27,10 +27,6 @@ object ImageUtils {
         return RepeatedImageResponse.newBuilder().addAllData(imagesGrpc).build()
     }
 
-    fun toCompressImageGrpcList(images: List<ImageProto>): RepeatedImageResponse {
-        return RepeatedImageResponse.newBuilder().addAllData(images).build()
-    }
-
     fun fromImageGrpcList(imagesGrpc: List<ImageProto>, ad: Ad): List<Image> {
         val images = mutableListOf<Image>()
         imagesGrpc.forEach { images.add(fromImageGrpc(it, ad)) }

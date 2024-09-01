@@ -35,9 +35,8 @@ class AdService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         val pagingSort: Pageable = PageRequest.of(request.page.toInt(), request.limit.toInt())
-
         val adPage = adRepository.findAll(
-            Specification.where(FilterUtils.adSpecification(request)),
+            Specification.where(FilterUtils.adSpecification(request,userId)),
             pagingSort
         )
         val total = adRepository.count()
@@ -47,7 +46,7 @@ class AdService(
             ads.add(
                 AdUtils.toAdGrpc(
                     ad,
-                    if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
+                    if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) > 0
                     else false,
                 )
             )
@@ -95,6 +94,7 @@ class AdService(
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun setFavoriteAd(
         request: AdOuterClass.GetByIdRequest?,
         responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
@@ -131,7 +131,6 @@ class AdService(
             val ad = AdUtils.fromAdGrpc(request.ad)
             adRepository.save(ad)
             val images = ImageUtils.fromImageGrpcList(request.imagesList, ad)
-            images.forEach { image -> println("${image.imageBytes.toByteString()}") }
             images.forEach { imageRepository.save(it) }
             responseObserver?.onNext(UserOuterClass.IsSuccess.newBuilder().setLogin(true).build())
         } else {

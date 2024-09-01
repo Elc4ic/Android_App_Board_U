@@ -207,11 +207,13 @@ class _MessagePageState extends State<MessagePage> {
                               Message message =
                                   messages[messages.length - index - 1];
                               final user = userRepository.getUser();
-                              return (message.sender.username.toLowerCase() == user?.username.toLowerCase())
+                              return (message.sender.username.toLowerCase() ==
+                                      user?.username.toLowerCase())
                                   ? SentMessageScreen(
                                       message: message,
                                       chatRepository: chatRepository,
                                       token: userRepository.getToken(),
+                                      messages: messages,
                                     )
                                   : ReceivedMessageScreen(message: message);
                             }),

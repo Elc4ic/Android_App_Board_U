@@ -28,6 +28,7 @@ message GetByUserIdRequest {
 message LoginRequest {
     string username = 1;
     string password = 2;
+    string deviceToken = 4;
 }
 
 message LoginResponse {

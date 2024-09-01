@@ -12,12 +12,13 @@ class SentMessageScreen extends StatelessWidget {
     super.key,
     required this.message,
     required this.chatRepository,
-    required this.token,
+    required this.token, required this.messages,
   });
 
   final Message message;
   final ChatRepository chatRepository;
   final String? token;
+  final List<Message> messages;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class SentMessageScreen extends StatelessWidget {
             child: InkWell(
               onLongPress: () => myDialog(context, () async {
                 await chatRepository.deleteMessage(message.id, token);
+                messages.remove(message);
                 context.pop();
               }, SC.DELETE_MESSAGE),
               child: Container(

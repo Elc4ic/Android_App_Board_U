@@ -24,11 +24,9 @@ class LoadComments extends UserEvent {
 }
 
 class LoadUserComments extends UserEvent {
-  LoadUserComments(
-    this.token, {
+  LoadUserComments({
     this.completer,
   });
 
-  final String? token;
   final Completer? completer;
 }

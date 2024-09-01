@@ -32,8 +32,7 @@ class _CommentFormState extends State<CommentForm> {
               convicted: widget.user,
               owner: userRepository.getUser(),
               created: Markup.dateNow(),
-            ),
-            userRepository.getToken());
+            ));
       });
       context.pop();
     }

@@ -38,10 +38,9 @@ class _EditCommentFormState extends State<EditCommentForm> {
               owner: widget.comment.owner,
               created: widget.comment.created,
             ),
-            ratingPrev.toInt(),
-            userRepository.getToken());
+            ratingPrev.toInt(),);
       });
-      widget.commentBloc.add(LoadUserComments(userRepository.getToken()));
+      widget.commentBloc.add(LoadUserComments());
       context.pop();
     }
   }
@@ -90,9 +89,9 @@ class _EditCommentFormState extends State<EditCommentForm> {
                   child: ElevatedButton(
                     onPressed: () async {
                       await userRepository.deleteComment(
-                          widget.comment.id, userRepository.getToken());
+                          widget.comment.id);
                       widget.commentBloc
-                          .add(LoadUserComments(userRepository.getToken()));
+                          .add(LoadUserComments());
                       context.pop();
                     },
                     child: Text(SC.DELETE,

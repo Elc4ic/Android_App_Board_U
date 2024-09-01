@@ -183,8 +183,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     user?.address = (type == 3)
                         ? _addressController.text
                         : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} ком.${_blockController.text}";
-                    await userRepository.changeUser(
-                        user, userRepository.getToken());
+                    await userRepository.changeUser(user);
                     context.go(SC.SETTINGS_PAGE);
                   },
                   child: Text("Сохранить", style: Theme.of(context).textTheme.bodyMedium),

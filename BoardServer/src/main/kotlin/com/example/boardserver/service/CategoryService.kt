@@ -11,7 +11,6 @@ import net.devh.boot.grpc.server.service.GrpcService
 @GrpcService
 class CategoryService(
     private val categoryRepository: CategoryRepository,
-    private val adRepository: AdRepository,
 ) : board.CategoryAPIGrpc.CategoryAPIImplBase() {
 
     override fun getAllCategories(
@@ -23,12 +22,4 @@ class CategoryService(
         responseObserver?.onCompleted()
     }
 
-    override fun getCategory(
-        request: AdOuterClass.GetByIdRequest?,
-        responseObserver: StreamObserver<AdOuterClass.RepeatedAdResponse>?
-    ) {
-        val ads = adRepository.findByCategoryId(request!!.id)
-        responseObserver?.onNext(AdUtils.toRepeatedAdGrpc(ads))
-        responseObserver?.onCompleted()
-    }
 }

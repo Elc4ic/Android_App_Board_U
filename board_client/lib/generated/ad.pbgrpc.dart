@@ -244,10 +244,6 @@ class CategoryAPIClient extends $grpc.Client {
       '/board.CategoryAPI/GetAllCategories',
       ($1.Empty value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $1.GetAllCategoriesResponse.fromBuffer(value));
-  static final _$getCategory = $grpc.ClientMethod<$1.GetByIdRequest, $1.RepeatedAdResponse>(
-      '/board.CategoryAPI/GetCategory',
-      ($1.GetByIdRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) => $1.RepeatedAdResponse.fromBuffer(value));
 
   CategoryAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -257,10 +253,6 @@ class CategoryAPIClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$1.GetAllCategoriesResponse> getAllCategories($1.Empty request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getAllCategories, request, options: options);
-  }
-
-  $grpc.ResponseFuture<$1.RepeatedAdResponse> getCategory($1.GetByIdRequest request, {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$getCategory, request, options: options);
   }
 }
 
@@ -276,23 +268,11 @@ abstract class CategoryAPIServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $1.Empty.fromBuffer(value),
         ($1.GetAllCategoriesResponse value) => value.writeToBuffer()));
-    $addMethod($grpc.ServiceMethod<$1.GetByIdRequest, $1.RepeatedAdResponse>(
-        'GetCategory',
-        getCategory_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) => $1.GetByIdRequest.fromBuffer(value),
-        ($1.RepeatedAdResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$1.GetAllCategoriesResponse> getAllCategories_Pre($grpc.ServiceCall call, $async.Future<$1.Empty> request) async {
     return getAllCategories(call, await request);
   }
 
-  $async.Future<$1.RepeatedAdResponse> getCategory_Pre($grpc.ServiceCall call, $async.Future<$1.GetByIdRequest> request) async {
-    return getCategory(call, await request);
-  }
-
   $async.Future<$1.GetAllCategoriesResponse> getAllCategories($grpc.ServiceCall call, $1.Empty request);
-  $async.Future<$1.RepeatedAdResponse> getCategory($grpc.ServiceCall call, $1.GetByIdRequest request);
 }

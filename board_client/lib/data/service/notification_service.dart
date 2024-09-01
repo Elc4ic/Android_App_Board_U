@@ -1,14 +1,15 @@
 
 
+import 'package:board_client/data/repository/user_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:get_it/get_it.dart';
 
 class NotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   NotificationService() {
     _firebaseMessaging.getToken().then((token) {
-      print('FCM Token: $token');
-      // Сохраните токен на сервере для отправки уведомлений
+      GetIt.I<UserRepository>().initFMC(token);
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -19,7 +20,7 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('Message clicked!');
+
     });
   }
 }

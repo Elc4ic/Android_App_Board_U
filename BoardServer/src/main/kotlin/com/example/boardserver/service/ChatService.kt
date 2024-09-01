@@ -7,22 +7,31 @@ import board.Chat.SendMessageRequest
 import board.UserOuterClass
 import com.example.boardserver.repository.ChatRepository
 import com.example.boardserver.repository.MessageRepository
+import com.example.boardserver.repository.TokenRepository
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.ChatUtils
 import com.example.boardserver.utils.JwtProvider
 import com.example.boardserver.utils.MessageUtils
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingException
+import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.Notification
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
+import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import com.example.boardserver.entity.Chat as EntityChat
+
 
 @GrpcService
 class ChatService(
     private val chatRepository: ChatRepository,
     private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
+    private val tokenRepository: TokenRepository,
     private val jwtProvider: JwtProvider,
+    private val firebaseMessaging: FirebaseMessaging,
 ) : board.ChatAPIGrpc.ChatAPIImplBase() {
 
     override fun getChatsPreview(
@@ -51,6 +60,23 @@ class ChatService(
                 val chat = chatRepository.findById(request.chatId).get()
                 messageRepository.save(MessageUtils.fromMessageGrpc(message, chat))
                 responseObserver?.onNext(message)
+                try {
+                    val to = if (chat.owner.id == request.receiver) chat.receiver.id else chat.owner.id
+                    val token = tokenRepository.findByUserId(to)
+                    val message: Message = Message.builder()
+                        .setToken(token.deviceToken)
+                        .setNotification(
+                            Notification.builder()
+                                .setTitle("Новое сообщение от ${user.name}")
+                                .setBody(request.message)
+                                .build()
+                        )
+                        .build()
+                    firebaseMessaging.send(message)
+                    ResponseEntity.ok<String>("Message sent successfully")
+                } catch (e: FirebaseMessagingException) {
+                    ResponseEntity.badRequest().body<String>("Error sending message: " + e.message)
+                }
             }
 
             override fun onError(t: Throwable) {

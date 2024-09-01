@@ -15,15 +15,6 @@ object ChatUtils {
             .build()
     }
 
-    fun fromChatGrpc(chat: ChatPreview, user: User): Chat {
-        return Chat(
-            id = chat.id,
-            ad = AdUtils.fromAdGrpc(chat.ad),
-            owner = UserUtils.fromUserGrpc(user),
-            receiver = UserUtils.fromUserGrpc(chat.target),
-        )
-    }
-
     fun createChatGrpc(ad: Ad, target: User, user: EntityUser): Chat {
         return Chat(
             ad = AdUtils.fromAdGrpc(ad),
