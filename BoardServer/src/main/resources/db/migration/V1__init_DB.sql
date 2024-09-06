@@ -6,6 +6,7 @@ create sequence favorites_seq start with 1 increment by 50;
 create sequence images_seq start with 1 increment by 50;
 create sequence messages_seq start with 1 increment by 50;
 create sequence users_seq start with 1 increment by 50;
+create sequence tokens_seq start with 1 increment by 50;
 
 create table ads (
     id bigint not null,
@@ -62,7 +63,7 @@ create table images (
 create table tokens (
     id bigint not null,
     user_id bigint,
-    deviceToken varchar(255),
+    device_token varchar(255),
     primary key (id)
 );
 

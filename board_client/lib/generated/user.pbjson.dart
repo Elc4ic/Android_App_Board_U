@@ -25,17 +25,17 @@ const IsSuccess$json = {
 final $typed_data.Uint8List isSuccessDescriptor = $convert.base64Decode(
     'CglJc1N1Y2Nlc3MSFAoFbG9naW4YASABKAhSBWxvZ2lu');
 
-@$core.Deprecated('Use getByUserIdRequestDescriptor instead')
-const GetByUserIdRequest$json = {
-  '1': 'GetByUserIdRequest',
+@$core.Deprecated('Use userIdDescriptor instead')
+const UserId$json = {
+  '1': 'UserId',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 4, '10': 'id'},
   ],
 };
 
-/// Descriptor for `GetByUserIdRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List getByUserIdRequestDescriptor = $convert.base64Decode(
-    'ChJHZXRCeVVzZXJJZFJlcXVlc3QSDgoCaWQYASABKARSAmlk');
+/// Descriptor for `UserId`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List userIdDescriptor = $convert.base64Decode(
+    'CgZVc2VySWQSDgoCaWQYASABKARSAmlk');
 
 @$core.Deprecated('Use loginRequestDescriptor instead')
 const LoginRequest$json = {
@@ -81,31 +81,19 @@ final $typed_data.Uint8List signupRequestDescriptor = $convert.base64Decode(
     'Cg1TaWdudXBSZXF1ZXN0EhoKCHVzZXJuYW1lGAEgASgJUgh1c2VybmFtZRIaCghwYXNzd29yZB'
     'gCIAEoCVIIcGFzc3dvcmQSFAoFcGhvbmUYAyABKAlSBXBob25l');
 
-@$core.Deprecated('Use userResponseDescriptor instead')
-const UserResponse$json = {
-  '1': 'UserResponse',
-  '2': [
-    {'1': 'user', '3': 1, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
-  ],
-};
-
-/// Descriptor for `UserResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List userResponseDescriptor = $convert.base64Decode(
-    'CgxVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzILLmJvYXJkLlVzZXJSBHVzZXI=');
-
-@$core.Deprecated('Use setUserDescriptor instead')
-const SetUser$json = {
-  '1': 'SetUser',
+@$core.Deprecated('Use userTokenDescriptor instead')
+const UserToken$json = {
+  '1': 'UserToken',
   '2': [
     {'1': 'user', '3': 1, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
     {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
   ],
 };
 
-/// Descriptor for `SetUser`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List setUserDescriptor = $convert.base64Decode(
-    'CgdTZXRVc2VyEh8KBHVzZXIYASABKAsyCy5ib2FyZC5Vc2VyUgR1c2VyEhQKBXRva2VuGAIgAS'
-    'gJUgV0b2tlbg==');
+/// Descriptor for `UserToken`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List userTokenDescriptor = $convert.base64Decode(
+    'CglVc2VyVG9rZW4SHwoEdXNlchgBIAEoCzILLmJvYXJkLlVzZXJSBHVzZXISFAoFdG9rZW4YAi'
+    'ABKAlSBXRva2Vu');
 
 @$core.Deprecated('Use jwtProtoDescriptor instead')
 const JwtProto$json = {
@@ -207,16 +195,16 @@ final $typed_data.Uint8List commentsResponseDescriptor = $convert.base64Decode(
     'ChBDb21tZW50c1Jlc3BvbnNlEioKCGNvbW1lbnRzGAEgAygLMg4uYm9hcmQuQ29tbWVudFIIY2'
     '9tbWVudHM=');
 
-@$core.Deprecated('Use idAndJwtDescriptor instead')
-const IdAndJwt$json = {
-  '1': 'IdAndJwt',
+@$core.Deprecated('Use idTokenDescriptor instead')
+const IdToken$json = {
+  '1': 'IdToken',
   '2': [
     {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
     {'1': 'token', '3': 2, '4': 1, '5': 9, '10': 'token'},
   ],
 };
 
-/// Descriptor for `IdAndJwt`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List idAndJwtDescriptor = $convert.base64Decode(
-    'CghJZEFuZEp3dBIOCgJpZBgBIAEoA1ICaWQSFAoFdG9rZW4YAiABKAlSBXRva2Vu');
+/// Descriptor for `IdToken`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List idTokenDescriptor = $convert.base64Decode(
+    'CgdJZFRva2VuEg4KAmlkGAEgASgDUgJpZBIUCgV0b2tlbhgCIAEoCVIFdG9rZW4=');
 

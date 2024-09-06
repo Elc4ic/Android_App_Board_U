@@ -8,7 +8,6 @@ import com.example.boardserver.utils.AdUtils
 import com.example.boardserver.utils.FilterUtils
 import com.example.boardserver.utils.ImageUtils
 import com.example.boardserver.utils.JwtProvider
-import com.google.protobuf.kotlin.toByteString
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
@@ -34,9 +33,13 @@ class AdService(
         responseObserver: StreamObserver<AdOuterClass.PaginatedAd>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
-        val pagingSort: Pageable = PageRequest.of(request.page.toInt(), request.limit.toInt())
+        var favs: List<Favorites> = emptyList()
+        val pagingSort: Pageable = PageRequest.of(request.page, request.limit)
+        if (userId != null) {
+            favs = favRepository.findByUserId(userId)
+        }
         val adPage = adRepository.findAll(
-            Specification.where(FilterUtils.adSpecification(request,userId)),
+            Specification.where(FilterUtils.adSpecification(request, favs)),
             pagingSort
         )
         val total = adRepository.count()
@@ -63,7 +66,10 @@ class AdService(
     }
 
     @Transactional
-    override fun getOneAd(request: AdOuterClass.GetByIdRequest, responseObserver: StreamObserver<AdOuterClass.Ad>?) {
+    override fun getOneAd(
+        request: AdOuterClass.GetByIdRequest,
+        responseObserver: StreamObserver<AdOuterClass.Ad>?
+    ) {
         val userId = jwtProvider.validateJwt(request.token)
         val ad = adRepository.findById(request.id).get()
         if (ad.user.id != userId) {

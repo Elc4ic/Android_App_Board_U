@@ -32,37 +32,17 @@ class JwtProvider(
             .subject(userId.toString())
             .expiration(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365)))
             .signWith(jwtAccessSecret)
+            /*.claim("role", "USER")*/
             .compact()
     }
 
-    fun generateAccessToken(username: String): String {
-        val accessExpirationInstant = LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant()
-        val accessExpiration = Date.from(accessExpirationInstant)
-        return Jwts.builder()
-            .subject(username)
-            .expiration(accessExpiration)
-            .signWith(jwtAccessSecret)
-            .claim("role", "USER")
-            .compact()
-    }
-
-    fun generateRefreshToken(username: String): String {
-        val now = LocalDateTime.now()
-        val refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant()
-        val refreshExpiration = Date.from(refreshExpirationInstant)
-        return Jwts.builder()
-            .subject(username)
-            .expiration(refreshExpiration)
-            .signWith(jwtRefreshSecret)
-            .compact()
-    }
-
-    fun validateAccessToken(accessToken: String): Boolean {
-        return validateToken(accessToken)
-    }
-
-    fun validateRefreshToken(refreshToken: String): Boolean {
-        return validateToken(refreshToken)
+    fun needToRefresh(token: String): Boolean {
+        val now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()
+        val expiration = Jwts.parser()
+            .verifyWith(jwtAccessSecret)
+            .build()
+            .parseSignedClaims(token).payload.expiration.toInstant()
+        return now.isAfter(expiration)
     }
 
     fun validateToken(token: String): Boolean {

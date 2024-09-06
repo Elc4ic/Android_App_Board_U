@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,11 +65,9 @@ class _AdCardState extends State<AdCard> {
                       );
                     }
                     if (state is ImageLoadingFailure) {
-                      return Container(
-                        color: Colors.black12,
-                      );
+                      return NoImageWidget();
                     }
-                    return const Center(child: CircularProgressIndicator());
+                    return ShimmeringContainer();
                   },
                 ),
               ),

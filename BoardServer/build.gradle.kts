@@ -12,6 +12,7 @@ plugins {
     application
 }
 
+
 group = "org.example.boardserver"
 version = "0.0.1"
 
@@ -61,7 +62,7 @@ dependencies {
     //flyway
     implementation("org.flywaydb:flyway-core")
     //firebase
-    implementation("com.google.firebase:firebase-admin:9.3.0")
+    implementation("com.google.firebase:firebase-admin:9.0.0")
     implementation("com.google.cloud:google-cloud-pubsub:1.132.1")
     //jwt
     implementation("io.jsonwebtoken:jjwt:0.12.1")

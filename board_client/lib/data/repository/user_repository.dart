@@ -6,13 +6,11 @@ import '../../generated/user.pb.dart';
 abstract class UserRepository {
   Future<SharedPreferences> getSharedPreferences();
 
-  Future<bool> isAuthAvailable();
+  Future<bool> loadUserAndCheckRefresh();
 
   void initFMC(String? token);
 
   Future<bool> updateToken(String token);
-
-  Future<void> loadUser();
 
   String? getToken();
 
@@ -24,7 +22,7 @@ abstract class UserRepository {
 
   Future<bool> changeUser(User? user);
 
-  Future<bool> logout();
+  Future<bool> logout(Int64 id);
 
   Future<bool> login(String username, String password);
 

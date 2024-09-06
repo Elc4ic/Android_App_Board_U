@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    GetIt.I<UserRepository>().isAuthAvailable();
+    GetIt.I<UserRepository>().loadUserAndCheckRefresh();
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

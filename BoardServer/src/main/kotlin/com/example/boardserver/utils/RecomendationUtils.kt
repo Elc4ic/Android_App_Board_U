@@ -2,37 +2,61 @@ package com.example.boardserver.utils
 
 import com.example.boardserver.entity.Ad
 import com.example.boardserver.entity.Category
-import kotlin.math.abs
-import kotlin.math.max
+import com.example.boardserver.entity.Favorites
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.Predicate
+import jakarta.persistence.criteria.Root
 
 
 object RecommendationUtils {
 
-    fun calculateSimilarity(ad1: Ad, ads: List<Ad>): Double {
+    fun calculateSimilarity(cb: CriteriaBuilder, ad: Root<Ad?>, ads: List<Favorites>): Double {
         var similarityScore = 0.0
 
-        for ( ad2 in ads){
-            similarityScore += calculateTitleSimilarity(ad1.title, ad2.title) * 3
-            similarityScore += calculatePriceSimilarity(ad1.price, ad2.price)
-            similarityScore += calculateCategorySimilarity(ad1.category, ad2.category)
+        for (fav in ads) {
+            similarityScore += calculateTitleSimilarity(cb, ad, fav.ad.title) * 2
+            similarityScore += calculateDescSimilarity(cb, ad, fav.ad.description)
+            similarityScore += calculatePriceSimilarity(cb, ad, fav.ad.price)
+            similarityScore += calculateCategorySimilarity(cb, ad, fav.ad.category)
         }
         return similarityScore
     }
 
-    private fun calculateTitleSimilarity(title1: String, title2: String): Double {
-        val words1: Set<String> = title1.split(" ").toSet()
-        val words2: Set<String> = title2.split(" ").toSet()
-        val intersection: MutableSet<String> = HashSet(words1)
-        intersection.retainAll(words2)
-        return intersection.size.toDouble() / (words1.size + words2.size - intersection.size)
+    private fun calculateTitleSimilarity(cb: CriteriaBuilder, root: Root<Ad?>, title: String): Double {
+        var count = 0
+        var predicate: Predicate
+        val words2: Set<String> = title?.split(" ")?.toSet() ?: setOf()
+        words2.forEach {
+            predicate = cb.like(root.get("title"), "%${it.substring(0, (it.length * 0.7).toInt())}%")
+            if (!predicate.isNegated) {
+                count++
+            }
+        }
+        return count.toDouble() / words2.size
     }
 
-    private fun calculatePriceSimilarity(price1: Long, price2: Long): Double {
-        return 1.0 - abs(price1 - price2) / max(price1, price2)
+    private fun calculateDescSimilarity(cb: CriteriaBuilder, root: Root<Ad?>, desc: String?): Double {
+        var count = 0
+        var predicate: Predicate
+        val words2: Set<String> = desc?.split(" ")?.toSet() ?: setOf()
+        words2.forEach {
+            predicate = cb.like(root.get("description"), "%${it.substring(0, (it.length * 0.7).toInt())}%")
+            if (!predicate.isNegated) {
+                count++
+            }
+        }
+        return count.toDouble() / words2.size
     }
 
-    private fun calculateCategorySimilarity(category1: Category, category2: Category): Double {
-        return if (category1.id == category2.id) 1.0 else 0.0
+    private fun calculatePriceSimilarity(cb: CriteriaBuilder, root: Root<Ad?>, price2: Long): Double {
+        var count = 0.0
+        if (cb.greaterThanOrEqualTo(root.get("price"), price2 * 1.3).isNegated) count += 0.5
+        if (cb.lessThanOrEqualTo(root.get("price"), price2 * 0.70).isNegated) count += 0.5
+        return count
+    }
+
+    private fun calculateCategorySimilarity(cb: CriteriaBuilder, root: Root<Ad?>, category2: Category): Double {
+        return if (!cb.equal(root.get<Ad>("category").get<Category>("name"), category2.name).isNegated) 1.0 else 0.0
     }
 
 }

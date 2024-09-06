@@ -1,7 +1,6 @@
 package com.example.boardserver.service
 
-import board.UserOuterClass
-import board.UserOuterClass.UserResponse
+import board.UserOuterClass.*
 import com.example.boardserver.repository.CommentRepository
 import com.example.boardserver.repository.TokenRepository
 import com.example.boardserver.repository.UserRepository
@@ -25,17 +24,17 @@ class UserService(
 
     @Transactional
     override fun getSignUp(
-        request: UserOuterClass.SignupRequest?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: SignupRequest?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         if (userRepository.findByUsername(request!!.username).isEmpty) {
-            val newUser = UserOuterClass.User.newBuilder()
+            val newUser = User.newBuilder()
                 .setName(request.username)
                 .setUsername(request.username)
                 .setPassword(UserUtils.hashPassword(request.password))
                 .setPhone(request.phone)
                 .build()
-            val user =UserUtils.fromUserGrpc(newUser)
+            val user = UserUtils.fromUserGrpc(newUser)
             userRepository.save(user)
             responseObserver?.onNext(UserUtils.successGrpc())
         } else {
@@ -45,17 +44,18 @@ class UserService(
     }
 
     override fun getLogin(
-        request: UserOuterClass.LoginRequest?,
-        responseObserver: StreamObserver<UserOuterClass.LoginResponse>?
+        request: LoginRequest?,
+        responseObserver: StreamObserver<LoginResponse>?
     ) {
         val user = userRepository.findByUsername(request!!.username).get()
         if (UserUtils.checkPassword(request.password, user.password)) {
             responseObserver!!.onNext(
-                UserOuterClass.LoginResponse.newBuilder()
+                LoginResponse.newBuilder()
                     .setUser(UserUtils.toUserGrpc(user))
                     .setAccessToken(jwtProvider.createJwt(user.id))
                     .build()
             )
+            println(request.deviceToken)
             tokenRepository.save(fcmProvider.createTokenEntity(user, request.deviceToken))
         } else {
             responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный ввод").asException())
@@ -63,15 +63,29 @@ class UserService(
         responseObserver.onCompleted()
     }
 
-    override fun getUserData(
-        request: UserOuterClass.JwtProto?,
-        responseObserver: StreamObserver<UserResponse>?
+    @Transactional
+    override fun logOut(
+        request: UserId?,
+        responseObserver: StreamObserver<IsSuccess>?
+    ) {
+        tokenRepository.deleteByUserId(request!!.id)
+        responseObserver?.onNext(UserUtils.successGrpc())
+        responseObserver?.onCompleted()
+    }
+
+    override fun getUserAndRefresh(
+        request: JwtProto?,
+        responseObserver: StreamObserver<UserToken>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
+            var token = request.token
             val user = userRepository.findById(userId).get()
+            if(jwtProvider.needToRefresh(request.token)) {
+                token = jwtProvider.createJwt(user.id)
+            }
             responseObserver?.onNext(
-                UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build()
+                UserToken.newBuilder().setUser(UserUtils.toUserGrpc(user)).setToken(token).build()
             )
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -81,14 +95,14 @@ class UserService(
 
     @Transactional
     override fun changeUserData(
-        request: UserOuterClass.SetUser?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: UserToken?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
             userRepository.save(UserUtils.fromUserGrpc(request.user!!))
             responseObserver?.onNext(
-                UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+                IsSuccess.newBuilder().setLogin(true).build()
             )
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -98,25 +112,25 @@ class UserService(
 
     @Transactional
     override fun deleteUser(
-        request: UserOuterClass.JwtProto?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: JwtProto?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         super.deleteUser(request, responseObserver)
     }
 
     override fun getUserById(
-        request: UserOuterClass.GetByUserIdRequest?,
-        responseObserver: StreamObserver<UserResponse>?
+        request: UserId?,
+        responseObserver: StreamObserver<UserToken>?
     ) {
         val user = userRepository.findById(request!!.id).get();
-        responseObserver?.onNext(UserResponse.newBuilder().setUser(UserUtils.toUserGrpc(user)).build())
+        responseObserver?.onNext(UserToken.newBuilder().setUser(UserUtils.toUserGrpc(user)).build())
         responseObserver?.onCompleted()
     }
 
     @Transactional
     override fun addComment(
-        request: UserOuterClass.CommentProto?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: CommentProto?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
@@ -133,7 +147,7 @@ class UserService(
                 )
             )
             responseObserver?.onNext(
-                UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+                IsSuccess.newBuilder().setLogin(true).build()
             )
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -142,8 +156,8 @@ class UserService(
     }
 
     override fun getUserComments(
-        request: UserOuterClass.JwtProto?,
-        responseObserver: StreamObserver<UserOuterClass.CommentsResponse>?
+        request: JwtProto?,
+        responseObserver: StreamObserver<CommentsResponse>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
@@ -157,8 +171,8 @@ class UserService(
 
     @Transactional
     override fun deleteComment(
-        request: UserOuterClass.IdAndJwt?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: IdToken?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
@@ -170,7 +184,7 @@ class UserService(
                 userRepository.save(user)
                 commentRepository.delete(comment)
                 responseObserver?.onNext(
-                    UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+                    IsSuccess.newBuilder().setLogin(true).build()
                 )
             } else {
                 responseObserver?.onError(
@@ -184,8 +198,8 @@ class UserService(
     }
 
     override fun getComments(
-        request: UserOuterClass.GetByUserIdRequest?,
-        responseObserver: StreamObserver<UserOuterClass.CommentsResponse>?
+        request: UserId?,
+        responseObserver: StreamObserver<CommentsResponse>?
     ) {
         val comments = commentRepository.findByConvictedId(request!!.id)
         responseObserver?.onNext(CommentUtils.toRepeatedCommentGrpc(comments))
@@ -194,8 +208,8 @@ class UserService(
 
     @Transactional
     override fun editComment(
-        request: UserOuterClass.EditCommentRequest?,
-        responseObserver: StreamObserver<UserOuterClass.IsSuccess>?
+        request: EditCommentRequest?,
+        responseObserver: StreamObserver<IsSuccess>?
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
@@ -207,7 +221,7 @@ class UserService(
                 userRepository.save(convicted)
                 commentRepository.save(CommentUtils.fromCommentGrpc(request.comment, owner, convicted))
                 responseObserver?.onNext(
-                    UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
+                    IsSuccess.newBuilder().setLogin(true).build()
                 )
             } else {
                 responseObserver?.onError(

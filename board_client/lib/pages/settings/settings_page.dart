@@ -115,7 +115,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            userRepository.logout();
+                            userRepository.logout(userId!);
                           },
                           child: Text("Выйти из аккаунта",
                               style: Theme.of(context).textTheme.bodyMedium),

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/headers/ad_header.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -77,6 +78,9 @@ class _AdPageState extends State<AdPage> {
                         bloc: _imageBloc,
                         builder: (context, state) {
                           if (state is ImageLoaded) {
+                            if(state.images.isEmpty) {
+                              return NoImageWidget();
+                            }
                             imageMax = state.images.length;
                             return Column(
                               children: [
@@ -100,8 +104,7 @@ class _AdPageState extends State<AdPage> {
                                     },
                                     onPageChanged: (pagePosition) {
                                       setState(() {
-                                        imageCount = pagePosition +
-                                            ((state.images.isEmpty) ? 1 : 0);
+                                        imageCount = pagePosition + 1;
                                       });
                                     },
                                   ),
@@ -122,13 +125,12 @@ class _AdPageState extends State<AdPage> {
                             return TryAgainWidget(
                               exception: state.exception,
                               onPressed: () {
-                                _imageBloc.add(
-                                    LoadImageList(widget.idAd, false));
+                                _imageBloc
+                                    .add(LoadImageList(widget.idAd, false));
                               },
                             );
                           }
-                          return const Center(
-                              child: CircularProgressIndicator());
+                          return ShimmeringContainer();
                         },
                       ),
                     ),
@@ -195,7 +197,7 @@ class _AdPageState extends State<AdPage> {
                 },
               );
             }
-            return const Center(child: CircularProgressIndicator());
+            return ShimmeringContainer();
           },
         ),
       ),

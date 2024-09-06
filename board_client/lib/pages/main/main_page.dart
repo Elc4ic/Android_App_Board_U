@@ -329,7 +329,8 @@ Future<void> filterDialog(
                     contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
               ),
               Markup.dividerH10,
-              Text("Сортировка", style: Theme.of(context).textTheme.titleMedium),
+              Text("Сортировка",
+                  style: Theme.of(context).textTheme.titleMedium),
               DropdownButtonFormField(
                 items: query.map((String orderBy) {
                   return DropdownMenuItem(
@@ -372,7 +373,7 @@ Future<void> filterDialog(
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      if(formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         page = 0;
                         if (maxController.text.isNotEmpty) {
                           priceMax = int.parse(maxController.text);
@@ -380,7 +381,8 @@ Future<void> filterDialog(
                         if (minController.text.isNotEmpty) {
                           priceMin = int.parse(minController.text);
                         }
-                        commonAddress = addressController.text;
+                        commonAddress =
+                            Markup.capitalize(addressController.text);
                         adListBloc.add(LoadAdList(
                             commonSearch,
                             commonAddress,

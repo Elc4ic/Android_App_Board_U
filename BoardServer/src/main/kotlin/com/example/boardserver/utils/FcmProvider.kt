@@ -2,14 +2,13 @@ package com.example.boardserver.utils
 
 import com.example.boardserver.entity.DeviceToken
 import com.example.boardserver.entity.User
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import java.util.Base64
+import java.util.*
 import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
+
 
 @Component
 class FcmProvider(
@@ -18,7 +17,8 @@ class FcmProvider(
     private val key: SecretKey
 
     init {
-        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey))
+        val decodedKey = Base64.getDecoder().decode(secretKey)
+        this.key = SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
     }
 
     fun createTokenEntity(user: User, token: String): DeviceToken{
@@ -27,12 +27,6 @@ class FcmProvider(
             user = user,
             deviceToken = encrypt(token)
         )
-    }
-
-    fun generateKey(): SecretKey {
-        val keyGen = KeyGenerator.getInstance("AES")
-        keyGen.init(256)
-        return keyGen.generateKey()
     }
 
     fun encrypt(input: String): String {

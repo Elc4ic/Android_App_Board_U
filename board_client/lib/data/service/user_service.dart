@@ -26,17 +26,6 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<SharedPreferences> getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
-  }
-
-  @override
-  Future<void> loadUser() async {
-    final response = await _client.getUserData(JwtProto(token: authToken));
-    appUser = response.user;
-  }
-
-  @override
   User? getUser() => appUser;
 
   @override
@@ -46,11 +35,21 @@ class UserService implements UserRepository {
   String? getFCMToken() => fmcToken;
 
   @override
-  Future<bool> isAuthAvailable() async {
+  Future<SharedPreferences> getSharedPreferences() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  @override
+  Future<bool> loadUserAndCheckRefresh() async {
     final sharedPreferences = await getSharedPreferences();
     authToken = sharedPreferences.getString('token');
+    print(authToken);
     if (authToken != null) {
-      final response = await _client.getUserData(JwtProto(token: authToken));
+      final response =
+          await _client.getUserAndRefresh(JwtProto(token: authToken));
+      authToken = response.token;
+      print(authToken);
+      sharedPreferences.setString('token', response.token);
       appUser = response.user;
       return true;
     }
@@ -65,7 +64,8 @@ class UserService implements UserRepository {
   }
 
   @override
-  Future<bool> logout() async {
+  Future<bool> logout(Int64 id) async {
+    await _client.logOut(UserId(id: id));
     final sharedPreferences = await getSharedPreferences();
     authToken = null;
     appUser = null;
@@ -104,13 +104,13 @@ class UserService implements UserRepository {
   @override
   Future<bool> changeUser(User? user) async {
     final response =
-        await _client.changeUserData(SetUser(user: user, token: authToken));
+        await _client.changeUserData(UserToken(user: user, token: authToken));
     return response.login;
   }
 
   @override
   Future<User> getUserById(Int64 id) async {
-    final user = await _client.getUserById(GetByUserIdRequest(id: id));
+    final user = await _client.getUserById(UserId(id: id));
     return user.user;
   }
 
@@ -131,13 +131,13 @@ class UserService implements UserRepository {
   @override
   Future<bool> deleteComment(Int64 id) async {
     final response =
-        await _client.deleteComment(IdAndJwt(id: id, token: authToken));
+        await _client.deleteComment(IdToken(id: id, token: authToken));
     return response.login;
   }
 
   @override
   Future<List<Comment>> getComments(Int64 id) async {
-    final comments = await _client.getComments(GetByUserIdRequest(id: id));
+    final comments = await _client.getComments(UserId(id: id));
     return comments.comments;
   }
 

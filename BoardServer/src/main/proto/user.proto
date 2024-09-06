@@ -6,14 +6,15 @@ package board;
 service UserAPI {
     rpc GetSignUp (SignupRequest) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
-    rpc GetUserData (JwtProto) returns (UserResponse);
-    rpc GetUserById (GetByUserIdRequest) returns (UserResponse);
-    rpc ChangeUserData (SetUser) returns (IsSuccess);
+    rpc GetUserAndRefresh (JwtProto) returns (UserToken);
+    rpc GetUserById (UserId) returns (UserToken);
+    rpc LogOut (UserId) returns (IsSuccess);
+    rpc ChangeUserData (UserToken) returns (IsSuccess);
     rpc DeleteUser (JwtProto) returns (IsSuccess);
     rpc AddComment (CommentProto) returns (IsSuccess);
     rpc EditComment (EditCommentRequest) returns (IsSuccess);
-    rpc DeleteComment (IdAndJwt) returns (IsSuccess);
-    rpc GetComments (GetByUserIdRequest) returns (CommentsResponse);
+    rpc DeleteComment (IdToken) returns (IsSuccess);
+    rpc GetComments (UserId) returns (CommentsResponse);
     rpc GetUserComments (JwtProto) returns (CommentsResponse);
 }
 
@@ -21,7 +22,7 @@ message IsSuccess {
     bool login = 1;
 }
 
-message GetByUserIdRequest {
+message UserId {
     uint64 id = 1;
 }
 
@@ -42,11 +43,7 @@ message SignupRequest {
     string phone = 3;
 }
 
-message UserResponse {
-    User user = 1;
-}
-
-message SetUser {
+message UserToken {
     User user = 1;
     string token = 2;
 }
@@ -91,7 +88,7 @@ message CommentsResponse {
     repeated Comment comments = 1;
 }
 
-message IdAndJwt {
+message IdToken {
     int64 id = 1;
     string token = 2;
 }

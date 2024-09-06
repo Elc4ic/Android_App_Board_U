@@ -47,8 +47,8 @@ class AdService implements AdRepository {
               address: address,
               category: category,
               query: query),
-          limit: fnum.Int64(pageSize),
-          page: fnum.Int64(page),
+          limit: pageSize,
+          page: page,
           token: token),
     );
     return response;

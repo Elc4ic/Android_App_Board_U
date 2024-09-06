@@ -1,5 +1,4 @@
 import 'package:board_client/data/repository/category_repository.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:grpc/grpc.dart';
 
 import '../../generated/ad.pbgrpc.dart';

@@ -27,22 +27,8 @@ const GetManyAdRequest$json = {
   '1': 'GetManyAdRequest',
   '2': [
     {'1': 'filter', '3': 1, '4': 1, '5': 11, '6': '.board.FilterQuery', '10': 'filter'},
-    {
-      '1': 'limit',
-      '3': 2,
-      '4': 1,
-      '5': 3,
-      '8': {'6': 2},
-      '10': 'limit',
-    },
-    {
-      '1': 'page',
-      '3': 3,
-      '4': 1,
-      '5': 3,
-      '8': {'6': 2},
-      '10': 'page',
-    },
+    {'1': 'limit', '3': 2, '4': 1, '5': 5, '10': 'limit'},
+    {'1': 'page', '3': 3, '4': 1, '5': 5, '10': 'page'},
     {'1': 'token', '3': 4, '4': 1, '5': 9, '10': 'token'},
   ],
 };
@@ -50,8 +36,8 @@ const GetManyAdRequest$json = {
 /// Descriptor for `GetManyAdRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getManyAdRequestDescriptor = $convert.base64Decode(
     'ChBHZXRNYW55QWRSZXF1ZXN0EioKBmZpbHRlchgBIAEoCzISLmJvYXJkLkZpbHRlclF1ZXJ5Ug'
-    'ZmaWx0ZXISGAoFbGltaXQYAiABKANCAjACUgVsaW1pdBIWCgRwYWdlGAMgASgDQgIwAlIEcGFn'
-    'ZRIUCgV0b2tlbhgEIAEoCVIFdG9rZW4=');
+    'ZmaWx0ZXISFAoFbGltaXQYAiABKAVSBWxpbWl0EhIKBHBhZ2UYAyABKAVSBHBhZ2USFAoFdG9r'
+    'ZW4YBCABKAlSBXRva2Vu');
 
 @$core.Deprecated('Use filterQueryDescriptor instead')
 const FilterQuery$json = {
@@ -151,14 +137,7 @@ const PaginatedAd$json = {
       '8': {'6': 2},
       '10': 'total',
     },
-    {
-      '1': 'page',
-      '3': 4,
-      '4': 1,
-      '5': 3,
-      '8': {'6': 2},
-      '10': 'page',
-    },
+    {'1': 'page', '3': 4, '4': 1, '5': 5, '10': 'page'},
     {
       '1': 'page_count',
       '3': 5,
@@ -173,8 +152,8 @@ const PaginatedAd$json = {
 /// Descriptor for `PaginatedAd`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List paginatedAdDescriptor = $convert.base64Decode(
     'CgtQYWdpbmF0ZWRBZBIdCgRkYXRhGAEgAygLMgkuYm9hcmQuQWRSBGRhdGESGAoFY291bnQYAi'
-    'ABKANCAjACUgVjb3VudBIYCgV0b3RhbBgDIAEoA0ICMAJSBXRvdGFsEhYKBHBhZ2UYBCABKANC'
-    'AjACUgRwYWdlEiEKCnBhZ2VfY291bnQYBSABKANCAjACUglwYWdlQ291bnQ=');
+    'ABKANCAjACUgVjb3VudBIYCgV0b3RhbBgDIAEoA0ICMAJSBXRvdGFsEhIKBHBhZ2UYBCABKAVS'
+    'BHBhZ2USIQoKcGFnZV9jb3VudBgFIAEoA0ICMAJSCXBhZ2VDb3VudA==');
 
 @$core.Deprecated('Use adDescriptor instead')
 const Ad$json = {

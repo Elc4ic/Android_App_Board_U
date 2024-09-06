@@ -10,6 +10,7 @@ import com.example.boardserver.repository.MessageRepository
 import com.example.boardserver.repository.TokenRepository
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.utils.ChatUtils
+import com.example.boardserver.utils.FcmProvider
 import com.example.boardserver.utils.JwtProvider
 import com.example.boardserver.utils.MessageUtils
 import com.google.firebase.messaging.FirebaseMessaging
@@ -19,7 +20,6 @@ import com.google.firebase.messaging.Notification
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
-import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
 import com.example.boardserver.entity.Chat as EntityChat
 
@@ -31,6 +31,7 @@ class ChatService(
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
     private val jwtProvider: JwtProvider,
+    private val fmcProvider: FcmProvider,
     private val firebaseMessaging: FirebaseMessaging,
 ) : board.ChatAPIGrpc.ChatAPIImplBase() {
 
@@ -63,8 +64,9 @@ class ChatService(
                 try {
                     val to = if (chat.owner.id == request.receiver) chat.receiver.id else chat.owner.id
                     val token = tokenRepository.findByUserId(to)
-                    val message: Message = Message.builder()
-                        .setToken(token.deviceToken)
+                    println(fmcProvider.decrypt(token.deviceToken))
+                    val fireMessage: Message = Message.builder()
+                        .setToken(fmcProvider.decrypt(token.deviceToken))
                         .setNotification(
                             Notification.builder()
                                 .setTitle("Новое сообщение от ${user.name}")
@@ -72,10 +74,10 @@ class ChatService(
                                 .build()
                         )
                         .build()
-                    firebaseMessaging.send(message)
-                    ResponseEntity.ok<String>("Message sent successfully")
+                    firebaseMessaging.send(fireMessage)
+                    println("Message sent successfully")
                 } catch (e: FirebaseMessagingException) {
-                    ResponseEntity.badRequest().body<String>("Error sending message: " + e.message)
+                    println("Message sent error" + e.message)
                 }
             }
 

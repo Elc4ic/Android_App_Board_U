@@ -180,13 +180,20 @@ class _SetAddressPageState extends State<SetAddressPage> {
                 ElevatedButton(
                   onPressed: () async {
                     var user = userRepository.getUser();
+                    var korpus = (campusf != "")
+                        ? ": к."
+                        : (gorodf != "")
+                            ? ": общ."
+                            : "";
+                    var room = (_blockController.text != "") ? "ком." : "";
                     user?.address = (type == 3)
                         ? _addressController.text
-                        : "${locf ?? ""}: к.${campusf ?? ""}${gorodf ?? ""} ком.${_blockController.text}";
+                        : "${locf ?? ""}$korpus${campusf ?? ""}${gorodf ?? ""} $room${_blockController.text}";
                     await userRepository.changeUser(user);
                     context.go(SC.SETTINGS_PAGE);
                   },
-                  child: Text("Сохранить", style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text("Сохранить",
+                      style: Theme.of(context).textTheme.bodyMedium),
                 ),
               ],
             ),

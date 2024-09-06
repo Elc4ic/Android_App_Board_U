@@ -28,6 +28,7 @@ class MiniProfile extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.memory(
+                    gaplessPlayback: true,
                     width: 50,
                     height: 50,
                     fit: BoxFit.fitWidth,
@@ -80,6 +81,7 @@ class MiniProfileButton extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.memory(
+                gaplessPlayback: true,
                 width: 40,
                 height: 40,
                 fit: BoxFit.cover,
@@ -117,6 +119,7 @@ class Profile extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(40),
                 child: Image.memory(
+                  gaplessPlayback: true,
                   width: 100,
                   height: 100,
                   fit: BoxFit.fitWidth,

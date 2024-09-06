@@ -52,8 +52,8 @@ class Empty extends $pb.GeneratedMessage {
 class GetManyAdRequest extends $pb.GeneratedMessage {
   factory GetManyAdRequest({
     FilterQuery? filter,
-    $fixnum.Int64? limit,
-    $fixnum.Int64? page,
+    $core.int? limit,
+    $core.int? page,
     $core.String? token,
   }) {
     final $result = create();
@@ -77,8 +77,8 @@ class GetManyAdRequest extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'GetManyAdRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'board'), createEmptyInstance: create)
     ..aOM<FilterQuery>(1, _omitFieldNames ? '' : 'filter', subBuilder: FilterQuery.create)
-    ..aInt64(2, _omitFieldNames ? '' : 'limit')
-    ..aInt64(3, _omitFieldNames ? '' : 'page')
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'limit', $pb.PbFieldType.O3)
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'page', $pb.PbFieldType.O3)
     ..aOS(4, _omitFieldNames ? '' : 'token')
     ..hasRequiredFields = false
   ;
@@ -116,18 +116,18 @@ class GetManyAdRequest extends $pb.GeneratedMessage {
   FilterQuery ensureFilter() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get limit => $_getI64(1);
+  $core.int get limit => $_getIZ(1);
   @$pb.TagNumber(2)
-  set limit($fixnum.Int64 v) { $_setInt64(1, v); }
+  set limit($core.int v) { $_setSignedInt32(1, v); }
   @$pb.TagNumber(2)
   $core.bool hasLimit() => $_has(1);
   @$pb.TagNumber(2)
   void clearLimit() => clearField(2);
 
   @$pb.TagNumber(3)
-  $fixnum.Int64 get page => $_getI64(2);
+  $core.int get page => $_getIZ(2);
   @$pb.TagNumber(3)
-  set page($fixnum.Int64 v) { $_setInt64(2, v); }
+  set page($core.int v) { $_setSignedInt32(2, v); }
   @$pb.TagNumber(3)
   $core.bool hasPage() => $_has(2);
   @$pb.TagNumber(3)
@@ -486,7 +486,7 @@ class PaginatedAd extends $pb.GeneratedMessage {
     $core.Iterable<Ad>? data,
     $fixnum.Int64? count,
     $fixnum.Int64? total,
-    $fixnum.Int64? page,
+    $core.int? page,
     $fixnum.Int64? pageCount,
   }) {
     final $result = create();
@@ -515,7 +515,7 @@ class PaginatedAd extends $pb.GeneratedMessage {
     ..pc<Ad>(1, _omitFieldNames ? '' : 'data', $pb.PbFieldType.PM, subBuilder: Ad.create)
     ..aInt64(2, _omitFieldNames ? '' : 'count')
     ..aInt64(3, _omitFieldNames ? '' : 'total')
-    ..aInt64(4, _omitFieldNames ? '' : 'page')
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'page', $pb.PbFieldType.O3)
     ..aInt64(5, _omitFieldNames ? '' : 'pageCount')
     ..hasRequiredFields = false
   ;
@@ -563,9 +563,9 @@ class PaginatedAd extends $pb.GeneratedMessage {
   void clearTotal() => clearField(3);
 
   @$pb.TagNumber(4)
-  $fixnum.Int64 get page => $_getI64(3);
+  $core.int get page => $_getIZ(3);
   @$pb.TagNumber(4)
-  set page($fixnum.Int64 v) { $_setInt64(3, v); }
+  set page($core.int v) { $_setSignedInt32(3, v); }
   @$pb.TagNumber(4)
   $core.bool hasPage() => $_has(3);
   @$pb.TagNumber(4)
