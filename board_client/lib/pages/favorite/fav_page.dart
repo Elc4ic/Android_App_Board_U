@@ -1,4 +1,5 @@
 import 'package:board_client/pages/favorite/widget/row_card.dart';
+import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,12 +64,21 @@ class _FavPageState extends State<FavPage> {
                   );
                 }
                 return ListView.builder(
-                  padding: Markup.padding_all_4,
                   itemCount: state.adList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return RowCard(
-                      ad: state.adList[index],
-                      token: userRepository.getToken(),
+                    if(index ==0){
+                      return VBlackBox(
+                        child: RowCard(
+                          ad: state.adList[index],
+                          token: userRepository.getToken(),
+                        ),
+                      );
+                    }
+                    return BBlackBox(
+                      child: RowCard(
+                        ad: state.adList[index],
+                        token: userRepository.getToken(),
+                      ),
                     );
                   },
                 );

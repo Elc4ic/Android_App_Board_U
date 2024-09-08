@@ -17,9 +17,14 @@ class Markup {
   static const EdgeInsets padding_all_4 = EdgeInsets.all(4);
   static const EdgeInsets padding_all_2 = EdgeInsets.all(2);
   static const EdgeInsets padding_t_l_8 = EdgeInsets.only(left: 8, top: 8);
+  static const EdgeInsets padding_h_24_t_16_b_4 = EdgeInsets.only(left: 12,right: 12, top: 24, bottom: 4);
+  static const EdgeInsets padding_h_16_t_4_b_16 = EdgeInsets.only(left: 16,right: 16, top: 4, bottom: 16);
+  static const EdgeInsets padding_l_16_t_24_b_2 = EdgeInsets.only(left: 16, top: 24, bottom: 2);
+  static const EdgeInsets padding_h_8_t_12_b_2 = EdgeInsets.only(left: 4,right: 4, top: 12, bottom: 2);
   static const EdgeInsets padding_h_16_v_4 =
       EdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static const EdgeInsets padding_h_8 = EdgeInsets.symmetric(horizontal: 8);
+  static const EdgeInsets padding_h_4 = EdgeInsets.symmetric(horizontal: 4);
 
   //dividers
   static const Widget dividerH5 = SizedBox(height: 5);
@@ -35,7 +40,8 @@ class Markup {
     return width > 1700 ? 1700 : width;
   }
 
-  static String capitalize(String str) {
+  static String capitalize(String? str) {
+    if(str==null || str == "") return "";
     return "${str[0].toUpperCase()}${str.substring(1)}";
   }
 

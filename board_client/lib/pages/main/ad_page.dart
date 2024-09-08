@@ -14,6 +14,7 @@ import '../../bloc/image_bloc/image_bloc.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/chat_repository.dart';
 import '../../data/repository/user_repository.dart';
+import '../../widgets/black_containers.dart';
 import '../../widgets/mini_profile.dart';
 import '../../widgets/widgets.dart';
 
@@ -72,13 +73,14 @@ class _AdPageState extends State<AdPage> {
                 ),
                 body: ListView(
                   children: [
+                    Divider(),
                     SizedBox(
-                      height: 412,
+                      height: 416,
                       child: BlocBuilder<ImageBloc, ImageState>(
                         bloc: _imageBloc,
                         builder: (context, state) {
                           if (state is ImageLoaded) {
-                            if(state.images.isEmpty) {
+                            if (state.images.isEmpty) {
                               return NoImageWidget();
                             }
                             imageMax = state.images.length;
@@ -110,7 +112,7 @@ class _AdPageState extends State<AdPage> {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 12,
+                                  height: 16,
                                   child: Center(
                                     child: Text("$imageCount/$imageMax",
                                         style: Theme.of(context)
@@ -134,56 +136,115 @@ class _AdPageState extends State<AdPage> {
                         },
                       ),
                     ),
-                    Padding(
-                      padding: Markup.padding_h_8,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("${state.ad.price} ${SC.RUBLES}",
-                              style: Theme.of(context).textTheme.bodyLarge),
-                          Text(state.ad.title,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        VerticalBlackBox(
+                          padding: Markup.padding_h_24_t_16_b_4,
+                          child: Text(state.ad.title,
                               style: Theme.of(context).textTheme.titleLarge),
-                          Markup.dividerH10,
-                          Text("Описание:",
-                              style: Theme.of(context).textTheme.labelMedium),
-                          Text(state.ad.description,
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          Markup.dividerH10,
-                          Text(state.ad.created,
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          Markup.dividerH10,
-                          MiniProfile(user: state.ad.user),
-                          Markup.dividerH10,
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text("Позвонить",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge),
-                                ),
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: Markup.padding_l_16_t_24_b_2,
+                                child: Text("${state.ad.price} ${SC.RUBLES}",
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge),
                               ),
-                              Markup.dividerW10,
-                              Expanded(
+                            ),
+                            LBlackBox(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints.tightFor(height: 64),
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    final chatId = await chatRepository
-                                        .startChat(state.ad, token);
+                                    final chatId = await chatRepository.startChat(
+                                        state.ad, token);
                                     context.push("/chat/$chatId");
                                   },
-                                  child: Text("Написать",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge),
+                                  child: Expanded(
+                                    child: Text("Написать",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge),
+                                  ),
                                 ),
                               ),
-                            ],
-                          )
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        VerticalBlackBox(
+                          padding: Markup.padding_h_16_t_4_b_16,
+                          child: Text(state.ad.created,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: Markup.padding_h_16_t_4_b_16,
+                                child: Text("${state.ad.views} просмотров",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelMedium),
+                              ),
+                            ),
+                            Markup.dividerW10,
+                            Expanded(
+                              child: LBlackBox(
+                                  child: MiniProfile(user: state.ad.user)),
+                            )
+                          ],
+                        ),
+                        VerticalBlackBox(
+                          padding: Markup.padding_l_16_t_24_b_2,
+                          child: Text("Описание:",
+                              style: Theme.of(context).textTheme.labelLarge),
+                        ),
+                        Row(
+                          children: [
+                            Container(
+                              width: 60,
+                            ),
+                            Expanded(
+                              child: LBlackBox(
+                                  padding: Markup.padding_all_8,
+                                  child: Text(state.ad.description,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium)),
+                            ),
+                          ],
+                        ),
+                        /*Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                child: Text("Позвонить",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge),
+                              ),
+                            ),
+                            Markup.dividerW10,
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final chatId = await chatRepository.startChat(
+                                      state.ad, token);
+                                  context.push("/chat/$chatId");
+                                },
+                                child: Text("Написать",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge),
+                              ),
+                            ),
+                          ],
+                        )*/
+                      ],
                     ),
                   ],
                 ),

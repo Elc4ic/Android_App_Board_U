@@ -22,7 +22,6 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-
   final _commentBloc = UserBloc(
     GetIt.I<UserRepository>(),
   );
@@ -41,63 +40,58 @@ class _CommentPageState extends State<CommentPage> {
           onRefresh: () async {
             _commentBloc.add(LoadComments(widget.userId));
           },
-          child: Padding(
-            padding: Markup.padding_all_16,
-            child: BlocBuilder<UserBloc, UserState>(
-              bloc: _commentBloc,
-              builder: (context, state) {
-                if (state is CommentsLoaded) {
-                  if (state.comments.isEmpty) {
-                    return CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: 100,
-                            child: Center(
-                              child: Text(SC.SEARCH_NOTHING,
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                            ),
+          child: BlocBuilder<UserBloc, UserState>(
+            bloc: _commentBloc,
+            builder: (context, state) {
+              if (state is CommentsLoaded) {
+                if (state.comments.isEmpty) {
+                  return CustomScrollView(
+                    slivers: [
+                      SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: 100,
+                          child: Center(
+                            child: Text(SC.SEARCH_NOTHING,
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
-                        )
-                      ],
-                    );
-                  }
-                  return ListView.builder(
-                    padding: Markup.padding_all_4,
-                    itemCount: state.comments.length+1,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return firstInfo(state.user);
-                      } else {
-                        return CommentRow(comment: state.comments[index-1],isMine: false,userBloc: _commentBloc);
-                      }
-                    },
+                        ),
+                      )
+                    ],
                   );
                 }
-                if (state is UserLoadingFailure) {
-                  return TryAgainWidget(
-                    exception: state.exception,
-                    onPressed: () {
-                      _commentBloc.add(LoadComments(widget.userId));
-                    },
-                  );
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            ),
+                return ListView.builder(
+                  itemCount: state.comments.length + 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    if (index == 0) {
+                      return firstInfo(state.user);
+                    } else {
+                      return CommentRow(
+                          comment: state.comments[index - 1],
+                          isMine: false,
+                          userBloc: _commentBloc);
+                    }
+                  },
+                );
+              }
+              if (state is UserLoadingFailure) {
+                return TryAgainWidget(
+                  exception: state.exception,
+                  onPressed: () {
+                    _commentBloc.add(LoadComments(widget.userId));
+                  },
+                );
+              }
+              return const Center(child: CircularProgressIndicator());
+            },
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: Markup.padding_all_4,
-        child: ElevatedButton(
-          onPressed: () {
-            context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
-          },
-          child:
-              Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
-        ),
+      bottomNavigationBar: ElevatedButton(
+        onPressed: () {
+          context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
+        },
+        child:
+            Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
       ),
     );
   }
@@ -129,5 +123,3 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 }
-
-

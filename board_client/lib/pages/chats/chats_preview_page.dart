@@ -7,6 +7,7 @@ import '../../bloc/chat_bloc/chat_bloc.dart';
 import '../../data/repository/chat_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
+import '../../widgets/black_containers.dart';
 import '../../widgets/widgets.dart';
 
 class ChatsPreviewPage extends StatefulWidget {
@@ -34,8 +35,7 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Чаты",
-            style: Theme.of(context).textTheme.labelLarge),
+        title: Text("Чаты", style: Theme.of(context).textTheme.labelLarge),
       ),
       body: SafeArea(
         child: RefreshIndicator(
@@ -62,13 +62,23 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                   );
                 }
                 return ListView.builder(
-                  padding: Markup.padding_all_4,
                   itemCount: state.chat.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return ChatRow(
-                      chat: state.chat[index],
-                      token: userRepository.getToken(),
-                      chatBloc: _chatListBloc,
+                    if (index == 0) {
+                      return VBlackBox(
+                        child: ChatRow(
+                          chat: state.chat[index],
+                          token: userRepository.getToken(),
+                          chatBloc: _chatListBloc,
+                        ),
+                      );
+                    }
+                    return BBlackBox(
+                      child: ChatRow(
+                        chat: state.chat[index],
+                        token: userRepository.getToken(),
+                        chatBloc: _chatListBloc,
+                      ),
                     );
                   },
                 );

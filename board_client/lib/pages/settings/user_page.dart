@@ -75,6 +75,9 @@ class _UserPageState extends State<UserPage> {
                       child: Center(child: CircularProgressIndicator()));
                 },
               ),
+            const SliverToBoxAdapter(
+              child: Markup.dividerH10
+            ),
               BlocBuilder<AdListBloc, AdListState>(
                 bloc: _adListBloc,
                 builder: (context, state) {

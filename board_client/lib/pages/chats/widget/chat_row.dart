@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:board_client/bloc/chat_bloc/chat_bloc.dart';
 import 'package:board_client/generated/chat.pb.dart';
+import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,80 +39,86 @@ class _ChatRowState extends State<ChatRow> {
   Widget build(BuildContext context) {
     _imageBloc.add(LoadImageList(widget.chat.ad.id, true));
     return SizedBox(
-      height: 120,
-      child: Card(
-        child: InkWell(
-          onLongPress: () => myDialog(context, () async {
-            GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
-            widget.chatBloc.add(LoadChatList());
-            context.pop();
-          }, "Вы уверенны, что хотите удалить чат?"),
-          onTap: () {
-            context.push("/chat/${widget.chat.id}");
-          },
-          child: Row(
-            children: [
-              Padding(
+      height: 106,
+      child: InkWell(
+        onLongPress: () => myDialog(context, () async {
+          GetIt.I<ChatRepository>().deleteChat(widget.chat.id, widget.token);
+          widget.chatBloc.add(LoadChatList());
+          context.pop();
+        }, "Вы уверенны, что хотите удалить чат?"),
+        onTap: () {
+          context.push("/chat/${widget.chat.id}");
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: Markup.padding_all_8,
+              child: BlocBuilder<ImageBloc, ImageState>(
+                bloc: _imageBloc,
+                builder: (context, state) {
+                  if (state is ImageLoaded) {
+                    return Image.memory(
+                      gaplessPlayback: true,
+                      width: 90,
+                      height: 90,
+                      fit: BoxFit.fitWidth,
+                      Uint8List.fromList(state.images.first),
+                    );
+                  }
+                  if (state is ImageLoadingFailure) {
+                    return Container(
+                      width: 100,
+                      height: 90,
+                      color: Colors.blueAccent,
+                    );
+                  }
+                  return const SizedBox(
+                      width: 90,
+                      height: 90,
+                      child: Center(child: CircularProgressIndicator()));
+                },
+              ),
+            ),
+            Expanded(
+              child: LBlackBox(
                 padding: Markup.padding_all_8,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: BlocBuilder<ImageBloc, ImageState>(
-                        bloc: _imageBloc,
-                        builder: (context, state) {
-                          if (state is ImageLoaded) {
-                            return Image.memory(
-                              gaplessPlayback: true,
-                              width: 100,
-                              height: 90,
-                              fit: BoxFit.fitWidth,
-                              Uint8List.fromList(state.images.first),
-                            );
-                          }
-                          if (state is ImageLoadingFailure) {
-                            return Container(
-                              width: 100,
-                              height: 90,
-                              color: Colors.blueAccent,
-                            );
-                          }
-                          return const SizedBox(
-                              width: 100,
-                              height: 90,
-                              child:
-                                  Center(child: CircularProgressIndicator()));
-                        },
-                      ),
-                    ),
-                    Markup.dividerW10,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(widget.chat.target.username,
-                                style: Theme.of(context).textTheme.labelSmall),
-                          ],
+                        Image.memory(
+                          gaplessPlayback: true,
+                          width: 30,
+                          height: 30,
+                          fit: BoxFit.fitWidth,
+                          Uint8List.fromList(widget.chat.target.avatar),
                         ),
-                        Text(widget.chat.ad.title.length < 22
-                            ? widget.chat.ad.title
-                            : "${widget.chat.ad.title.substring(0, 21)}...",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        Text("${widget.chat.ad.price}P",
-                            style: Theme.of(context).textTheme.titleMedium),
-                        Markup.dividerH5,
-                        Text("Последнее сообщение",
-                            style: Theme.of(context).textTheme.bodySmall),
+                        Markup.dividerW5,
+                        Text(widget.chat.target.username,
+                            style: Theme.of(context).textTheme.labelSmall),
                       ],
-                    )
+                    ),
+                    Row(
+                      children: [
+                        Text("${widget.chat.ad.price}P",
+                            style: Theme.of(context).textTheme.labelMedium),
+                        Markup.dividerW5,
+                        Text(
+                            widget.chat.ad.title.length < 18
+                                ? widget.chat.ad.title
+                                : "${widget.chat.ad.title.substring(0, 17)}...",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ],
+                    ),
+                    Text("Последнее сообщение:",
+                        style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

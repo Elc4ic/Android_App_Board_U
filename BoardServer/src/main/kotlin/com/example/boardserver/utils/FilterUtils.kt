@@ -64,16 +64,8 @@ object FilterUtils {
 
                     query.orderBy(
                         cb.desc(
-                            cb.literal(RecommendationUtils.calculateSimilarity(cb,root, favList))
+                            cb.literal(RecommendationUtils.calculateSimilarity(cb, root, favList))
                                 .`as`(Double::class.java),
-                            /*cb.function(
-                                "calculate_similarity",
-                                Double::class.java,
-                                root.get<Ad>("title"),
-                                root.get<Ad>("price"),
-                                root.get<Ad>("category").get<Category>("id"),
-                                cb.literal(userId).`as`(Long::class.java)
-                            )*/
                         )
                     )
                 }

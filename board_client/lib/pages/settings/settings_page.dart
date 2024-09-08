@@ -1,3 +1,4 @@
+import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import '../../bloc/user_bloc/user_bloc.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/widgets.dart';
+import '../advertisement/widget/my_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -26,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
   );
 
   @override
-  void initState(){
+  void initState() {
     userId = userRepository.getUser()!.id;
     _userBloc.add(LoadUser(userId!));
     super.initState();
@@ -65,64 +67,69 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
               ),
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: Markup.padding_h_8,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => changeDialog(context),
-                                child: Text("Изменить имя",
-                                    style: Theme.of(context).textTheme.bodyMedium),
-                              ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => changeDialog(context),
+                              child: Text("Изменить имя",
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
                             ),
-                            Markup.dividerW10,
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () => avatarDialog(context),
-                                child: Text("Изменить аватар",
-                                    style: Theme.of(context).textTheme.bodyMedium),
-                              ),
+                          ),
+                          Expanded(
+                            child: ElevatedButton(
+                              onPressed: () => avatarDialog(context),
+                              child: Text("Изменить аватар",
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push("/setaddress");
+                        },
+                        child: Text("Настроить адресс",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.push("/usercomments");
+                        },
+                        child: Text("Отправленные комментарии",
+                            style: Theme.of(context).textTheme.bodyMedium),
+                      ),
+                    ),
+                    const SizedBox(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.push("/setaddress");
-                          },
-                          child: Text("Настроить адресс",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
+                        height: 100,
+                        child: TBlackBox(
+                          child: Center(),
+                        )),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => myDialog(context, () async {
+                          userRepository.logout(userId!);
+                          context.pop();
+                        }, "Вы уверенны, что хотите выйти из аккаунта?"),
+                        child: Text("Выйти из аккаунта",
+                            style: Theme.of(context).textTheme.bodyMedium),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.push("/usercomments");
-                          },
-                          child: Text("Отправленные комментарии",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            userRepository.logout(userId!);
-                          },
-                          child: Text("Выйти из аккаунта",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

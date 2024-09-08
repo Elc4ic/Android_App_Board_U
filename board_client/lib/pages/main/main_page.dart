@@ -90,17 +90,23 @@ class _MainPageState extends State<MainPage> {
                     bloc: _catListBloc,
                     builder: (context, state) {
                       if (state is CategoryListLoaded) {
-                        return Wrap(
-                          spacing: 5,
-                          children: generateCategory(
-                              state.categories, context, _adListBloc),
+                        return Column(
+                          children: [
+                            Wrap(
+                              children: generateCategory(
+                                  state.categories, context, _adListBloc),
+                            ),
+                            Markup.dividerH10,
+                          ],
                         );
                       }
                       if (state is CategoryFailure) {
                         return Center(
                           child: TryAgainWidget(
                             exception: state.exception,
-                            onPressed: () {},
+                            onPressed: () {
+                              _catListBloc.add(LoadCategories());
+                            },
                           ),
                         );
                       }
@@ -116,7 +122,7 @@ class _MainPageState extends State<MainPage> {
                       if (state.adList.isEmpty) {
                         return SliverFillRemaining(
                           child: SizedBox(
-                            height: 100,
+                            height: 200,
                             child: Center(
                               child: Text(SC.SEARCH_NOTHING,
                                   style:

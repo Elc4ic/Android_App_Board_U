@@ -11,8 +11,8 @@ class CustomShape extends CustomPainter {
 
     var path = Path();
     path.lineTo(-5, 0);
-    path.lineTo(0, 10);
-    path.lineTo(5, 0);
+    path.lineTo(0, 20);
+    path.lineTo(15, 0);
     canvas.drawPath(path, paint);
   }
 

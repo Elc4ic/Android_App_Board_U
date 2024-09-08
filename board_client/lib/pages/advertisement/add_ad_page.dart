@@ -1,8 +1,12 @@
 import 'dart:io';
 
+import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/form/add_form.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../../widgets/black_containers.dart';
 
 
 class AddAdPage extends StatefulWidget {
@@ -35,8 +39,11 @@ class _AddAdPageState extends State<AddAdPage> {
                 width: 100,
                 fit: BoxFit.cover,
               ),
-              Text((index + 1).toString(),
-                  style: Theme.of(context).textTheme.bodyMedium),
+              Padding(
+                padding: Markup.padding_h_4,
+                child: Text((index + 1).toString(),
+                    style: Theme.of(context).textTheme.bodyMedium),
+              ),
               const Align(
                   alignment: Alignment.topRight,
                   child: Icon(Icons.close, size: 20, color: Colors.black87)),
@@ -56,11 +63,8 @@ class _AddAdPageState extends State<AddAdPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Container(
+                child: BlackBox(
                   height: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(width: 2)),
                   child: InkWell(
                     onTap: _imagePick,
                     child: const Center(

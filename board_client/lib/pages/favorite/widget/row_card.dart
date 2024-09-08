@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:board_client/values/values.dart';
+import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,69 +33,65 @@ class _RowCardState extends State<RowCard> {
   @override
   Widget build(BuildContext context) {
     _imageBloc.add(LoadImageList(widget.ad.id, true));
-    return SizedBox(
-      height: 120,
-      child: Card(
-        child: InkWell(
-          onTap: () {
-            context.push("/ad/${widget.ad.id}");
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
+    return Card(
+      child: InkWell(
+        onTap: () {
+          context.push("/ad/${widget.ad.id}");
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RBlackBox(
+              child: Padding(
                 padding: Markup.padding_all_8,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                child: BlocBuilder<ImageBloc, ImageState>(
+                  bloc: _imageBloc,
+                  builder: (context, state) {
+                    if (state is ImageLoaded) {
+                      return Image.memory(
+                        gaplessPlayback: true,
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.fitWidth,
+                        Uint8List.fromList(state.images.first),
+                      );
+                    }
+                    if (state is ImageLoadingFailure) {
+                      return Container(
+                        width: 90,
+                        height: 90,
+                        color: Colors.blueAccent,
+                      );
+                    }
+                    return const SizedBox(
+                        width: 90,
+                        height: 90,
+                        child:
+                        Center(child: CircularProgressIndicator()));
+                  },
+                ),
+               ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: Markup.padding_all_8,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: BlocBuilder<ImageBloc, ImageState>(
-                        bloc: _imageBloc,
-                        builder: (context, state) {
-                          if (state is ImageLoaded) {
-                            return Image.memory(
-                              gaplessPlayback: true,
-                              width: 100,
-                              height: 90,
-                              fit: BoxFit.fitWidth,
-                              Uint8List.fromList(state.images.first),
-                            );
-                          }
-                          if (state is ImageLoadingFailure) {
-                            return Container(
-                              width: 100,
-                              height: 90,
-                              color: Colors.blueAccent,
-                            );
-                          }
-                          return const SizedBox(
-                              width: 100,
-                              height: 90,
-                              child:
-                                  Center(child: CircularProgressIndicator()));
-                        },
-                      ),
-                    ),
-                    Markup.dividerW10,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${widget.ad.price} P",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        Text( (widget.ad.title.length > 21)
-                            ? "${widget.ad.title.substring(0, 20)}..."
-                            : widget.ad.title,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ],
-                    )
+                    Text("${widget.ad.price} P",
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text( (widget.ad.title.length > 21)
+                        ? "${widget.ad.title.substring(0, 20)}..."
+                        : widget.ad.title,
+                        style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  FavButton(
+            ),
+            Column(
+              children: [
+                BLBlackBox(
+                  child: FavButton(
                     isFav: isFav,
                     onPressed: () {
                       setState(() {
@@ -102,11 +99,11 @@ class _RowCardState extends State<RowCard> {
                       });
                       adRepository.setFavoriteAd(widget.ad.id, widget.token);
                     },
-                  )
-                ],
-              )
-            ],
-          ),
+                  ),
+                )
+              ],
+            )
+          ],
         ),
       ),
     );

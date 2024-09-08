@@ -8,6 +8,7 @@ import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
+import '../../widgets/black_containers.dart';
 import '../../widgets/widgets.dart';
 
 class MyAdsPage extends StatefulWidget {
@@ -65,15 +66,26 @@ class _MyAdsPageState extends State<MyAdsPage> {
                     );
                   }
                   return ListView.builder(
-                      padding: Markup.padding_all_4,
-                      itemCount: state.adList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return AdRow(
+                    itemCount: state.adList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0) {
+                        return VBlackBox(
+                          child: AdRow(
+                            ad: state.adList[index],
+                            token: userRepository.getToken(),
+                            adListBloc: _adListBloc,
+                          ),
+                        );
+                      }
+                      return BBlackBox(
+                        child: AdRow(
                           ad: state.adList[index],
                           token: userRepository.getToken(),
                           adListBloc: _adListBloc,
-                        );
-                      });
+                        ),
+                      );
+                    },
+                  );
                 }
                 if (state is AdListLoadingFailure) {
                   return TryAgainWidget(

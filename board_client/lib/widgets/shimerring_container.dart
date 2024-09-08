@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 
 class ShimmeringContainer extends StatefulWidget {
@@ -21,10 +22,15 @@ class _ShimmeringContainerState extends State<ShimmeringContainer> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 300),
-      color: _index == 0 ? Colors.white10 : Colors.white70,
+      color: _index == 0 ? Colors.black45 : Colors.white70,
     );
   }
 }
@@ -44,6 +50,3 @@ class NoImageWidget extends StatelessWidget {
     );
   }
 }
-
-
-

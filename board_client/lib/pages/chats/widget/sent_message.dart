@@ -1,4 +1,5 @@
 import 'package:board_client/data/repository/chat_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -37,12 +38,7 @@ class SentMessageScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: const BoxDecoration(
-                  color: Colors.lightBlue,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(18),
-                    bottomLeft: Radius.circular(18),
-                    bottomRight: Radius.circular(18),
-                  ),
+                  color: MyColorConst.blue2,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -74,7 +70,7 @@ class SentMessageScreen extends StatelessWidget {
               ),
             ),
           ),
-          CustomPaint(painter: CustomShape(Colors.lightBlue)),
+          CustomPaint(painter: CustomShape(MyColorConst.blue2)),
         ],
       ),
     );

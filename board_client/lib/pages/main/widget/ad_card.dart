@@ -40,84 +40,87 @@ class _AdCardState extends State<AdCard> {
   Widget build(BuildContext context) {
     _imageBloc.add(LoadImageList(widget.ad.id, true));
     return Card(
-      elevation: 10,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10),
-        child: InkWell(
-          onTap: () {
-            context.push("/ad/${widget.ad.id}");
-          },
-          child: Column(
-            children: [
-              Flexible(
-                fit: FlexFit.tight,
-                flex: 5,
-                child: BlocBuilder<ImageBloc, ImageState>(
-                  bloc: _imageBloc,
-                  builder: (context, state) {
-                    if (state is ImageLoaded) {
-                      Uint8List bytes = Uint8List.fromList(state.images.first);
-                      return Image.memory(
-                        gaplessPlayback: true,
-                        width: Const.cellWidth,
-                        fit: BoxFit.fitWidth,
-                        bytes,
-                      );
-                    }
-                    if (state is ImageLoadingFailure) {
-                      return NoImageWidget();
-                    }
-                    return ShimmeringContainer();
-                  },
+      child: InkWell(
+        onTap: () {
+          context.push("/ad/${widget.ad.id}");
+        },
+        child: Column(
+          children: [
+            Flexible(
+              fit: FlexFit.tight,
+              flex: 5,
+              child: BlocBuilder<ImageBloc, ImageState>(
+                bloc: _imageBloc,
+                builder: (context, state) {
+                  if (state is ImageLoaded) {
+                    Uint8List bytes = Uint8List.fromList(state.images.first);
+                    return Image.memory(
+                      gaplessPlayback: true,
+                      width: Const.cellWidth,
+                      fit: BoxFit.fitWidth,
+                      bytes,
+                    );
+                  }
+                  if (state is ImageLoadingFailure) {
+                    return NoImageWidget();
+                  }
+                  return ShimmeringContainer();
+                },
+              ),
+            ),
+            Flexible(
+              flex: 3,
+              child: Container(
+                padding: Markup.padding_all_8,
+                decoration: const BoxDecoration(
+                    border: Border(
+                      top: BorderSide(
+                        width: 1,
+                      ),
+                    )
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              widget.ad.title.length < 26
+                                  ? widget.ad.title
+                                  : "${widget.ad.title.substring(0, 24)}...",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Text("${widget.ad.price} ${SC.RUBLES}",
+                              style: Theme.of(context).textTheme.bodyMedium),
+                          Text(selectAddress(),
+                              style: Theme.of(context).textTheme.bodySmall),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          FavButton(
+                            onPressed: () {
+                              adRepository.setFavoriteAd(
+                                  widget.ad.id, widget.token);
+                              setState(() {
+                                widget.ad.isFav = !widget.ad.isFav;
+                              });
+                            },
+                            isFav: widget.ad.isFav,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Flexible(
-                flex: 3,
-                child: Padding(
-                  padding: Markup.padding_all_8,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 4,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                widget.ad.title.length < 26
-                                    ? widget.ad.title
-                                    : "${widget.ad.title.substring(0, 24)}...",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                            Text("${widget.ad.price} ${SC.RUBLES}",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                            Text(selectAddress(),
-                                style: Theme.of(context).textTheme.bodySmall),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            FavButton(
-                              onPressed: () {
-                                adRepository.setFavoriteAd(
-                                    widget.ad.id, widget.token);
-                                setState(() {
-                                  widget.ad.isFav = !widget.ad.isFav;
-                                });
-                              },
-                              isFav: widget.ad.isFav,
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

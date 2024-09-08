@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:board_client/widgets/black_containers.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -50,14 +52,13 @@ class _AdRowState extends State<AdRow> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: Markup.padding_all_8,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(
+              Expanded(
+                child: HorizontalBlackBox(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Markup.dividerW10,
+                      Container(
                         width: 90,
                         height: 90,
                         color: Colors.black12,
@@ -67,43 +68,48 @@ class _AdRowState extends State<AdRow> {
                             if (state is ImageLoaded) {
                               return Image.memory(
                                 gaplessPlayback: true,
-                                fit: BoxFit.fitWidth,
+                                fit: BoxFit.cover,
                                 Uint8List.fromList(state.images.first),
                               );
                             }
                             if (state is ImageLoadingFailure) {
-                              return Container();
+                              return NoImageWidget();
                             }
                             return const Center(
                                 child: CircularProgressIndicator());
                           },
                         ),
                       ),
-                    ),
-                    Markup.dividerW10,
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${widget.ad.price} P",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        Text(
-                            (widget.ad.title.length > 18)
-                                ? "${widget.ad.title.substring(0, 17)}..."
-                                : widget.ad.title,
-                            style: Theme.of(context).textTheme.bodyMedium),
-                        Text(widget.ad.isActive ? SC.ACTIVE : SC.UNACTIVE,
-                            style: Theme.of(context).textTheme.bodySmall),
-                        Row(
+                      Markup.dividerW10,
+                      const VerticalDivider(width: 1),
+                      Padding(
+                        padding: Markup.padding_all_8,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.remove_red_eye),
-                            Markup.dividerW5,
-                            Text(widget.ad.views.toString(),
+                            Text("${widget.ad.price} P",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text(
+                                (widget.ad.title.length > 18)
+                                    ? "${widget.ad.title.substring(0, 17)}..."
+                                    : widget.ad.title,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            Text(widget.ad.isActive ? SC.ACTIVE : SC.UNACTIVE,
                                 style: Theme.of(context).textTheme.bodySmall),
+                            Spacer(),
+                            Row(
+                              children: [
+                                const Icon(Icons.remove_red_eye),
+                                Markup.dividerW5,
+                                Text(widget.ad.views.toString(),
+                                    style: Theme.of(context).textTheme.bodySmall),
+                              ],
+                            )
                           ],
-                        )
-                      ],
-                    )
-                  ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Wrap(

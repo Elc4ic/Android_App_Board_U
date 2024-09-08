@@ -31,11 +31,6 @@ class ReceivedMessageScreen extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: Colors.grey[300],
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(18),
-                  bottomLeft: Radius.circular(18),
-                  bottomRight: Radius.circular(18),
-                ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
