@@ -21,10 +21,16 @@ class _AddAdFormState extends State<LoginForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      await userRepository.login(
-          _usernameController.text, _passwordController.text);
-      NavItems.resetAllBranches(context);
-      context.go(SC.MAIN_PAGE);
+      try {
+        await userRepository.login(
+            _usernameController.text, _passwordController.text);
+        context.go(SC.MAIN_PAGE);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(e.toString()), backgroundColor: MyColorConst.error),
+        );
+      }
     }
   }
 
@@ -49,11 +55,11 @@ class _AddAdFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              validator:
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
+              validator: RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
             TextFormField(
+              obscureText: true,
               controller: _passwordController,
               keyboardType: TextInputType.visiblePassword,
               decoration: const InputDecoration(
@@ -65,19 +71,20 @@ class _AddAdFormState extends State<LoginForm> {
                   ),
                 ),
               ),
-              validator:
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
+              validator: RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             TextButton(
               onPressed: () {
                 context.push(SC.SIGNUP_PAGE);
               },
-              child: Text(SC.SIGN_UP, style: Theme.of(context).textTheme.bodySmall),
+              child: Text(SC.SIGN_UP,
+                  style: Theme.of(context).textTheme.bodySmall),
             ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
+              child:
+                  Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
             ),
           ],
         ),

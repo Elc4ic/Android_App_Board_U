@@ -11,6 +11,7 @@ object ChatUtils {
         return ChatPreview.newBuilder()
             .setId(chat.id)
             .setAd(AdUtils.toAdGrpc(chat.ad))
+            .setLastMessage(MessageUtils.toMessageGrpc(chat.lastMessage!!))
             .setTarget(UserUtils.toUserGrpc(chat.receiver))
             .build()
     }

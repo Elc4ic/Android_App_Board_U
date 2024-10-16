@@ -20,31 +20,21 @@ class _AddAdFormState extends State<SignUpForm> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  bool isPhoneValid(String s) {
-    if (s == null && s.length > 11 && s.length < 11 && !s.startsWith("7")) {
-      return false;
-    }
-    try {
-      double.parse(s);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  }
-
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        userRepository.signUp(
+        await userRepository.signUp(
           _usernameController.text,
           _passwordController.text,
           _phoneController.text,
         );
         context.go(SC.LOGIN_PAGE);
       } catch (e) {
-        _usernameController.clear();
-        _passwordController.clear();
-        _phoneController.clear();
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text(e.toString()),
+                backgroundColor: MyColorConst.error
+            ),);
       }
     }
   }
@@ -101,6 +91,7 @@ class _AddAdFormState extends State<SignUpForm> {
             ),
             Markup.dividerH10,
             TextFormField(
+              obscureText: true,
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: SC.PASSWORD,

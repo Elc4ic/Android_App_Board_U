@@ -9,4 +9,6 @@ import java.util.*
 interface UserRepository : JpaRepository<User, Long> {
     override fun findById(id: Long): Optional<User>
     fun findByUsername(username: String): Optional<User>
+    fun countByPhone(phone: String): Int
+    fun countByUsername(username: String): Int
 }

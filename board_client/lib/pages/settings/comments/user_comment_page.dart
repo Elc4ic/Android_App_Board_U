@@ -56,7 +56,6 @@ class _UserCommentPageState extends State<UserCommentPage> {
                   );
                 }
                 return ListView.builder(
-                  padding: Markup.padding_all_4,
                   itemCount: state.comments.length,
                   itemBuilder: (BuildContext context, int index) {
                     return CommentRow(comment: state.comments[index],isMine: true, userBloc: _commentBloc,);

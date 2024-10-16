@@ -38,7 +38,7 @@ class SentMessageScreen extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(14),
                 decoration: const BoxDecoration(
-                  color: MyColorConst.blue2,
+                  color: MyColorConst.blue1,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -70,7 +70,7 @@ class SentMessageScreen extends StatelessWidget {
               ),
             ),
           ),
-          CustomPaint(painter: CustomShape(MyColorConst.blue2)),
+          CustomPaint(painter: CustomShape(MyColorConst.blue1)),
         ],
       ),
     );

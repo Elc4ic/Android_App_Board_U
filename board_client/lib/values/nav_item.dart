@@ -10,10 +10,17 @@ class NavItems {
   ];
 
   static void resetAllBranches(BuildContext context) {
-    Navigator.of(context).popUntil((route) => route.isFirst);
+      final branches = StatefulNavigationShell.of(context).route.branches;
+      for (final branch in branches) {
+        try {
+          branch.navigatorKey.currentState?.popUntil((route) => route.isFirst);
+        } catch (e) {
+          continue;
+        }
+      }
   }
 
-  static List<ImageProto> imageFromFilePicker(List<XFile> files) {
+  static List<ImageProto> imagesFromFiles(List<XFile> files) {
     final webs = List<ImageProto>.empty(growable: true);
     files.forEach((it) async {
       webs.add(ImageProto(
@@ -40,8 +47,8 @@ class NavItems {
   static Future<Uint8List> avatarToWebp(Uint8List list) async {
     final result = await FlutterImageCompress.compressWithList(
       list,
-      minHeight: 100,
-      minWidth: 100,
+      minHeight: 120,
+      minWidth: 120,
       quality: 30,
       format: CompressFormat.webp,
     );

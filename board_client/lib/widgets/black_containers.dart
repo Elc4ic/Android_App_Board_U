@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BlackBox extends StatelessWidget {
-  const BlackBox({super.key, required this.child, this.height, this.padding});
+  const BlackBox({super.key, required this.child, this.height, this.padding, this.margin});
 
   final Widget child;
   final double? height;
   final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class BlackBox extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(border: Border.all(width: 1)),
       padding: padding,
+      margin: margin,
       child: child,
     );
   }
@@ -111,11 +113,12 @@ class LBlackBox extends StatelessWidget {
 }
 
 class BBlackBox extends StatelessWidget {
-  const BBlackBox({super.key, required this.child, this.height, this.padding});
+  const BBlackBox({super.key, required this.child, this.height, this.padding, this.margin});
 
   final Widget child;
   final double? height;
   final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
@@ -127,17 +130,19 @@ class BBlackBox extends StatelessWidget {
         ),
       ),
       padding: padding,
+      margin: margin,
       child: child,
     );
   }
 }
 
 class TBlackBox extends StatelessWidget {
-  const TBlackBox({super.key, required this.child, this.height, this.padding});
+  const TBlackBox({super.key, required this.child, this.height, this.padding, this.margin});
 
   final Widget child;
   final double? height;
   final EdgeInsets? padding;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
@@ -149,6 +154,7 @@ class TBlackBox extends StatelessWidget {
         ),
       ),
       padding: padding,
+      margin: margin,
       child: child,
     );
   }

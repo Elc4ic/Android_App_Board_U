@@ -1,4 +1,5 @@
 import 'package:board_client/pages/settings/comments/comment_row.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -25,6 +26,8 @@ class _CommentPageState extends State<CommentPage> {
   final _commentBloc = UserBloc(
     GetIt.I<UserRepository>(),
   );
+
+  final UserRepository userRepository = GetIt.I<UserRepository>();
 
   @override
   void initState() {
@@ -81,18 +84,20 @@ class _CommentPageState extends State<CommentPage> {
                   },
                 );
               }
-              return const Center(child: CircularProgressIndicator());
+              return ShimmeringContainer();
             },
           ),
         ),
       ),
-      bottomNavigationBar: ElevatedButton(
-        onPressed: () {
-          context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
-        },
-        child:
-            Text(SC.PUBLISH_AD, style: Theme.of(context).textTheme.bodyMedium),
-      ),
+      bottomNavigationBar: (userRepository.getUser()?.id != widget.userId)
+          ? ElevatedButton(
+              onPressed: () {
+                context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
+              },
+              child: Text(SC.PUBLISH_AD,
+                  style: Theme.of(context).textTheme.bodyMedium),
+            )
+          : null,
     );
   }
 

@@ -147,28 +147,25 @@ class _AdPageState extends State<AdPage> {
                         Row(
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: Markup.padding_l_16_t_24_b_2,
+                              child: Align(
+                                alignment: Alignment.bottomLeft,
                                 child: Text("${state.ad.price} ${SC.RUBLES}",
                                     style:
                                         Theme.of(context).textTheme.labelLarge),
                               ),
                             ),
                             LBlackBox(
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints.tightFor(height: 64),
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    final chatId = await chatRepository.startChat(
-                                        state.ad, token);
-                                    context.push("/chat/$chatId");
-                                  },
-                                  child: Expanded(
-                                    child: Text("Написать",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge),
-                                  ),
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final chatId = await chatRepository.startChat(
+                                      state.ad, token);
+                                  context.push("/chat/$chatId");
+                                },
+                                child: Expanded(
+                                  child: Text("Написать",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
                                 ),
                               ),
                             ),

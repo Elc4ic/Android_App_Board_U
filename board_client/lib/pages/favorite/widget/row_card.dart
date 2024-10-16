@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
+import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -63,11 +64,11 @@ class _RowCardState extends State<RowCard> {
                         color: Colors.blueAccent,
                       );
                     }
-                    return const SizedBox(
+                    return SizedBox(
                         width: 90,
                         height: 90,
                         child:
-                        Center(child: CircularProgressIndicator()));
+                        ShimmeringContainer());
                   },
                 ),
                ),

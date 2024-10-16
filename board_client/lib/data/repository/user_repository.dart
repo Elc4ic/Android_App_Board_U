@@ -24,6 +24,8 @@ abstract class UserRepository {
 
   Future<bool> logout(Int64 id);
 
+  Future<bool> deleteUser();
+
   Future<bool> login(String username, String password);
 
   Future<bool> signUp(String username, String password, String phone);

@@ -90,12 +90,16 @@ class AdService(
         request: AdOuterClass.GetByIdWithBoolRequest?,
         responseObserver: StreamObserver<AdOuterClass.RepeatedImageResponse>?
     ) {
-        if (request?.value == true) {
-            val image = imageRepository.findFirstByAdId(request.id).get()
-            responseObserver?.onNext(ImageUtils.toImageGrpcList(listOf(image)))
-        } else {
-            val images = imageRepository.findByAdId(request!!.id)
-            responseObserver?.onNext(ImageUtils.toImageGrpcList(images))
+        try {
+            if (request?.value == true) {
+                val image = imageRepository.findFirstByAdId(request.id).get()
+                responseObserver?.onNext(ImageUtils.toImageGrpcList(listOf(image)))
+            } else {
+                val images = imageRepository.findByAdId(request!!.id)
+                responseObserver?.onNext(ImageUtils.toImageGrpcList(images))
+            }
+        }catch (e: Exception){
+            responseObserver?.onNext(ImageUtils.toImageGrpcList(emptyList()))
         }
         responseObserver?.onCompleted()
     }
@@ -153,7 +157,7 @@ class AdService(
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
             favRepository.deleteAllByAdId(request.id)
-            imageRepository.deleteByAdId(request.id)
+            imageRepository.deleteAllByAdId(request.id)
             val chats = chatRepository.findByAdId(request.id)
             chats.forEach {
                 messageRepository.deleteAllByChatId(it.id);

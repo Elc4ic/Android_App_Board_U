@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:fixnum/fixnum.dart';
 
 import 'package:grpc/grpc.dart';
@@ -11,8 +10,8 @@ import '../repository/user_repository.dart';
 class UserService implements UserRepository {
   static String? authToken;
   static String? fmcToken;
-  static User? appUser;
   late UserAPIClient _client;
+  static User? appUser;
 
   UserService() {
     final channel = ClientChannel(
@@ -78,13 +77,11 @@ class UserService implements UserRepository {
       final request = LoginRequest(
           username: username, password: password, deviceToken: fmcToken);
       final response = await _client.getLogin(request);
-      log(response.accessToken);
       await updateToken(response.accessToken);
       appUser = response.user;
       return true;
     } catch (e) {
-      log("$e my login error");
-      return false;
+      throw Exception(e);
     }
   }
 
@@ -96,8 +93,7 @@ class UserService implements UserRepository {
       await _client.getSignUp(request);
       return true;
     } catch (e) {
-      log("$e my signUp error");
-      return false;
+      throw Exception(e);
     }
   }
 
@@ -150,5 +146,11 @@ class UserService implements UserRepository {
   @override
   void initFMC(String? token) {
     fmcToken = token;
+  }
+
+  @override
+  Future<bool> deleteUser() async {
+    var response = await _client.deleteUser(JwtProto(token: authToken));
+    return response.login;
   }
 }

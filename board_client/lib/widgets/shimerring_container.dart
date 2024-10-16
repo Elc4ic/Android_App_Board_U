@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 
 class ShimmeringContainer extends StatefulWidget {
@@ -14,7 +13,7 @@ class _ShimmeringContainerState extends State<ShimmeringContainer> {
   @override
   void initState() {
     super.initState();
-    Timer.periodic(Duration(milliseconds: 300), (Timer timer) {
+    Timer.periodic(const Duration(milliseconds: 300), (Timer timer) {
       setState(() {
         _index = (_index + 1) % 3;
       });
@@ -29,7 +28,7 @@ class _ShimmeringContainerState extends State<ShimmeringContainer> {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       color: _index == 0 ? Colors.black45 : Colors.white70,
     );
   }

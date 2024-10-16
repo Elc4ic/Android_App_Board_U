@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface CommentRepository : JpaRepository<Comment, Long> {
     fun findByConvictedId(convictedId: Long): MutableList<Comment>
     fun findByOwnerId(ownerId: Long): MutableList<Comment>
+    fun deleteByOwnerId(ownerId: Long)
 }

@@ -73,10 +73,9 @@ class _AdRowState extends State<AdRow> {
                               );
                             }
                             if (state is ImageLoadingFailure) {
-                              return NoImageWidget();
+                              return const NoImageWidget();
                             }
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return ShimmeringContainer();
                           },
                         ),
                       ),

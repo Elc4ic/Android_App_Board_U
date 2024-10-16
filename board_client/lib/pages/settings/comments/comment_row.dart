@@ -21,23 +21,23 @@ class CommentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: Markup.padding_all_4,
-      width: double.infinity,
-      child: Card(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: MiniProfileButton(user: comment.owner),
-                ),
-                Visibility(
-                  visible: isMine,
-                  child: BBlackBox(
-                    child: Container(
+      margin: Markup.padding_v_4,
+      child: SizedBox(
+        width: double.infinity,
+        child: Card(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: MiniProfileButton(user: comment.owner),
+                  ),
+                  Visibility(
+                    visible: isMine,
+                    child: VBlackBox(
                       child: IconButton(
                         tooltip: SC.EDIT,
                         icon: const Icon(Icons.mode_edit),
@@ -46,58 +46,58 @@ class CommentRow extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: Markup.padding_all_16,
-                          child: Row(
+                ],
+              ),
+              Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          BBlackBox(
+                            padding: Markup.padding_all_12,
+                            child: Row(
+                              children: [
+                                Text(comment.rating.toString(),
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium),
+                                const Icon(
+                                  size: 20,
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Expanded(
+                        child: BLBlackBox(
+                          padding: Markup.padding_all_4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(comment.rating.toString(),
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium),
-                              const Icon(
-                                size: 20,
-                                Icons.star,
-                                color: Colors.amber,
+                              Padding(
+                                padding: Markup.padding_all_4,
+                                child: Text(comment.text,
+                                    style: Theme.of(context).textTheme.bodyMedium),
                               ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Text(comment.created,
+                                    style: Theme.of(context).textTheme.bodySmall),
+                              )
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                    Expanded(
-                      child: LBlackBox(
-                        padding: Markup.padding_all_4,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: Markup.padding_all_4,
-                              child: Text(comment.text,
-                                  style: Theme.of(context).textTheme.bodyMedium),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(comment.created,
-                                  style: Theme.of(context).textTheme.bodySmall),
-                            )
-                          ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

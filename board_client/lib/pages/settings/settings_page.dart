@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:board_client/main.dart';
 import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
@@ -36,104 +39,117 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            _userBloc.add(LoadUser(userId!));
-          },
-          child: CustomScrollView(
-            slivers: [
-              BlocBuilder<UserBloc, UserState>(
-                bloc: _userBloc,
-                builder: (context, state) {
-                  if (state is UserLoaded) {
-                    return SliverToBoxAdapter(
-                      child: Profile(user: state.user),
-                    );
-                  }
-                  if (state is UserLoadingFailure) {
-                    return SliverFillRemaining(
-                      child: TryAgainWidget(
-                        exception: state.exception,
-                        onPressed: () {
-                          _userBloc.add(LoadUser(userId!));
-                        },
-                      ),
-                    );
-                  }
-                  return const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()));
-                },
-              ),
-              SliverToBoxAdapter(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () => changeDialog(context),
-                              child: Text("Изменить имя",
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                            ),
+    return SafeArea(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          _userBloc.add(LoadUser(userId!));
+        },
+        child: CustomScrollView(
+          slivers: [
+            BlocBuilder<UserBloc, UserState>(
+              bloc: _userBloc,
+              builder: (context, state) {
+                if (state is UserLoaded) {
+                  return SliverToBoxAdapter(
+                    child: Profile(user: state.user),
+                  );
+                }
+                if (state is UserLoadingFailure) {
+                  return SliverFillRemaining(
+                    child: TryAgainWidget(
+                      exception: state.exception,
+                      onPressed: () {
+                        _userBloc.add(LoadUser(userId!));
+                      },
+                    ),
+                  );
+                }
+                return const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()));
+              },
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => changeDialog(context),
+                            child: Text("Изменить имя",
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () => avatarDialog(context),
-                              child: Text("Изменить аватар",
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                            ),
+                        ),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => avatarDialog(context),
+                            child: Text("Изменить аватар",
+                                style: Theme.of(context).textTheme.bodyMedium),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.push("/setaddress");
+                      },
+                      child: Text("Настроить адресс",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ),
+                  ),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.push("/usercomments");
+                      },
+                      child: Text("Отправленные комментарии",
+                          style: Theme.of(context).textTheme.bodyMedium),
+                    ),
+                  ),
+                  const SizedBox(
                       width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push("/setaddress");
-                        },
-                        child: Text("Настроить адресс",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
+                      height: 50,
+                      child: TBlackBox(
+                        child: Center(),
+                      )),
+                  VerticalBlackBox(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () => myDialog(context, () async {
+                              await userRepository.logout(userId!);
+                              exit(0);
+                            }, "Выход из аккаунта закроет приложение!"),
+                            child: Text("Выйти из аккаунта",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () => myDialog(context, () async {
+                              await userRepository.deleteUser();
+                              exit(0);
+                            }, "Удаление аккаунта закроет приложение!"),
+                            child: Text("Удалить аккаунт",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          context.push("/usercomments");
-                        },
-                        child: Text("Отправленные комментарии",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                    const SizedBox(
-                        width: double.infinity,
-                        height: 100,
-                        child: TBlackBox(
-                          child: Center(),
-                        )),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => myDialog(context, () async {
-                          userRepository.logout(userId!);
-                          context.pop();
-                        }, "Вы уверенны, что хотите выйти из аккаунта?"),
-                        child: Text("Выйти из аккаунта",
-                            style: Theme.of(context).textTheme.bodyMedium),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

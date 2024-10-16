@@ -20,6 +20,7 @@ import com.google.firebase.messaging.Notification
 import io.grpc.Status
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService
+import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
 import com.example.boardserver.entity.Chat as EntityChat
 
@@ -41,7 +42,7 @@ class ChatService(
     ) {
         val userId = jwtProvider.validateJwt(request!!.token)
         if (userId != null) {
-            val chats = chatRepository.findByOwnerId(userId)
+            val chats = chatRepository.findByOwnerId(userId, Sort.by(Sort.Direction.DESC, "lastMessage.date"))
             responseObserver?.onNext(
                 RepeatedChatPreview.newBuilder()
                     .addAllChats(ChatUtils.toRepeatedChat(chats))
@@ -53,13 +54,17 @@ class ChatService(
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun sendMessage(responseObserver: StreamObserver<Chat.Message>?): StreamObserver<SendMessageRequest> =
         object : StreamObserver<SendMessageRequest> {
             override fun onNext(request: SendMessageRequest) {
                 val user = userRepository.findById(request.receiver).get()
                 val message = MessageUtils.createMessageGrpc(request.message, user, request.data)
                 val chat = chatRepository.findById(request.chatId).get()
-                messageRepository.save(MessageUtils.fromMessageGrpc(message, chat))
+                val messageEntity = MessageUtils.fromMessageGrpc(message, chat)
+                chat.lastMessage = messageEntity
+                messageRepository.save(messageEntity)
+                chatRepository.save(chat)
                 responseObserver?.onNext(message)
                 try {
                     val to = if (chat.owner.id == request.receiver) chat.receiver.id else chat.owner.id
@@ -75,14 +80,18 @@ class ChatService(
                         )
                         .build()
                     firebaseMessaging.send(fireMessage)
-                    println("Message sent successfully")
                 } catch (e: FirebaseMessagingException) {
-                    println("Message sent error" + e.message)
+                    responseObserver?.onError(
+                        Status.INVALID_ARGUMENT.withDescription("Ошибка отправки уведомления: ${e.message}")
+                            .asException()
+                    )
                 }
             }
 
             override fun onError(t: Throwable) {
-                responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Ошибка отправки").asException())
+                responseObserver?.onError(
+                    Status.INVALID_ARGUMENT.withDescription("Ошибка отправки: + ${t.message}").asException()
+                )
             }
 
             override fun onCompleted() {

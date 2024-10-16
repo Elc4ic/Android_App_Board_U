@@ -13,6 +13,7 @@ import '../../../bloc/image_bloc/image_bloc.dart';
 import '../../../data/repository/ad_repository.dart';
 import '../../../data/repository/chat_repository.dart';
 import '../../../values/values.dart';
+import '../../../widgets/shimerring_container.dart';
 import '../../advertisement/widget/my_dialog.dart';
 
 class ChatRow extends StatefulWidget {
@@ -73,10 +74,8 @@ class _ChatRowState extends State<ChatRow> {
                       color: Colors.blueAccent,
                     );
                   }
-                  return const SizedBox(
-                      width: 90,
-                      height: 90,
-                      child: Center(child: CircularProgressIndicator()));
+                  return SizedBox(
+                      width: 90, height: 90, child: ShimmeringContainer());
                 },
               ),
             ),
@@ -88,12 +87,14 @@ class _ChatRowState extends State<ChatRow> {
                   children: [
                     Row(
                       children: [
-                        Image.memory(
-                          gaplessPlayback: true,
+                        SizedBox(
                           width: 30,
                           height: 30,
-                          fit: BoxFit.fitWidth,
-                          Uint8List.fromList(widget.chat.target.avatar),
+                          child: Image.memory(
+                            gaplessPlayback: true,
+                            fit: BoxFit.fitWidth,
+                            Uint8List.fromList(widget.chat.target.avatar),
+                          ),
                         ),
                         Markup.dividerW5,
                         Text(widget.chat.target.username,

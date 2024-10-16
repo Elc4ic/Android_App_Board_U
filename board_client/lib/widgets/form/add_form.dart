@@ -37,7 +37,7 @@ class _AddAdFormState extends State<AddAdForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final images = NavItems.imageFromFilePicker(widget.result);
+      final images = NavItems.imagesFromFiles(widget.result);
       Future.delayed(const Duration(seconds: 1), () async {
         await adRepository.addAd(
           Ad(

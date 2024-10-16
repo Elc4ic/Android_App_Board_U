@@ -8,6 +8,7 @@ import java.util.*
 @Repository
 interface FavoritesRepository : JpaRepository<Favorites, Long> {
     fun deleteAllByAdId(id: Long)
+    fun deleteAllByUserId(id: Long)
     fun findByUserId(id: Long): MutableList<Favorites>
     fun findByAdIdAndUserId(adId: Long, userId: Long): Optional<Favorites>
     fun countByUserIdAndAdId(userId: Long, adId: Long): Long

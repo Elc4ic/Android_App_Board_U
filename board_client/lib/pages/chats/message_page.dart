@@ -6,8 +6,8 @@ import 'package:board_client/generated/chat.pb.dart';
 import 'package:board_client/pages/chats/widget/received_message.dart';
 import 'package:board_client/pages/chats/widget/sent_message.dart';
 import 'package:board_client/values/values.dart';
+import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +15,7 @@ import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:go_router/go_router.dart';
 
+import '../../../widgets/shimerring_container.dart';
 import '../../bloc/image_bloc/image_bloc.dart';
 import '../../data/repository/ad_repository.dart';
 import '../../data/repository/user_repository.dart';
@@ -145,40 +146,35 @@ class _MessagePageState extends State<MessagePage> {
               onTap: () {
                 context.push("/ad/${chat?.ad.id}");
               },
-              child: SizedBox(
+              child: VBlackBox(
                 height: 50,
                 child: Padding(
                   padding: Markup.padding_all_8,
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: BlocBuilder<ImageBloc, ImageState>(
-                          bloc: _imageBloc,
-                          builder: (context, state) {
-                            if (state is ImageLoaded) {
-                              return Image.memory(
-                                width: 44,
-                                height: 44,
-                                fit: BoxFit.fitWidth,
-                                Uint8List.fromList(state.images.first),
-                              );
-                            }
-                            if (state is ImageLoadingFailure) {
-                              return Container(
-                                width: 60,
-                                height: 60,
-                                color: Colors.black12,
-                              );
-                            }
-                            return const SizedBox(
-                                width: 60,
-                                height: 60,
-                                child:
-                                    Center(child: CircularProgressIndicator()));
-                          },
-                        ),
+                      BlocBuilder<ImageBloc, ImageState>(
+                        bloc: _imageBloc,
+                        builder: (context, state) {
+                          if (state is ImageLoaded) {
+                            return Image.memory(
+                              width: 44,
+                              height: 44,
+                              fit: BoxFit.fitWidth,
+                              Uint8List.fromList(state.images.first),
+                            );
+                          }
+                          if (state is ImageLoadingFailure) {
+                            return Container(
+                              width: 60,
+                              height: 60,
+                              color: Colors.black12,
+                            );
+                          }
+                          return SizedBox(
+                              width: 60,
+                              height: 60,
+                              child: ShimmeringContainer());
+                        },
                       ),
                       Markup.dividerW10,
                       Text(

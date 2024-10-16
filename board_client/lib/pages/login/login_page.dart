@@ -14,10 +14,9 @@ class _LoginPageState extends State<LoginPage> {
     return const Scaffold(
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
             LoginForm(),
-            Spacer(),
           ],
         ),
       ),

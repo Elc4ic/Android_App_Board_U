@@ -118,7 +118,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/my',
               builder: (context, state) {
-                return LoginChecker(go: const MyAdsPage());
+                return const LoginChecker(child: MyAdsPage());
               },
               routes: [
                 GoRoute(
@@ -137,7 +137,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/favorites',
               builder: (context, state) {
-                return LoginChecker(go: const FavPage());
+                return const LoginChecker(child: FavPage());
               },
             ),
           ],
@@ -147,7 +147,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/chats',
               builder: (context, state) {
-                return LoginChecker(go: const ChatsPreviewPage());
+                return const LoginChecker(child: ChatsPreviewPage());
               },
             ),
           ],
@@ -157,7 +157,7 @@ GoRouter router = GoRouter(
             GoRoute(
               path: '/settings',
               builder: (context, state) {
-                return LoginChecker(go: const SettingsPage());
+                return const LoginChecker(child: SettingsPage());
               },
             ),
           ],

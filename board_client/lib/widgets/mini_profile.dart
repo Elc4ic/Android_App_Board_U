@@ -126,12 +126,13 @@ class Profile extends StatelessWidget {
             ),
           ),
         ),
-        Divider(height: 1,),
+        const Divider(height: 1,),
         Row(
           children: [
             Expanded(
+              flex: 3,
               child: Center(
-                child: Text(user.name ?? "-",
+                child: Text(user.name,
                     style: Theme
                         .of(context)
                         .textTheme
@@ -139,6 +140,7 @@ class Profile extends StatelessWidget {
               ),
             ),
             Expanded(
+              flex: 2,
               child: LBlackBox(
                 child: ElevatedButton(
                   onPressed: () {
@@ -164,7 +166,7 @@ class Profile extends StatelessWidget {
             )
           ],
         ),
-        Divider(height: 1,),
+        const Divider(height: 1,),
         Row(
           children: [
             RBlackBox(
@@ -188,12 +190,28 @@ class Profile extends StatelessWidget {
           ],
         ),
         VerticalBlackBox(
-          padding: Markup.padding_h_16_t_4_b_16,
-          child: Text(user.phone ?? "-",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium),
+          child: Row(
+            children: [
+              RBlackBox(
+                padding: Markup.padding_all_8,
+                child: Text("Телефон",
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyLarge),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: Markup.padding_all_8,
+                  child: Text(user.phone ?? "-",
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .bodyMedium),
+                ),
+              )
+            ],
+          ),
         )
       ],
     );

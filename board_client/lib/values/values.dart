@@ -9,8 +9,6 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../bloc/ad_list_bloc/ad_list_bloc.dart';
-import '../generated/ad.pb.dart';
 
 part 'colors.dart';
 

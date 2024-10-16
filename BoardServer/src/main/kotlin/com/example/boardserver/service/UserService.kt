@@ -1,9 +1,7 @@
 package com.example.boardserver.service
 
 import board.UserOuterClass.*
-import com.example.boardserver.repository.CommentRepository
-import com.example.boardserver.repository.TokenRepository
-import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.repository.*
 import com.example.boardserver.utils.CommentUtils
 import com.example.boardserver.utils.FcmProvider
 import com.example.boardserver.utils.JwtProvider
@@ -17,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional
 class UserService(
     private val userRepository: UserRepository,
     private val commentRepository: CommentRepository,
+    private val favRepository: FavoritesRepository,
+    private val imageRepository: ImageRepository,
+    private val chatRepository: ChatRepository,
+    private val messageRepository: MessageRepository,
+    private val adRepository: AdRepository,
     private val tokenRepository: TokenRepository,
     private val jwtProvider: JwtProvider,
     private val fcmProvider: FcmProvider
@@ -27,39 +30,53 @@ class UserService(
         request: SignupRequest?,
         responseObserver: StreamObserver<IsSuccess>?
     ) {
-        if (userRepository.findByUsername(request!!.username).isEmpty) {
-            val newUser = User.newBuilder()
-                .setName(request.username)
-                .setUsername(request.username)
-                .setPassword(UserUtils.hashPassword(request.password))
-                .setPhone(request.phone)
-                .build()
-            val user = UserUtils.fromUserGrpc(newUser)
-            userRepository.save(user)
-            responseObserver?.onNext(UserUtils.successGrpc())
+        if (userRepository.countByPhone(request!!.phone) == 0) {
+            if (userRepository.countByUsername(request.username) == 0) {
+                val newUser = User.newBuilder()
+                    .setName(request.username)
+                    .setUsername(request.username)
+                    .setPassword(UserUtils.hashPassword(request.password))
+                    .setPhone(request.phone)
+                    .build()
+                val user = UserUtils.fromUserGrpc(newUser)
+                userRepository.save(user)
+                responseObserver?.onNext(UserUtils.successGrpc())
+            } else {
+                responseObserver!!.onError(
+                    Status.INVALID_ARGUMENT.withDescription("Пользователь с таким именем уже существует").asException()
+                )
+            }
         } else {
-            responseObserver?.onNext(UserUtils.failGrpc())
+            responseObserver!!.onError(
+                Status.INVALID_ARGUMENT.withDescription("Аккаунт с таким номером уже существует").asException()
+            )
         }
         responseObserver?.onCompleted()
     }
 
+    @Transactional
     override fun getLogin(
         request: LoginRequest?,
         responseObserver: StreamObserver<LoginResponse>?
     ) {
-        val user = userRepository.findByUsername(request!!.username).get()
-        if (UserUtils.checkPassword(request.password, user.password)) {
-            responseObserver!!.onNext(
-                LoginResponse.newBuilder()
-                    .setUser(UserUtils.toUserGrpc(user))
-                    .setAccessToken(jwtProvider.createJwt(user.id))
-                    .build()
-            )
-            println(request.deviceToken)
-            tokenRepository.save(fcmProvider.createTokenEntity(user, request.deviceToken))
+        if (userRepository.countByUsername(request!!.username) != 0) {
+            val user = userRepository.findByUsername(request.username).get()
+            if (UserUtils.checkPassword(request.password, user.password)) {
+                responseObserver!!.onNext(
+                    LoginResponse.newBuilder()
+                        .setUser(UserUtils.toUserGrpc(user))
+                        .setAccessToken(jwtProvider.createJwt(user.id))
+                        .build()
+                )
+                tokenRepository.deleteByUserId(user.id)
+                tokenRepository.save(fcmProvider.createTokenEntity(user, request.deviceToken))
+            } else {
+                responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный пароль").asException())
+            }
         } else {
-            responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный ввод").asException())
+            responseObserver!!.onError(Status.INVALID_ARGUMENT.withDescription("Пользователь не найден").asException())
         }
+
         responseObserver.onCompleted()
     }
 
@@ -81,7 +98,7 @@ class UserService(
         if (userId != null) {
             var token = request.token
             val user = userRepository.findById(userId).get()
-            if(jwtProvider.needToRefresh(request.token)) {
+            if (jwtProvider.needToRefresh(request.token)) {
                 token = jwtProvider.createJwt(user.id)
             }
             responseObserver?.onNext(
@@ -102,7 +119,7 @@ class UserService(
         if (userId != null) {
             userRepository.save(UserUtils.fromUserGrpc(request.user!!))
             responseObserver?.onNext(
-                IsSuccess.newBuilder().setLogin(true).build()
+                UserUtils.successGrpc()
             )
         } else {
             responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
@@ -115,7 +132,27 @@ class UserService(
         request: JwtProto?,
         responseObserver: StreamObserver<IsSuccess>?
     ) {
-        super.deleteUser(request, responseObserver)
+        val userId = jwtProvider.validateJwt(request!!.token)
+        if (userId != null) {
+            favRepository.deleteAllByUserId(userId)
+            val ad = adRepository.findByUserId(userId)
+            ad.forEach{
+                imageRepository.deleteAllByAdId(it.id)
+                adRepository.deleteById(it.id)
+            }
+            val chats = chatRepository.findAllByOwnerIdOrReceiverId(userId,userId)
+            chats.forEach {
+                messageRepository.deleteAllByChatId(it.id);
+                chatRepository.delete(it)
+            }
+            commentRepository.deleteByOwnerId(userId)
+            userRepository.deleteById(userId)
+            tokenRepository.deleteByUserId(userId)
+            responseObserver?.onNext(UserUtils.successGrpc())
+        } else {
+            responseObserver?.onError(Status.INVALID_ARGUMENT.withDescription("Неправильный токен").asException())
+        }
+        responseObserver?.onCompleted()
     }
 
     override fun getUserById(

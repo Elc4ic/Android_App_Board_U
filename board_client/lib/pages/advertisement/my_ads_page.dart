@@ -66,7 +66,7 @@ class _MyAdsPageState extends State<MyAdsPage> {
                     );
                   }
                   return ListView.builder(
-                    itemCount: state.adList.length,
+                    itemCount: state.adList.length + 1,
                     itemBuilder: (BuildContext context, int index) {
                       if (index == 0) {
                         return VBlackBox(
@@ -76,6 +76,8 @@ class _MyAdsPageState extends State<MyAdsPage> {
                             adListBloc: _adListBloc,
                           ),
                         );
+                      } else if (index == state.adList.length) {
+                        return const SizedBox(height: 80);
                       }
                       return BBlackBox(
                         child: AdRow(

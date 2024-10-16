@@ -5,31 +5,31 @@ import 'package:google_fonts/google_fonts.dart';
 ThemeData mainTheme(BuildContext context) => ThemeData(
       colorScheme: dark,
       textTheme: TextTheme(
-        bodyLarge: GoogleFonts.alegreyaSansSc(fontSize: Markup.size_20),
-        bodyMedium: GoogleFonts.alegreyaSansSc(fontSize: Markup.size_16),
-        bodySmall: GoogleFonts.alegreyaSansSc(fontSize: Markup.size_12),
-        titleLarge: GoogleFonts.rubikMonoOne(
+        bodyLarge: GoogleFonts.exo2(fontSize: Markup.size_20),
+        bodyMedium: GoogleFonts.exo2(fontSize: Markup.size_16),
+        bodySmall: GoogleFonts.exo2(fontSize: Markup.size_12),
+        titleLarge: GoogleFonts.jost(
             fontWeight: FontWeight.w700, fontSize: Markup.size_20),
-        titleMedium: GoogleFonts.rubikMonoOne(
+        titleMedium: GoogleFonts.jost(
             fontWeight: FontWeight.w700, fontSize: Markup.size_16),
-        titleSmall: GoogleFonts.rubikMonoOne(
+        titleSmall: GoogleFonts.jost(
             fontWeight: FontWeight.w700, fontSize: Markup.size_12),
-        labelLarge: GoogleFonts.alegreyaSansSc(
+        labelLarge: GoogleFonts.exo2(
           fontWeight: FontWeight.w700,
           fontSize: Markup.size_24,
         ),
-        labelMedium: GoogleFonts.alegreyaSansSc(
+        labelMedium: GoogleFonts.exo2(
           fontWeight: FontWeight.w700,
           fontSize: Markup.size_16,
         ),
-        labelSmall: GoogleFonts.alegreyaSansSc(
+        labelSmall: GoogleFonts.exo2(
           fontWeight: FontWeight.w700,
           fontSize: Markup.size_14,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        selectedLabelStyle: GoogleFonts.alegreyaSansSc(
-          fontWeight: FontWeight.w700,
+        selectedLabelStyle: GoogleFonts.jost(
+          fontWeight: FontWeight.w600,
           fontSize: Markup.size_14,
         ),
         unselectedItemColor: LightColorConst.text,
@@ -59,17 +59,21 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
         margin: EdgeInsets.all(0),
       ),
       inputDecorationTheme: InputDecorationTheme(
-          labelStyle: GoogleFonts.alegreyaSansSc(
-            fontWeight: FontWeight.w500,
+          labelStyle: GoogleFonts.exo2(
+            fontWeight: FontWeight.w400,
             fontSize: Markup.size_16,
           ),
-          floatingLabelStyle: GoogleFonts.alegreyaSansSc(
-            fontWeight: FontWeight.w500,
+          floatingLabelStyle: GoogleFonts.exo2(
+            fontWeight: FontWeight.w400,
             fontSize: Markup.size_12,
             color: MyColorConst.text,
           ),
-          helperStyle: GoogleFonts.alegreyaSansSc(
-            fontWeight: FontWeight.w500,
+          helperStyle: GoogleFonts.exo2(
+            fontWeight: FontWeight.w400,
+            fontSize: Markup.size_16,
+          ),
+          prefixStyle: GoogleFonts.exo2(
+            fontWeight: FontWeight.w400,
             fontSize: Markup.size_16,
           ),
           border: const OutlineInputBorder(

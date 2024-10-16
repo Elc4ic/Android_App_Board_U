@@ -8,9 +8,9 @@ import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 
 class LoginChecker extends StatefulWidget {
-  LoginChecker({super.key, required this.go});
+  const LoginChecker({super.key, required this.child});
 
-  final Widget go;
+  final Widget child;
 
   @override
   State<LoginChecker> createState() => _LoginCheckerState();
@@ -40,6 +40,6 @@ class _LoginCheckerState extends State<LoginChecker> {
         ),
       );
     }
-    return widget.go;
+    return widget.child;
   }
 }

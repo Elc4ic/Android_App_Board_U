@@ -13,6 +13,10 @@ class Chat(
     @JoinColumn(name = "ad_id")
     val ad: Ad,
 
+    @OneToOne
+    @JoinColumn(name = "message_id")
+    var lastMessage: Message? = null,
+
     @ManyToOne
     @JoinColumn(name = "owner_id")
     val owner: User,

@@ -31,6 +31,7 @@ create table category (
 create table chats (
     id bigint not null,
     ad_id bigint,
+    message_id bigint,
     owner_id bigint,
     receiver_id bigint,
     primary key (id)
@@ -94,6 +95,7 @@ create table users (
 alter table if exists ads add constraint ads_category_fk foreign key (category_id) references category;
 alter table if exists ads add constraint ads_user_fk foreign key (users_id) references users;
 alter table if exists chats add constraint chats_ads_fk foreign key (ad_id) references ads;
+alter table if exists chats add constraint chats_message_fk foreign key (message_id) references messages;
 alter table if exists chats add constraint chats_owner_fk foreign key (owner_id) references users;
 alter table if exists chats add constraint chats_receiver_fk foreign key (receiver_id) references users;
 alter table if exists comments add constraint comments_convicted_fk foreign key (convicted_id) references users;

@@ -1,9 +1,7 @@
 package com.example.boardserver.service
 
 import board.AdOuterClass
-import com.example.boardserver.repository.AdRepository
 import com.example.boardserver.repository.CategoryRepository
-import com.example.boardserver.utils.AdUtils
 import com.example.boardserver.utils.CategoryUtils
 import io.grpc.stub.StreamObserver
 import net.devh.boot.grpc.server.service.GrpcService

@@ -93,6 +93,8 @@ class _MainPageState extends State<MainPage> {
                         return Column(
                           children: [
                             Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
                               children: generateCategory(
                                   state.categories, context, _adListBloc),
                             ),
@@ -164,26 +166,6 @@ class _MainPageState extends State<MainPage> {
                         child: Center(child: CircularProgressIndicator()));
                   },
                 ),
-                /*SliverToBoxAdapter(
-                    child: ElevatedButton(
-                  child: Text("Загрузить ${page}",
-                      style: Theme.of(context).textTheme.bodySmall),
-                  onPressed: () {
-                    setState(() {
-                      page++;
-                    });
-                    _adListBloc.add(LoadAdList(
-                        commonSearch,
-                        commonAddress,
-                        priceMax,
-                        priceMin,
-                        page,
-                        pageSize,
-                        false,
-                        commonCategory,
-                        commonQuery));
-                  },
-                )),*/
               ],
             ),
           ),

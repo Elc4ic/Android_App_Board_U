@@ -14,10 +14,9 @@ class _SignUpPageState extends State<SignUpPage> {
     return const Scaffold(
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Spacer(),
             SignUpForm(),
-            Spacer(),
           ],
         ),
       ),
