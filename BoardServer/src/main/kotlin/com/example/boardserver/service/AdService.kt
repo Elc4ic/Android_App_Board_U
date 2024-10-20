@@ -3,10 +3,12 @@ package com.example.boardserver.service
 import board.AdOuterClass
 import board.AdOuterClass.RepeatedImageResponse
 import board.UserOuterClass
-import com.example.boardserver.entity.Favorites
+import com.example.boardserver.entity.*
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.repository.*
-import com.example.boardserver.utils.*
+import com.example.boardserver.utils.FilterUtils
+import com.example.boardserver.utils.JwtProvider
+import com.example.boardserver.utils.runWithTracing
 import io.grpc.Status
 import io.micrometer.tracing.Tracer
 import kotlinx.coroutines.withTimeout
@@ -47,8 +49,7 @@ class AdService(
             val ads = mutableListOf<AdOuterClass.Ad>()
             adPage.forEach { ad ->
                 ads.add(
-                    AdUtils.toAdGrpc(
-                        ad,
+                    ad.toAdGrpc(
                         if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) > 0
                         else false,
                     )
@@ -75,8 +76,7 @@ class AdService(
                 ad.views++
                 adRepository.save(ad)
             }
-            val response = AdUtils.toAdGrpc(
-                ad,
+            val response = ad.toAdGrpc(
                 if (userId != null) favRepository.countByUserIdAndAdId(userId, ad.id) == 1L
                 else false,
             )
@@ -127,9 +127,9 @@ class AdService(
             val span = tracer.startScopedSpan(AddAd)
             val userId = jwtProvider.validateJwt(request.token)
             if (userId != null) {
-                val ad = AdUtils.fromAdGrpc(request.ad)
+                val ad = request.ad.fromAdGrpc()
                 adRepository.save(ad)
-                val images = ImageUtils.fromImageGrpcList(request.imagesList, ad)
+                val images = request.imagesList.fromImageGrpcList(ad)
                 images.forEach { imageRepository.save(it) }
                 val response = UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
 
@@ -198,7 +198,7 @@ class AdService(
             val userId = jwtProvider.validateJwt(request.token)
             if (userId != null) {
                 val ads = favRepository.findByUserId(userId)
-                val response = AdUtils.toFavRepeatedAdGrpc(ads)
+                val response = ads.toFavRepeatedAdGrpc()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("got favorite ads: $it").also { span.tag("response", it.toString()) }
@@ -216,7 +216,7 @@ class AdService(
             val userId = jwtProvider.validateJwt(request.token)
             if (userId != null) {
                 val ads = adRepository.findByUserIdOrderByViewsDesc(userId)
-                val response = AdUtils.toRepeatedAdGrpc(ads)
+                val response = ads.toRepeatedAdGrpc()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("got my ads: $it").also { span.tag("response", it.toString()) }
@@ -232,7 +232,7 @@ class AdService(
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(GetByUserId)
             val ads = adRepository.findByUserId(request.id)
-            val response = AdUtils.toRepeatedAdGrpc(ads)
+            val response =ads.toRepeatedAdGrpc()
 
             runWithTracing(span) {
                 response.also { it ->
@@ -248,13 +248,13 @@ class AdService(
             val response: RepeatedImageResponse = try {
                 if (request.value) {
                     val image = imageRepository.findFirstByAdId(request.id).get()
-                    ImageUtils.toImageGrpcList(listOf(image))
+                 listOf(image).toImageGrpcList()
                 } else {
                     val images = imageRepository.findByAdId(request.id)
-                    ImageUtils.toImageGrpcList(images)
+                images.toImageGrpcList()
                 }
             } catch (e: Exception) {
-                ImageUtils.toImageGrpcList(emptyList()).also { span.tag("response", it.toString()) }
+                emptyList<Image>().toImageGrpcList().also { span.tag("response", it.toString()) }
             }
 
             runWithTracing(span) {

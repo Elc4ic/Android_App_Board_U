@@ -26,14 +26,6 @@ class AdCard extends StatefulWidget {
 class _AdCardState extends State<AdCard> {
   final adRepository = GetIt.I<AdService>();
 
-  late final _imageBloc = ImageCubit.get(context);
-
-  @override
-  void initState() {
-    _imageBloc.loadImages(widget.ad.id, true);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -47,26 +39,13 @@ class _AdCardState extends State<AdCard> {
             flex: 5,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: BlocBuilder<ImageCubit, ImageState>(
-                bloc: _imageBloc,
-                builder: (context, state) {
-                  if (state is ImageLoaded) {
-                    Uint8List bytes = Uint8List.fromList(state.images[widget.ad.id]!.first);
-                    return Image.memory(
-                      gaplessPlayback: true,
-                      width: Const.cellWidth,
-                      cacheWidth: Const.cardImageWidth,
-                      cacheHeight: Const.cardImageHeight,
-                      fit: BoxFit.cover,
-                      bytes,
-                    );
-                  }
-                  if (state is ImageLoadingFailure) {
-                    return const NoImageWidget();
-                  }
-                  return ShimmeringContainer();
-                },
-              ),
+              child: Image.network(
+                  gaplessPlayback: true,
+                  width: Const.cellWidth,
+                  cacheWidth: Const.cardImageWidth,
+                  cacheHeight: Const.cardImageHeight,
+                  fit: BoxFit.cover,
+                  "http://api.dvfuboard.ru:8080/images/${widget.ad.id}"),
             ),
           ),
           Flexible(

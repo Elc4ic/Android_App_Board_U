@@ -74,6 +74,7 @@ message Ad {
     string created = 10;
     User user = 11;
     Category category = 12;
+    repeated int64 images = 13;
 }
 message RepeatedAdResponse {
     repeated Ad data = 1;

@@ -169,6 +169,7 @@ const Ad$json = {
     {'1': 'created', '3': 10, '4': 1, '5': 9, '10': 'created'},
     {'1': 'user', '3': 11, '4': 1, '5': 11, '6': '.board.User', '10': 'user'},
     {'1': 'category', '3': 12, '4': 1, '5': 11, '6': '.board.Category', '10': 'category'},
+    {'1': 'images', '3': 13, '4': 3, '5': 3, '10': 'images'},
   ],
 };
 
@@ -178,7 +179,8 @@ final $typed_data.Uint8List adDescriptor = $convert.base64Decode(
     'gDUgVwcmljZRIgCgtkZXNjcmlwdGlvbhgEIAEoCVILZGVzY3JpcHRpb24SFQoGaXNfZmF2GAUg'
     'ASgIUgVpc0ZhdhIbCglpc19hY3RpdmUYBiABKAhSCGlzQWN0aXZlEhQKBXZpZXdzGAcgASgFUg'
     'V2aWV3cxIYCgdjcmVhdGVkGAogASgJUgdjcmVhdGVkEh8KBHVzZXIYCyABKAsyCy5ib2FyZC5V'
-    'c2VyUgR1c2VyEisKCGNhdGVnb3J5GAwgASgLMg8uYm9hcmQuQ2F0ZWdvcnlSCGNhdGVnb3J5');
+    'c2VyUgR1c2VyEisKCGNhdGVnb3J5GAwgASgLMg8uYm9hcmQuQ2F0ZWdvcnlSCGNhdGVnb3J5Eh'
+    'YKBmltYWdlcxgNIAMoA1IGaW1hZ2Vz');
 
 @$core.Deprecated('Use repeatedAdResponseDescriptor instead')
 const RepeatedAdResponse$json = {

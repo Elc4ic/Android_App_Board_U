@@ -61,11 +61,9 @@ object FilterUtils {
                 }
 
                 "По умолчанию" -> {
-
                     query.orderBy(
                         cb.desc(
                             cb.literal(RecommendationUtils.calculateSimilarity(cb, root, favList))
-                                .`as`(Double::class.java),
                         )
                     )
                 }

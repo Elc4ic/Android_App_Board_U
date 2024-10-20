@@ -24,21 +24,7 @@ class RowCard extends StatefulWidget {
 
 class _RowCardState extends State<RowCard> {
   final adService = GetIt.I<AdService>();
-  bool isFav = true;
-
-  late final _imageBloc = ImageCubit.get(context);
-
-  @override
-  void initState() {
-    _imageBloc.loadImages(widget.ad.id, true);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _imageBloc.close();
-    super.dispose();
-  }
+  late bool isFav = widget.ad.isFav;
 
   @override
   Widget build(BuildContext context) {
@@ -58,24 +44,13 @@ class _RowCardState extends State<RowCard> {
                 child: SizedBox(
                   width: 120,
                   height: 120,
-                  child: BlocConsumer<ImageCubit, ImageState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      if (state is ImageLoaded) {
-                        return Image.memory(
-                          gaplessPlayback: true,
-                          cacheWidth: Const.ImageWidth,
-                          cacheHeight: Const.ImageHeight,
-                          fit: BoxFit.fill,
-                          Uint8List.fromList(state.images[widget.ad.id]!.first),
-                        );
-                      }
-                      if (state is ImageLoadingFailure) {
-                        return const NoImageWidget();
-                      }
-                      return ShimmeringContainer();
-                    },
-                  ),
+                  child: Image.network(
+                      gaplessPlayback: true,
+                      width: Const.cellWidth,
+                      cacheWidth: Const.cardImageWidth,
+                      cacheHeight: Const.cardImageHeight,
+                      fit: BoxFit.cover,
+                      "http://api.dvfuboard.ru:8080/images/${widget.ad.id}"),
                 ),
               ),
             ),
@@ -99,7 +74,7 @@ class _RowCardState extends State<RowCard> {
                 try {
                   await adService.setFavoriteAd(widget.ad.id, widget.token);
                   setState(() {
-                    widget.ad.isFav = !widget.ad.isFav;
+                    isFav = !isFav;
                   });
                 } catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(

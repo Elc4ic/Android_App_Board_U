@@ -46,213 +46,215 @@ class _AdPageState extends State<AdPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: BlocConsumer<AdCubit, AdState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            if (state is AdLoaded) {
-              return Scaffold(
-                appBar: adHeader(
-                  state.ad.isFav,
-                  () async {
-                    try {
-                      await _adBloc.setFavorite(state.ad.id, token);
-                      setState(
-                        () {
-                          isFav = !isFav;
-                        },
-                      );
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text("Не получилось добавить в избранное"),
-                            backgroundColor: MyColorConst.error),
-                      );
-                    }
-                  },
-                ),
-                body: ListView(
-                  children: [
-                    SizedBox(
-                      height: 416,
-                      child: BlocConsumer<ImageCubit, ImageState>(
-                        listener: (context, state) {},
-                        builder: (context, state) {
-                          if (state is ImageLoaded) {
-                            if (state.images.isEmpty) {
-                              return NoImageWidget();
+      body: SelectionArea(
+        child: SafeArea(
+          child: BlocConsumer<AdCubit, AdState>(
+            listener: (context, state) {},
+            builder: (context, state) {
+              if (state is AdLoaded) {
+                return Scaffold(
+                  appBar: adHeader(
+                    state.ad.isFav,
+                    () async {
+                      try {
+                        await _adBloc.setFavorite(state.ad.id, token);
+                        setState(
+                          () {
+                            isFav = !isFav;
+                          },
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Не получилось добавить в избранное"),
+                              backgroundColor: MyColorConst.error),
+                        );
+                      }
+                    },
+                  ),
+                  body: ListView(
+                    children: [
+                      SizedBox(
+                        height: 416,
+                        child: BlocConsumer<ImageCubit, ImageState>(
+                          listener: (context, state) {},
+                          builder: (context, state) {
+                            if (state is ImageLoaded) {
+                              if (state.images.isEmpty) {
+                                return NoImageWidget();
+                              }
+                              imageMax = state.images.length;
+                              return Column(
+                                children: [
+                                  Container(
+                                    height: 400,
+                                    color: Colors.black12,
+                                    child: PageView.builder(
+                                      itemCount: state.images.length,
+                                      pageSnapping: true,
+                                      itemBuilder: (context, pagePosition) {
+                                        return InkWell(
+                                          onTap: () {
+                                            zoomDialog(
+                                                state.images[widget.idAd]![
+                                                    pagePosition],
+                                                context);
+                                          },
+                                          child: Image.memory(
+                                            Uint8List.fromList(state.images[
+                                                widget.idAd]![pagePosition]),
+                                          ),
+                                        );
+                                      },
+                                      onPageChanged: (pagePosition) {
+                                        setState(() {
+                                          imageCount = pagePosition + 1;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 16,
+                                    child: Center(
+                                      child: Text("$imageCount/$imageMax",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall),
+                                    ),
+                                  ),
+                                ],
+                              );
                             }
-                            imageMax = state.images.length;
-                            return Column(
-                              children: [
-                                Container(
-                                  height: 400,
-                                  color: Colors.black12,
-                                  child: PageView.builder(
-                                    itemCount: state.images.length,
-                                    pageSnapping: true,
-                                    itemBuilder: (context, pagePosition) {
-                                      return InkWell(
-                                        onTap: () {
-                                          zoomDialog(
-                                              state.images[widget.idAd]![
-                                                  pagePosition],
-                                              context);
-                                        },
-                                        child: Image.memory(
-                                          Uint8List.fromList(state.images[
-                                              widget.idAd]![pagePosition]),
-                                        ),
-                                      );
-                                    },
-                                    onPageChanged: (pagePosition) {
-                                      setState(() {
-                                        imageCount = pagePosition + 1;
-                                      });
-                                    },
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 16,
-                                  child: Center(
-                                    child: Text("$imageCount/$imageMax",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          if (state is ImageLoadingFailure) {
-                            return TryAgainWidget(
-                              exception: state.exception,
-                              onPressed: () {
-                                _imageBloc.loadImages(widget.idAd, false);
-                              },
-                            );
-                          }
-                          return ShimmeringContainer();
-                        },
+                            if (state is ImageLoadingFailure) {
+                              return TryAgainWidget(
+                                exception: state.exception,
+                                onPressed: () {
+                                  _imageBloc.loadImages(widget.idAd, false);
+                                },
+                              );
+                            }
+                            return ShimmeringContainer();
+                          },
+                        ),
                       ),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: Markup.padding_h_24_t_16_b_4,
-                          child: Text(state.ad.title,
-                              style: Theme.of(context).textTheme.titleLarge),
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Align(
-                                alignment: Alignment.bottomLeft,
-                                child: Text("${state.ad.price} ${SC.RUBLES}",
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: Markup.padding_h_24_t_16_b_4,
+                            child: Text(state.ad.title,
+                                style: Theme.of(context).textTheme.titleLarge),
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("${state.ad.price} ${SC.RUBLES}",
+                                      style:
+                                          Theme.of(context).textTheme.labelLarge),
+                                ),
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                final chatId = await chatService.startChat(
-                                    state.ad, token);
-                                context.push("/chat/$chatId");
-                              },
-                              child: Expanded(
-                                child: Text("Написать",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: Markup.padding_h_16_t_4_b_16,
-                          child: Text(state.ad.created,
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Container(
-                                padding: Markup.padding_h_16_t_4_b_16,
-                                child: Text("${state.ad.views} просмотров",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium),
-                              ),
-                            ),
-                            Markup.dividerW10,
-                            Expanded(
-                              child: MiniProfile(user: state.ad.user),
-                            )
-                          ],
-                        ),
-                        Container(
-                          padding: Markup.padding_l_16_t_24_b_2,
-                          child: Text("Описание:",
-                              style: Theme.of(context).textTheme.labelLarge),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              width: 60,
-                            ),
-                            Expanded(
-                              child: Container(
-                                  padding: Markup.padding_all_8,
-                                  child: Text(state.ad.description,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium)),
-                            ),
-                          ],
-                        ),
-                        /*Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text("Позвонить",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge),
-                              ),
-                            ),
-                            Markup.dividerW10,
-                            Expanded(
-                              child: ElevatedButton(
+                              ElevatedButton(
                                 onPressed: () async {
                                   final chatId = await chatService.startChat(
                                       state.ad, token);
                                   context.push("/chat/$chatId");
                                 },
-                                child: Text("Написать",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge),
+                                child: Expanded(
+                                  child: Text("Написать",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge),
+                                ),
                               ),
-                            ),
-                          ],
-                        )*/
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }
-            if (state is AdLoadingFailure) {
-              return TryAgainWidget(
-                exception: state.exception,
-                onPressed: () {
-                  _adBloc.loadAd(id: widget.idAd, token: token);
-                },
-              );
-            }
-            return ShimmeringContainer();
-          },
+                            ],
+                          ),
+                          Container(
+                            padding: Markup.padding_h_16_t_4_b_16,
+                            child: Text(state.ad.created,
+                                style: Theme.of(context).textTheme.bodyMedium),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: Markup.padding_h_16_t_4_b_16,
+                                  child: Text("${state.ad.views} просмотров",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelMedium),
+                                ),
+                              ),
+                              Markup.dividerW10,
+                              Expanded(
+                                child: MiniProfile(user: state.ad.user),
+                              )
+                            ],
+                          ),
+                          Container(
+                            padding: Markup.padding_l_16_t_24_b_2,
+                            child: Text("Описание:",
+                                style: Theme.of(context).textTheme.labelLarge),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 60,
+                              ),
+                              Expanded(
+                                child: Container(
+                                    padding: Markup.padding_all_8,
+                                    child: Text(state.ad.description,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium)),
+                              ),
+                            ],
+                          ),
+                          /*Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {},
+                                  child: Text("Позвонить",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge),
+                                ),
+                              ),
+                              Markup.dividerW10,
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    final chatId = await chatService.startChat(
+                                        state.ad, token);
+                                    context.push("/chat/$chatId");
+                                  },
+                                  child: Text("Написать",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge),
+                                ),
+                              ),
+                            ],
+                          )*/
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
+              if (state is AdLoadingFailure) {
+                return TryAgainWidget(
+                  exception: state.exception,
+                  onPressed: () {
+                    _adBloc.loadAd(id: widget.idAd, token: token);
+                  },
+                );
+              }
+              return ShimmeringContainer();
+            },
+          ),
         ),
       ),
     );

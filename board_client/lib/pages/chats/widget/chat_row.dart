@@ -120,11 +120,11 @@ class _ChatRowState extends State<ChatRow> {
                     ),
                     Text("Последнее сообщение:",
                         style: Theme.of(context).textTheme.bodySmall),
-                    /*   Text(
+                       Text(
                       (widget.chat.lastMessage.message.length < 18)
                           ? (widget.chat.lastMessage.message ?? "")
                           : "${widget.chat.lastMessage.message.substring(0, 17)}...",
-                    )*/
+                    )
                   ],
                 ),
               ),

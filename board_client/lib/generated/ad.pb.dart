@@ -593,6 +593,7 @@ class Ad extends $pb.GeneratedMessage {
     $core.String? created,
     $0.User? user,
     Category? category,
+    $core.Iterable<$fixnum.Int64>? images,
   }) {
     final $result = create();
     if (id != null) {
@@ -625,6 +626,9 @@ class Ad extends $pb.GeneratedMessage {
     if (category != null) {
       $result.category = category;
     }
+    if (images != null) {
+      $result.images.addAll(images);
+    }
     return $result;
   }
   Ad._() : super();
@@ -642,6 +646,7 @@ class Ad extends $pb.GeneratedMessage {
     ..aOS(10, _omitFieldNames ? '' : 'created')
     ..aOM<$0.User>(11, _omitFieldNames ? '' : 'user', subBuilder: $0.User.create)
     ..aOM<Category>(12, _omitFieldNames ? '' : 'category', subBuilder: Category.create)
+    ..p<$fixnum.Int64>(13, _omitFieldNames ? '' : 'images', $pb.PbFieldType.K6)
     ..hasRequiredFields = false
   ;
 
@@ -759,6 +764,9 @@ class Ad extends $pb.GeneratedMessage {
   void clearCategory() => clearField(12);
   @$pb.TagNumber(12)
   Category ensureCategory() => $_ensure(9);
+
+  @$pb.TagNumber(13)
+  $core.List<$fixnum.Int64> get images => $_getList(10);
 }
 
 class RepeatedAdResponse extends $pb.GeneratedMessage {

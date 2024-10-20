@@ -51,11 +51,11 @@ class AdListCubit extends Cubit<AdListState> {
   Future<void> getMyList() async {
     try {
       if (state is! AdListLoaded) {
-        emit(MyAdListLoading());
+        emit(AdListLoading());
       }
       final ads = await adService.getMyAds(userService.getToken());
       print(ads.data.toString());
-      emit(MyAdListLoaded(adList: ads.data));
+      emit(AdListLoaded(adList: ads.data, hasMore: false));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     }
@@ -64,11 +64,11 @@ class AdListCubit extends Cubit<AdListState> {
   Future<void> getFavList() async {
     try {
       if (state is! AdListLoaded) {
-        emit(FavAdListLoading());
+        emit(AdListLoading());
       }
       final ads = await adService.getFavoriteAds(userService.getToken());
 
-      emit(FavAdListLoaded(adList: ads.data));
+      emit(AdListLoaded(adList: ads.data, hasMore: false));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     }
@@ -80,7 +80,7 @@ class AdListCubit extends Cubit<AdListState> {
         emit(AdListLoading());
       }
       final ads = await adService.getByUserId(id);
-      emit(AdListLoaded(adList: ads.data, hasMore: true));
+      emit(AdListLoaded(adList: ads.data, hasMore: false));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     }

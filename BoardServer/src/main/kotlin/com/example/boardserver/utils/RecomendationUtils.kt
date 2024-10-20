@@ -14,8 +14,8 @@ object RecommendationUtils {
         var similarityScore = 0.0
 
         for (fav in ads) {
-            similarityScore += calculateTitleSimilarity(cb, ad, fav.ad.title) * 2
-            similarityScore += calculateDescSimilarity(cb, ad, fav.ad.description)
+            similarityScore += calculateTitleSimilarity(cb, ad, fav.ad.title) * 3
+            similarityScore += calculateDescSimilarity(cb, ad, fav.ad.description) * 2
             similarityScore += calculatePriceSimilarity(cb, ad, fav.ad.price)
             similarityScore += calculateCategorySimilarity(cb, ad, fav.ad.category)
         }
@@ -25,7 +25,7 @@ object RecommendationUtils {
     private fun calculateTitleSimilarity(cb: CriteriaBuilder, root: Root<Ad?>, title: String): Double {
         var count = 0
         var predicate: Predicate
-        val words2: Set<String> = title?.split(" ")?.toSet() ?: setOf()
+        val words2: Set<String> = title.split(" ").toSet()
         words2.forEach {
             predicate = cb.like(root.get("title"), "%${it.substring(0, (it.length * 0.7).toInt())}%")
             if (!predicate.isNegated) {

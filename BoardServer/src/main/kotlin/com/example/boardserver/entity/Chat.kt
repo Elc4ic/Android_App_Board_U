@@ -1,5 +1,7 @@
 package com.example.boardserver.entity
 
+import board.AdOuterClass
+import board.UserOuterClass
 import jakarta.persistence.*
 
 @Entity
@@ -25,3 +27,26 @@ class Chat(
     @JoinColumn(name = "receiver_id")
     val receiver: User,
 )
+
+fun Chat.toChatGrpc(): board.Chat.ChatPreview {
+    return board.Chat.ChatPreview.newBuilder()
+        .setId(this.id)
+        .setAd(this.ad.toAdGrpc())
+        .setLastMessage(this.lastMessage!!.toMessageGrpc())
+        .setTarget(this.receiver.toUserGrpc())
+        .build()
+}
+
+fun AdOuterClass.Ad.createChatGrpc(target: UserOuterClass.User, user: User): Chat {
+    return Chat(
+        ad = this.fromAdGrpc(),
+        owner = target.fromUserGrpc(),
+        receiver = user,
+    )
+}
+
+fun List<Chat>.toRepeatedChat(): List<board.Chat.ChatPreview> {
+    val chatsGrpc = mutableListOf<board.Chat.ChatPreview>()
+    this.forEach { c -> chatsGrpc.add(c.toChatGrpc()) }
+    return chatsGrpc
+}

@@ -1,14 +1,8 @@
-import 'dart:typed_data';
 
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/image_cubit/image_cubit.dart';
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
-import 'package:board_client/data/service/ad_service.dart';
-import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../generated/ad.pb.dart';
@@ -32,13 +26,6 @@ class AdRow extends StatefulWidget {
 
 class _AdRowState extends State<AdRow> {
   late final _adBloc = AdCubit.get(context);
-  late final _imageBloc = ImageCubit.get(context);
-
-  @override
-  void initState() {
-    _imageBloc.loadImages(widget.ad.id, true);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,24 +45,13 @@ class _AdRowState extends State<AdRow> {
                 child: SizedBox(
                   width: 120,
                   height: 120,
-                  child: BlocBuilder<ImageCubit, ImageState>(
-                    bloc: _imageBloc,
-                    builder: (context, state) {
-                      if (state is ImageLoaded) {
-                        return Image.memory(
-                          gaplessPlayback: true,
-                          fit: BoxFit.cover,
-                          cacheWidth: Const.ImageWidth,
-                          cacheHeight: Const.ImageHeight,
-                          Uint8List.fromList(state.images[widget.ad.id]!.first),
-                        );
-                      }
-                      if (state is ImageLoadingFailure) {
-                        return const NoImageWidget();
-                      }
-                      return ShimmeringContainer();
-                    },
-                  ),
+                  child: Image.network(
+                      gaplessPlayback: true,
+                      width: Const.cellWidth,
+                      cacheWidth: Const.cardImageWidth,
+                      cacheHeight: Const.cardImageHeight,
+                      fit: BoxFit.cover,
+                      "http://api.dvfuboard.ru:8080/images/${widget.ad.id}"),
                 ),
               ),
             ),

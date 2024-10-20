@@ -7,10 +7,6 @@ class AdListInitial extends AdListState {}
 
 class AdListLoading extends AdListState {}
 
-class MyAdListLoading extends AdListState {}
-
-class FavAdListLoading extends AdListState {}
-
 class AdListLoaded extends AdListState {
   AdListLoaded({
     required this.hasMore,
@@ -19,22 +15,6 @@ class AdListLoaded extends AdListState {
 
   final List<Ad> adList;
   final bool hasMore;
-}
-
-class MyAdListLoaded extends AdListState {
-  MyAdListLoaded({
-    required this.adList,
-  });
-
-  final List<Ad> adList;
-}
-
-class FavAdListLoaded extends AdListState {
-  FavAdListLoaded({
-    required this.adList,
-  });
-
-  final List<Ad> adList;
 }
 
 class AdListLoadingFailure extends AdListState {

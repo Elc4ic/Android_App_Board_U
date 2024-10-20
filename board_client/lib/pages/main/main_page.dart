@@ -1,6 +1,7 @@
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/category_cubit/category_cubit.dart';
 import 'package:board_client/cubit/image_cubit/image_cubit.dart';
+import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/pages/main/widget/ad_card.dart';
 import 'package:board_client/widgets/custom_grid.dart';
 import 'package:board_client/values/values.dart';
@@ -25,7 +26,7 @@ class _MainPageState extends State<MainPage> {
   var userService = GetIt.I<UserService>();
   final _scrollController = ScrollController();
 
-  late final _adListBloc = AdListCubit.get(context);
+  late final _adListBloc = AdListCubit(GetIt.I<AdService>(),GetIt.I<UserService>());
   late final _catListBloc = CategoryCubit.get(context);
   late final _imageBloc = ImageCubit.get(context);
 
@@ -65,92 +66,90 @@ class _MainPageState extends State<MainPage> {
     return SafeArea(
       child: Scaffold(
         appBar: header(context, _adListBloc),
-        body: SelectionArea(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              _adListBloc.page = 0;
-              _adListBloc.getAdList(true);
-              _catListBloc.loadCategories();
-            },
-            child: CustomScrollView(
-              cacheExtent: Const.cardCacheExtent,
-              physics: const ClampingScrollPhysics(),
-              controller: _scrollController,
-              slivers: [
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  sliver: SliverToBoxAdapter(
-                    child: BlocBuilder<CategoryCubit, CategoryState>(
-                      bloc: _catListBloc,
-                      builder: (context, state) {
-                        if (state is CategoryLoaded) {
-                          return SizedBox(
-                            height: 50,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: generateCategory(
-                                  state.categories, context, _adListBloc),
-                            ),
-                          );
-                        }
-                        if (state is CategoryFailure) {
-                          return Center(
-                            child: TryAgainWidget(
-                              exception: state.exception,
-                              onPressed: () {
-                                _catListBloc.loadCategories();
-                              },
-                            ),
-                          );
-                        }
-                        return const Center(child: CircularProgressIndicator());
-                      },
-                    ),
-                  ),
-                ),
-                BlocBuilder<AdListCubit, AdListState>(
-                  bloc: _adListBloc,
-                  builder: (context, state) {
-                    if (state is AdListLoaded) {
-                      _adListBloc.isLoading = (state.hasMore) ? false : true;
-                      if (state.adList.isEmpty) {
-                        return SliverFillRemaining(
-                          child: SizedBox(
-                            height: 200,
-                            child: Center(
-                              child: Text(SC.SEARCH_NOTHING,
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                            ),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            _adListBloc.page = 0;
+            _adListBloc.getAdList(true);
+            _catListBloc.loadCategories();
+          },
+          child: CustomScrollView(
+            cacheExtent: Const.cardCacheExtent,
+            physics: const ClampingScrollPhysics(),
+            controller: _scrollController,
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                sliver: SliverToBoxAdapter(
+                  child: BlocBuilder<CategoryCubit, CategoryState>(
+                    bloc: _catListBloc,
+                    builder: (context, state) {
+                      if (state is CategoryLoaded) {
+                        return SizedBox(
+                          height: 50,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: generateCategory(
+                                state.categories, context, _adListBloc),
                           ),
                         );
                       }
-                      return CustomGrid(
-                        cellWidth: Const.cellWidthInt,
-                        width: widthNow,
-                        items: List.generate(
-                            state.adList.length,
-                            (index) => AdCard(
-                                ad: state.adList[index],
-                                token: userService.getToken())).toList(),
-                      );
-                    }
-                    if (state is AdListLoadingFailure) {
+                      if (state is CategoryFailure) {
+                        return Center(
+                          child: TryAgainWidget(
+                            exception: state.exception,
+                            onPressed: () {
+                              _catListBloc.loadCategories();
+                            },
+                          ),
+                        );
+                      }
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                  ),
+                ),
+              ),
+              BlocBuilder<AdListCubit, AdListState>(
+                bloc: _adListBloc,
+                builder: (context, state) {
+                  if (state is AdListLoaded) {
+                    _adListBloc.isLoading = (state.hasMore) ? false : true;
+                    if (state.adList.isEmpty) {
                       return SliverFillRemaining(
-                        child: TryAgainWidget(
-                          exception: state.exception,
-                          onPressed: () {
-                            _adListBloc.getAdList(false);
-                          },
+                        child: SizedBox(
+                          height: 200,
+                          child: Center(
+                            child: Text(SC.SEARCH_NOTHING,
+                                style:
+                                    Theme.of(context).textTheme.bodyMedium),
+                          ),
                         ),
                       );
                     }
-                    return const SliverFillRemaining(
-                        child: Center(child: CircularProgressIndicator()));
-                  },
-                ),
-              ],
-            ),
+                    return CustomGrid(
+                      cellWidth: Const.cellWidthInt,
+                      width: widthNow,
+                      items: List.generate(
+                          state.adList.length,
+                          (index) => AdCard(
+                              ad: state.adList[index],
+                              token: userService.getToken())).toList(),
+                    );
+                  }
+                  if (state is AdListLoadingFailure) {
+                    return SliverFillRemaining(
+                      child: TryAgainWidget(
+                        exception: state.exception,
+                        onPressed: () {
+                          _adListBloc.getAdList(false);
+                        },
+                      ),
+                    );
+                  }
+                  return const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()));
+                },
+              ),
+            ],
           ),
         ),
       ),

@@ -36,14 +36,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => AdCubit(GetIt.I<AdService>())),
         BlocProvider(
             create: (context) =>
-                AdListCubit(GetIt.I<AdService>(), GetIt.I<UserService>())),
-        BlocProvider(
-            create: (context) =>
                 ChatCubit(GetIt.I<ChatService>(), GetIt.I<UserService>())),
         BlocProvider(
             create: (context) => CategoryCubit(GetIt.I<CategoryService>())),
         BlocProvider(create: (context) => AppCubit()),
-        BlocProvider(create: (context) => ImageCubit(GetIt.I<AdService>())),
         BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>()))
       ],
       child: BlocConsumer<AppCubit, AppState>(

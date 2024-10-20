@@ -20,7 +20,8 @@ class MyAdsPage extends StatefulWidget {
 class _MyAdsPageState extends State<MyAdsPage> {
   var userService = GetIt.I<UserService>();
 
-  late final _adListBloc = AdListCubit.get(context);
+  late final _adListBloc =
+      AdListCubit(GetIt.I<AdService>(), GetIt.I<UserService>());
 
   @override
   void initState() {
@@ -41,8 +42,8 @@ class _MyAdsPageState extends State<MyAdsPage> {
             onRefresh: () async {
               _adListBloc.getMyList();
             },
-            child: BlocConsumer<AdListCubit, AdListState>(
-              listener: (context, state) {},
+            child: BlocBuilder<AdListCubit, AdListState>(
+              bloc: _adListBloc,
               builder: (context, state) {
                 if (state is AdListLoaded) {
                   if (state.adList.isEmpty) {

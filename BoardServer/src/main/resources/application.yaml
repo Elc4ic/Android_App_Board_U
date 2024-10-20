@@ -32,7 +32,7 @@ management:
     export:
       zipkin:
         enabled: true
-        endpoint: http://micro_zipkin:9411/api/v2/spans
+        endpoint: http://micro_zipkin/api/v2/spans
 
 jwt:
   secret:

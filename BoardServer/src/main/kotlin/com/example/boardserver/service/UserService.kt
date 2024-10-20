@@ -1,9 +1,13 @@
 package com.example.boardserver.service
 
 import board.UserOuterClass.*
+import board.UserOuterClass.User
+import com.example.boardserver.entity.*
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.repository.*
-import com.example.boardserver.utils.*
+import com.example.boardserver.utils.FcmProvider
+import com.example.boardserver.utils.JwtProvider
+import com.example.boardserver.utils.runWithTracing
 import io.grpc.Status
 import io.micrometer.tracing.Tracer
 import kotlinx.coroutines.withTimeout
@@ -35,10 +39,10 @@ class UserService(
             if (userRepository.countByPhone(request.phone) == 0) {
                 if (userRepository.countByUsername(request.username) == 0) {
                     val newUser = User.newBuilder().setName(request.username).setUsername(request.username)
-                        .setPassword(UserUtils.hashPassword(request.password)).setPhone(request.phone).build()
-                    val user = UserUtils.fromUserGrpc(newUser)
+                        .setPassword(request.password.hashPassword()).setPhone(request.phone).build()
+                    val user = newUser.fromUserGrpc()
                     userRepository.save(user)
-                    val response = UserUtils.successGrpc()
+                    val response = successGrpc()
                     runWithTracing(span) {
                         response.also { it ->
                             log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -62,8 +66,8 @@ class UserService(
 
             if (userRepository.countByUsername(request.username) != 0) {
                 val user = userRepository.findByUsername(request.username).get()
-                if (UserUtils.checkPassword(request.password, user.password)) {
-                    val response = LoginResponse.newBuilder().setUser(UserUtils.toUserGrpc(user))
+                if (request.password.checkPassword(user.password)) {
+                    val response = LoginResponse.newBuilder().setUser(user.toUserGrpc())
                         .setAccessToken(jwtProvider.createJwt(user.id)).build()
                     tokenRepository.deleteByUserId(user.id)
                     tokenRepository.save(fcmProvider.createTokenEntity(user, request.deviceToken))
@@ -92,7 +96,7 @@ class UserService(
                 if (jwtProvider.needToRefresh(request.token)) {
                     token = jwtProvider.createJwt(user.id)
                 }
-                val response = UserToken.newBuilder().setUser(UserUtils.toUserGrpc(user)).setToken(token).build()
+                val response = UserToken.newBuilder().setUser(user.toUserGrpc()).setToken(token).build()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -109,7 +113,7 @@ class UserService(
             val span = tracer.startScopedSpan(GetUserById)
 
             val user = userRepository.findById(request.id).get()
-            val response = UserToken.newBuilder().setUser(UserUtils.toUserGrpc(user)).build()
+            val response = UserToken.newBuilder().setUser(user.toUserGrpc()).build()
             runWithTracing(span) {
                 response.also { it ->
                     log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -124,7 +128,7 @@ class UserService(
             val span = tracer.startScopedSpan(LogOut)
 
             tokenRepository.deleteByUserId(request.id)
-            val response = UserUtils.successGrpc()
+            val response = successGrpc()
             runWithTracing(span) {
                 response.also { it ->
                     log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -139,8 +143,8 @@ class UserService(
 
             val userId = jwtProvider.validateJwt(request.token)
             if (userId != null) {
-                userRepository.save(UserUtils.fromUserGrpc(request.user!!))
-                val response = UserUtils.successGrpc()
+                userRepository.save(request.user!!.fromUserGrpc())
+                val response = successGrpc()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -171,7 +175,7 @@ class UserService(
                 commentRepository.deleteByCreatorId(userId)
                 userRepository.deleteById(userId)
                 tokenRepository.deleteByUserId(userId)
-                val response = UserUtils.successGrpc()
+                val response = successGrpc()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -195,9 +199,7 @@ class UserService(
                 convicted.ratingNum++
                 userRepository.save(convicted)
                 commentRepository.save(
-                    CommentUtils.fromCommentGrpc(
-                        request.comment, owner, convicted
-                    )
+                    request.comment.fromCommentGrpc(owner, convicted)
                 )
                 val response = IsSuccess.newBuilder().setLogin(true).build()
                 runWithTracing(span) {
@@ -224,7 +226,7 @@ class UserService(
                     convicted.ratingAll += request.comment.rating
                     convicted.ratingAll -= request.ratingPrev
                     userRepository.save(convicted)
-                    commentRepository.save(CommentUtils.fromCommentGrpc(request.comment, owner, convicted))
+                    commentRepository.save(request.comment.fromCommentGrpc(owner, convicted))
                     val response = IsSuccess.newBuilder().setLogin(true).build()
                     runWithTracing(span) {
                         response.also { it ->
@@ -274,7 +276,7 @@ class UserService(
             val span = tracer.startScopedSpan(GetComments)
 
             val comments = commentRepository.findByConvictedId(request.id)
-            val response = CommentUtils.toRepeatedCommentGrpc(comments)
+            val response = comments.toRepeatedCommentGrpc()
             runWithTracing(span) {
                 response.also { it ->
                     log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -290,7 +292,7 @@ class UserService(
             val userId = jwtProvider.validateJwt(request.token)
             if (userId != null) {
                 val comments = commentRepository.findByCreatorId(userId)
-                val response = CommentUtils.toRepeatedCommentGrpc(comments)
+                val response = comments.toRepeatedCommentGrpc()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("sign up: $it").also { span.tag("response", it.toString()) }

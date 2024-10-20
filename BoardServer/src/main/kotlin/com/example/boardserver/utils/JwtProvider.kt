@@ -17,8 +17,8 @@ class JwtProvider(
     @Value("\${jwt.secret.access}") jwtAccessSecret: String?,
     @Value("\${jwt.secret.refresh}") jwtRefreshSecret: String?
 ) {
-    private val jwtAccessSecret: SecretKey
-    private val jwtRefreshSecret: SecretKey
+    private final val jwtAccessSecret: SecretKey
+    private final val jwtRefreshSecret: SecretKey
 
     init {
         this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret))

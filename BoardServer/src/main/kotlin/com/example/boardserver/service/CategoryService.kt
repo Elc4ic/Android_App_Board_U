@@ -1,9 +1,9 @@
 package com.example.boardserver.service
 
 import board.AdOuterClass
+import com.example.boardserver.entity.toCategoriesResponse
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.repository.CategoryRepository
-import com.example.boardserver.utils.CategoryUtils
 import com.example.boardserver.utils.runWithTracing
 import io.micrometer.tracing.Tracer
 import kotlinx.coroutines.withTimeout
@@ -20,7 +20,7 @@ class CategoryService(
             withTimeout(timeOutMillis) {
                 val span = tracer.startScopedSpan(GetAllCategories)
                 val category = categoryRepository.findAll()
-                val response = CategoryUtils.toCategoriesResponse(category)
+                val response = category.toCategoriesResponse()
                 runWithTracing(span) {
                     response.also { it ->
                         log.info("get all categories: $it").also { span.tag("image", it.toString()) }

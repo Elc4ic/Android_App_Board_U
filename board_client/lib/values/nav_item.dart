@@ -9,17 +9,6 @@ class NavItems {
     SC.SETTINGS_PAGE,
   ];
 
-  static void resetAllBranches(BuildContext context) {
-      final branches = StatefulNavigationShell.of(context).route.branches;
-      for (final branch in branches) {
-        try {
-          branch.navigatorKey.currentState?.popUntil((route) => route.isFirst);
-        } catch (e) {
-          continue;
-        }
-      }
-  }
-
   static List<ImageProto> imagesFromFiles(List<XFile> files) {
     final webs = List<ImageProto>.empty(growable: true);
     files.forEach((it) async {

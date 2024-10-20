@@ -14,7 +14,7 @@ import javax.crypto.spec.SecretKeySpec
 class FcmProvider(
     @Value("\${firebase.secretKey}") secretKey: String?,
 ) {
-    private val key: SecretKey
+    private final val key: SecretKey
 
     init {
         val decodedKey = Base64.getDecoder().decode(secretKey)
