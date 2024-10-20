@@ -27,6 +27,7 @@ class Markup {
   static const EdgeInsets padding_h_16_v_4 =
       EdgeInsets.symmetric(vertical: 4, horizontal: 16);
   static const EdgeInsets padding_h_8 = EdgeInsets.symmetric(horizontal: 8);
+  static const EdgeInsets padding_h8_v16 = EdgeInsets.symmetric(horizontal: 8,vertical: 16);
   static const EdgeInsets padding_h_4 = EdgeInsets.symmetric(horizontal: 4);
   static const EdgeInsets padding_v_8 = EdgeInsets.symmetric(vertical: 4);
   static const EdgeInsets padding_v_4 = EdgeInsets.symmetric(vertical: 8);
@@ -51,6 +52,11 @@ class Markup {
     return DateTime(now.year, now.month, now.day, now.hour, now.minute)
         .toString()
         .substring(0, 16);
+  }
+
+  static String substringText(String text,int len) {
+    if(text.length < len) return text;
+    return "${text.substring(0, len-1)}...";
   }
 
   static String countRating(int? r, int? n) {

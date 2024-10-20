@@ -1,4 +1,4 @@
-import 'package:board_client/widgets/black_containers.dart';
+
 import 'package:flutter/material.dart';
 
 class CustomGrid extends StatelessWidget {
@@ -22,14 +22,10 @@ class CustomGrid extends StatelessWidget {
       ),
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
-        if (index < gridCount-1)
-          return TRBBlackBox(child: items[index]);
-        else if (index == gridCount-1)
-          return VBlackBox(child: items[index]);
-        else if (index % gridCount == 1)
-          return BBlackBox(child: items[index]);
-        else
-          return RBBlackBox(child: items[index]);
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: items[index],
+          );
       },
     );
   }

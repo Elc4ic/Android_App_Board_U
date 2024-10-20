@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:board_client/data/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 
 class LoginChecker extends StatefulWidget {
@@ -17,7 +17,7 @@ class LoginChecker extends StatefulWidget {
 }
 
 class _LoginCheckerState extends State<LoginChecker> {
-  final userRepository = GetIt.I<UserRepository>();
+  final userRepository = GetIt.I<UserService>();
   bool update = true;
 
   @override

@@ -1,3 +1,6 @@
+import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
+import 'package:board_client/cubit/category_cubit/category_cubit.dart';
+import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/pages/main/widget/ad_card.dart';
 import 'package:board_client/widgets/custom_grid.dart';
 import 'package:board_client/values/values.dart';
@@ -7,22 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
-import '../../bloc/category_list_bloc/category_list_bloc.dart';
-import '../../data/repository/ad_repository.dart';
-import '../../data/repository/category_repository.dart';
-import '../../data/repository/user_repository.dart';
+import '../../data/service/category_service.dart';
+import '../../data/service/user_service.dart';
 import '../../generated/ad.pb.dart';
-
-String commonSearch = "";
-int priceMax = 0;
-int priceMin = 0;
-
-String commonAddress = "";
-Category? commonCategory;
-String commonQuery = "По умолчанию";
-int page = 0;
-const pageSize = 10;
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -32,39 +22,41 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  var userRepository = GetIt.I<UserRepository>();
+  var userService = GetIt.I<UserService>();
   final _scrollController = ScrollController();
-  final _adListBloc = AdListBloc(
-    GetIt.I<AdRepository>(),
-    GetIt.I<UserRepository>(),
-  );
-  final _catListBloc = CategoryListBloc(
-    GetIt.I<CategoryRepository>(),
-  );
-  var _isLoading = false;
+
+  late final _adListBloc = AdListCubit.get(context);
+  late final _catListBloc = CategoryCubit.get(context);
+  late final _imageBloc = ImageCubit.get(context);
 
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 1), () {
-      _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
-          priceMin, page, pageSize, true, commonCategory, commonQuery));
-      _catListBloc.add(LoadCategories());
+    Future.delayed(const Duration(milliseconds: 500), () {
+      _adListBloc.getAdList(true);
+      _catListBloc.loadCategories();
     });
     _scrollController.addListener(() async {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
       double delta = 100.0;
-      if (maxScroll - currentScroll <= delta && !_isLoading) {
-        _isLoading = true;
-        page++;
+      if (maxScroll - currentScroll <= delta && _adListBloc.isLoading) {
+        _adListBloc.isLoading = true;
+        _adListBloc.page++;
         await Future.delayed(const Duration(milliseconds: 500), () {
-          _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
-              priceMin, page, pageSize, false, commonCategory, commonQuery));
+          _adListBloc.getAdList(false);
         });
         setState(() {});
       }
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _catListBloc.close();
+    _adListBloc.close();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,51 +68,51 @@ class _MainPageState extends State<MainPage> {
         body: SelectionArea(
           child: RefreshIndicator(
             onRefresh: () async {
-              page = 0;
-              _adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
-                  priceMin, page, pageSize, true, commonCategory, commonQuery));
-              _catListBloc.add(LoadCategories());
+              _adListBloc.page = 0;
+              _adListBloc.getAdList(true);
+              _catListBloc.loadCategories();
             },
             child: CustomScrollView(
+              cacheExtent: Const.cardCacheExtent,
               physics: const ClampingScrollPhysics(),
               controller: _scrollController,
               slivers: [
-                SliverToBoxAdapter(
-                  child: BlocBuilder<CategoryListBloc, CategoryListState>(
-                    bloc: _catListBloc,
-                    builder: (context, state) {
-                      if (state is CategoryListLoaded) {
-                        return Column(
-                          children: [
-                            Wrap(
-                              spacing: 4,
-                              runSpacing: 4,
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  sliver: SliverToBoxAdapter(
+                    child: BlocBuilder<CategoryCubit, CategoryState>(
+                      bloc: _catListBloc,
+                      builder: (context, state) {
+                        if (state is CategoryLoaded) {
+                          return SizedBox(
+                            height: 50,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
                               children: generateCategory(
                                   state.categories, context, _adListBloc),
                             ),
-                            Markup.dividerH10,
-                          ],
-                        );
-                      }
-                      if (state is CategoryFailure) {
-                        return Center(
-                          child: TryAgainWidget(
-                            exception: state.exception,
-                            onPressed: () {
-                              _catListBloc.add(LoadCategories());
-                            },
-                          ),
-                        );
-                      }
-                      return const Center(child: CircularProgressIndicator());
-                    },
+                          );
+                        }
+                        if (state is CategoryFailure) {
+                          return Center(
+                            child: TryAgainWidget(
+                              exception: state.exception,
+                              onPressed: () {
+                                _catListBloc.loadCategories();
+                              },
+                            ),
+                          );
+                        }
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
                   ),
                 ),
-                BlocBuilder<AdListBloc, AdListState>(
+                BlocBuilder<AdListCubit, AdListState>(
                   bloc: _adListBloc,
                   builder: (context, state) {
                     if (state is AdListLoaded) {
-                      _isLoading = (state.hasMore) ? false : true;
+                      _adListBloc.isLoading = (state.hasMore) ? false : true;
                       if (state.adList.isEmpty) {
                         return SliverFillRemaining(
                           child: SizedBox(
@@ -140,7 +132,7 @@ class _MainPageState extends State<MainPage> {
                             state.adList.length,
                             (index) => AdCard(
                                 ad: state.adList[index],
-                                token: userRepository.getToken())).toList(),
+                                token: userService.getToken())).toList(),
                       );
                     }
                     if (state is AdListLoadingFailure) {
@@ -148,16 +140,7 @@ class _MainPageState extends State<MainPage> {
                         child: TryAgainWidget(
                           exception: state.exception,
                           onPressed: () {
-                            _adListBloc.add(LoadAdList(
-                                commonSearch,
-                                commonAddress,
-                                priceMax,
-                                priceMin,
-                                page,
-                                pageSize,
-                                false,
-                                commonCategory,
-                                commonQuery));
+                            _adListBloc.getAdList(false);
                           },
                         ),
                       );
@@ -176,24 +159,26 @@ class _MainPageState extends State<MainPage> {
 }
 
 List<Widget> generateCategory(
-    List<Category> categories, BuildContext context, AdListBloc adListBloc) {
+    List<Category> categories, BuildContext context, AdListCubit adListBloc) {
   return List.generate(
     categories.length,
-    (index) => ElevatedButton(
-        onPressed: () {
-          page = 0;
-          commonCategory = categories[index];
-          adListBloc.add(LoadAdList(commonSearch, commonAddress, priceMax,
-              priceMin, page, pageSize, true, commonCategory, commonQuery));
-        },
-        child: Text(categories[index].name,
-            style: Theme.of(context).textTheme.bodySmall)),
+    (index) => Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: OutlinedButton(
+          onPressed: () {
+            adListBloc.page = 0;
+            adListBloc.category = categories[index];
+            adListBloc.getAdList(true);
+          },
+          child: Text(categories[index].name,
+              style: Theme.of(context).textTheme.bodySmall)),
+    ),
   ).toList();
 }
 
-PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
+PreferredSizeWidget header(BuildContext context, AdListCubit adListBloc) {
   final searchController = TextEditingController();
-  searchController.text = commonSearch;
+  searchController.text = adListBloc.search;
   return PreferredSize(
     preferredSize: const Size.fromHeight(Const.HeaderHight),
     child: Row(
@@ -205,28 +190,19 @@ PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
               controller: searchController,
               keyboardType: TextInputType.text,
               onChanged: (String value) {
-                commonSearch = value;
+                adListBloc.search = value;
               },
               onSubmitted: (String value) {
-                page = 0;
-                adListBloc.add(LoadAdList(
-                    commonSearch,
-                    commonAddress,
-                    priceMax,
-                    priceMin,
-                    page,
-                    pageSize,
-                    true,
-                    commonCategory,
-                    commonQuery));
+                adListBloc.page = 0;
+                adListBloc.getAdList(true);
               },
               leading: const Icon(Icons.search),
               trailing: [
                 IconButton(
                   tooltip: "Фильтрация",
                   icon: const Icon(Icons.filter_alt),
-                  onPressed: () =>
-                      filterDialog(context, adListBloc, page, pageSize),
+                  onPressed: () => filterDialog(context, adListBloc,
+                      adListBloc.page, AdListCubit.pageSize),
                 ),
               ],
               hintText: SC.SEARCH_HINT,
@@ -239,16 +215,16 @@ PreferredSizeWidget header(BuildContext context, AdListBloc adListBloc) {
 }
 
 Future<void> filterDialog(
-    BuildContext context, AdListBloc adListBloc, int page, int pageSize) async {
+    BuildContext context, AdListCubit cubit, int page, int pageSize) async {
   final formKey = GlobalKey<FormState>();
   final maxController = TextEditingController();
   final minController = TextEditingController();
   final addressController = TextEditingController();
-  minController.text = priceMin == 0 ? "" : priceMin.toString();
-  maxController.text = priceMax == 0 ? "" : priceMax.toString();
-  addressController.text = commonAddress;
-  final categoryRepository = GetIt.I<CategoryRepository>();
-  List<Category>? categories = categoryRepository.getCategories();
+  minController.text = cubit.priceMin == 0 ? "" : cubit.priceMin.toString();
+  maxController.text = cubit.priceMax == 0 ? "" : cubit.priceMax.toString();
+  addressController.text = cubit.address;
+  final categoryService = GetIt.I<CategoryService>();
+  List<Category>? categories = categoryService.getCategories();
   List<String> query = Const.query;
   return showDialog<void>(
     context: context,
@@ -310,9 +286,9 @@ Future<void> filterDialog(
                   );
                 }).toList(),
                 onChanged: (newValue) {
-                  commonCategory = newValue;
+                  cubit.category = newValue;
                 },
-                value: commonCategory,
+                value: cubit.category,
                 decoration: const InputDecoration(
                     contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
               ),
@@ -327,9 +303,9 @@ Future<void> filterDialog(
                   );
                 }).toList(),
                 onChanged: (newValue) {
-                  commonQuery = newValue!;
+                  cubit.query = newValue!;
                 },
-                value: commonQuery,
+                value: cubit.query,
                 decoration: const InputDecoration(
                     contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
               ),
@@ -339,21 +315,12 @@ Future<void> filterDialog(
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      page = 0;
-                      priceMax = 0;
-                      priceMin = 0;
-                      commonAddress = "";
-                      commonCategory = null;
-                      adListBloc.add(LoadAdList(
-                          commonSearch,
-                          commonAddress,
-                          priceMax,
-                          priceMin,
-                          page,
-                          pageSize,
-                          true,
-                          commonCategory,
-                          commonQuery));
+                      cubit.page = 0;
+                      cubit.priceMax = 0;
+                      cubit.priceMin = 0;
+                      cubit.address = "";
+                      cubit.category = null;
+                      cubit.getAdList(true);
                       Navigator.pop(context);
                     },
                     child: Text("Сбросить",
@@ -364,23 +331,14 @@ Future<void> filterDialog(
                       if (formKey.currentState!.validate()) {
                         page = 0;
                         if (maxController.text.isNotEmpty) {
-                          priceMax = int.parse(maxController.text);
+                          cubit.priceMax = int.parse(maxController.text);
                         }
                         if (minController.text.isNotEmpty) {
-                          priceMin = int.parse(minController.text);
+                          cubit.priceMin = int.parse(minController.text);
                         }
-                        commonAddress =
+                        cubit.address =
                             Markup.capitalize(addressController.text);
-                        adListBloc.add(LoadAdList(
-                            commonSearch,
-                            commonAddress,
-                            priceMax,
-                            priceMin,
-                            page,
-                            pageSize,
-                            true,
-                            commonCategory,
-                            commonQuery));
+                        cubit.getAdList(true);
                         Navigator.pop(context);
                       }
                     },

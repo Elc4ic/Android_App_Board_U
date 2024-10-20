@@ -1,108 +1,134 @@
-create sequence ads_seq start with 1 increment by 50;
-create sequence category_seq start with 1 increment by 50;
-create sequence chats_seq start with 1 increment by 50;
-create sequence comments_seq start with 1 increment by 50;
-create sequence favorites_seq start with 1 increment by 50;
-create sequence images_seq start with 1 increment by 50;
-create sequence messages_seq start with 1 increment by 50;
-create sequence users_seq start with 1 increment by 50;
-create sequence tokens_seq start with 1 increment by 50;
+CREATE SEQUENCE ads_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE category_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE chats_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE comments_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE favorites_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE images_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE messages_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE tokens_seq START WITH 1 INCREMENT BY 50;
+CREATE SEQUENCE users_seq START WITH 1 INCREMENT BY 50;
 
-create table ads (
-    id bigint not null,
-    is_active boolean not null,
-    views integer not null,
-    category_id bigint,
-    price bigint not null,
-    users_id bigint,
-    created varchar(255),
-    description varchar(255),
-    title varchar(255),
-    primary key (id)
+CREATE TABLE ads (
+ is_active BOOLEAN NOT NULL,
+ views INTEGER NOT NULL,
+ category_id BIGINT,
+ id BIGINT NOT NULL,
+ price BIGINT NOT NULL,
+ users_id BIGINT,
+ created VARCHAR(255),
+ description VARCHAR(255),
+ title VARCHAR(255),
+ PRIMARY KEY (id)
 );
 
-create table category (
-    id bigint not null,
-    name varchar(255),
-    path varchar(255),
-    primary key (id)
+CREATE TABLE category (
+ id BIGINT NOT NULL,
+ name VARCHAR(255),
+ path VARCHAR(255),
+ PRIMARY KEY (id)
 );
 
-create table chats (
-    id bigint not null,
-    ad_id bigint,
-    message_id bigint,
-    owner_id bigint,
-    receiver_id bigint,
-    primary key (id)
+CREATE TABLE chats (
+ ad_id BIGINT,
+ id BIGINT NOT NULL,
+ message_id BIGINT UNIQUE,
+ owner_id BIGINT,
+ receiver_id BIGINT,
+ PRIMARY KEY (id)
 );
 
-create table comments (
-    id bigint not null,
-    rating integer not null,
-    convicted_id bigint,
-    owner_id bigint,
-    created varchar(255),
-    text varchar(255),
-    primary key (id)
+CREATE TABLE comments (
+ rating INTEGER NOT NULL,
+ convicted_id BIGINT,
+ id BIGINT NOT NULL,
+ creator_id BIGINT,
+ created VARCHAR(255),
+ text VARCHAR(255),
+ PRIMARY KEY (id)
 );
 
-create table favorites (
-    id bigint not null,
-    ad_id bigint,
-    user_id bigint,
-    primary key (id)
+CREATE TABLE favorites (
+ ad_id BIGINT,
+ id BIGINT NOT NULL,
+ user_id BIGINT,
+ PRIMARY KEY (id)
 );
 
-create table images (
-    id bigint not null,
-    ad_id bigint,
-    image_bytes bytea,
-    primary key (id)
+CREATE TABLE images (
+ ad_id BIGINT,
+ id BIGINT NOT NULL,
+ image_bytes BYTEA,
+ PRIMARY KEY (id)
 );
 
-create table tokens (
-    id bigint not null,
-    user_id bigint,
-    device_token varchar(255),
-    primary key (id)
+CREATE TABLE messages (
+ chat_id BIGINT,
+ id BIGINT NOT NULL,
+ user_id BIGINT,
+ content VARCHAR(255),
+ data VARCHAR(255),
+ PRIMARY KEY (id)
 );
 
-create table messages (
-    id bigint not null,
-    chat_id bigint,
-    user_id bigint,
-    content varchar(255),
-    data varchar(255),
-    primary key (id)
+CREATE TABLE tokens (
+ id BIGINT NOT NULL,
+ user_id BIGINT UNIQUE,
+ device_token VARCHAR(255),
+ PRIMARY KEY (id)
 );
 
-create table users (
-    id bigint not null,
-    rating_all integer not null,
-    rating_num integer not null,
-    address varchar(255),
-    email varchar(255),
-    name varchar(255),
-    password varchar(255),
-    phone varchar(255),
-    username varchar(255),
-    deviceToken varchar(255),
-    avatar bytea,
-    primary key (id)
+CREATE TABLE users (
+ rating_all INTEGER NOT NULL,
+ rating_num INTEGER NOT NULL,
+ id BIGINT NOT NULL,
+ address VARCHAR(255),
+ email VARCHAR(255),
+ name VARCHAR(255),
+ password VARCHAR(255),
+ phone VARCHAR(255),
+ username VARCHAR(255),
+ avatar BYTEA,
+ PRIMARY KEY (id)
 );
 
-alter table if exists ads add constraint ads_category_fk foreign key (category_id) references category;
-alter table if exists ads add constraint ads_user_fk foreign key (users_id) references users;
-alter table if exists chats add constraint chats_ads_fk foreign key (ad_id) references ads;
-alter table if exists chats add constraint chats_message_fk foreign key (message_id) references messages;
-alter table if exists chats add constraint chats_owner_fk foreign key (owner_id) references users;
-alter table if exists chats add constraint chats_receiver_fk foreign key (receiver_id) references users;
-alter table if exists comments add constraint comments_convicted_fk foreign key (convicted_id) references users;
-alter table if exists comments add constraint comments_owner_fk foreign key (owner_id) references users;
-alter table if exists favorites add constraint favorites_ads_fk foreign key (ad_id) references ads;
-alter table if exists favorites add constraint favorites_users_fk foreign key (user_id) references users;
-alter table if exists images add constraint images_ads_fk foreign key (ad_id) references ads;
-alter table if exists messages add constraint messages_chats_fk foreign key (chat_id) references chats;
-alter table if exists messages add constraint messages_user_fk foreign key (user_id) references users;
-alter table if exists tokens add constraint tokens_user_fk foreign key (user_id) references users;
+ALTER TABLE IF EXISTS ads
+ ADD CONSTRAINT FK_ads_category FOREIGN KEY (category_id) REFERENCES category;
+
+ALTER TABLE IF EXISTS ads
+ ADD CONSTRAINT FK_ads_user FOREIGN KEY (users_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS chats
+ ADD CONSTRAINT FK_chats_ad FOREIGN KEY (ad_id) REFERENCES ads;
+
+ALTER TABLE IF EXISTS chats
+ ADD CONSTRAINT FK_chats_message FOREIGN KEY (message_id) REFERENCES messages;
+
+ALTER TABLE IF EXISTS chats
+ ADD CONSTRAINT FK_chats_owner FOREIGN KEY (owner_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS chats
+ ADD CONSTRAINT FK_chats_receiver FOREIGN KEY (receiver_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS comments
+ ADD CONSTRAINT FK_comments_convicted FOREIGN KEY (convicted_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS comments
+ ADD CONSTRAINT FK_comments_creator FOREIGN KEY (creator_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS favorites
+ ADD CONSTRAINT FK_favorites_ad FOREIGN KEY (ad_id) REFERENCES ads;
+
+ALTER TABLE IF EXISTS favorites
+ ADD CONSTRAINT FK_favorites_user FOREIGN KEY (user_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS images
+ ADD CONSTRAINT FK_images_ad FOREIGN KEY (ad_id) REFERENCES ads;
+
+ALTER TABLE IF EXISTS messages
+ ADD CONSTRAINT FK_messages_chat FOREIGN KEY (chat_id) REFERENCES chats;
+
+ALTER TABLE IF EXISTS messages
+ ADD CONSTRAINT FK_messages_user FOREIGN KEY (user_id) REFERENCES users;
+
+ALTER TABLE IF EXISTS tokens
+ ADD CONSTRAINT FK_tokens_user FOREIGN KEY (user_id) REFERENCES users;

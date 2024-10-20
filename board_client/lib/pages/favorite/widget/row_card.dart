@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/values/values.dart';
-import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../bloc/image_bloc/image_bloc.dart';
-import '../../../data/repository/ad_repository.dart';
+import '../../../data/service/ad_service.dart';
 import '../../../generated/ad.pb.dart';
 
 class RowCard extends StatefulWidget {
@@ -24,17 +23,27 @@ class RowCard extends StatefulWidget {
 }
 
 class _RowCardState extends State<RowCard> {
-  final adRepository = GetIt.I<AdRepository>();
+  final adService = GetIt.I<AdService>();
   bool isFav = true;
 
-  final _imageBloc = ImageBloc(
-    GetIt.I<AdRepository>(),
-  );
+  late final _imageBloc = ImageCubit.get(context);
+
+  @override
+  void initState() {
+    _imageBloc.loadImages(widget.ad.id, true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _imageBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _imageBloc.add(LoadImageList(widget.ad.id, true));
     return Card(
+      color: MyColorConst.card,
       child: InkWell(
         onTap: () {
           context.push("/ad/${widget.ad.id}");
@@ -42,67 +51,64 @@ class _RowCardState extends State<RowCard> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RBlackBox(
-              child: Padding(
-                padding: Markup.padding_all_8,
-                child: BlocBuilder<ImageBloc, ImageState>(
-                  bloc: _imageBloc,
-                  builder: (context, state) {
-                    if (state is ImageLoaded) {
-                      return Image.memory(
-                        gaplessPlayback: true,
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.fitWidth,
-                        Uint8List.fromList(state.images.first),
-                      );
-                    }
-                    if (state is ImageLoadingFailure) {
-                      return Container(
-                        width: 90,
-                        height: 90,
-                        color: Colors.blueAccent,
-                      );
-                    }
-                    return SizedBox(
-                        width: 90,
-                        height: 90,
-                        child:
-                        ShimmeringContainer());
-                  },
+            Padding(
+              padding: Markup.padding_all_8,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: BlocConsumer<ImageCubit, ImageState>(
+                    listener: (context, state) {},
+                    builder: (context, state) {
+                      if (state is ImageLoaded) {
+                        return Image.memory(
+                          gaplessPlayback: true,
+                          cacheWidth: Const.ImageWidth,
+                          cacheHeight: Const.ImageHeight,
+                          fit: BoxFit.fill,
+                          Uint8List.fromList(state.images[widget.ad.id]!.first),
+                        );
+                      }
+                      if (state is ImageLoadingFailure) {
+                        return const NoImageWidget();
+                      }
+                      return ShimmeringContainer();
+                    },
+                  ),
                 ),
-               ),
+              ),
             ),
             Expanded(
               child: Padding(
-                padding: Markup.padding_all_8,
+                padding: Markup.padding_h8_v16,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("${widget.ad.price} P",
                         style: Theme.of(context).textTheme.bodyMedium),
-                    Text( (widget.ad.title.length > 21)
-                        ? "${widget.ad.title.substring(0, 20)}..."
-                        : widget.ad.title,
+                    Text(Markup.substringText(widget.ad.title, 21),
                         style: Theme.of(context).textTheme.bodyMedium),
                   ],
                 ),
               ),
             ),
-            Column(
-              children: [
-                BLBlackBox(
-                  child: FavButton(
-                    isFav: isFav,
-                    onPressed: () {
-                      setState(() {
-                        isFav = !isFav;
-                      });
-                      adRepository.setFavoriteAd(widget.ad.id, widget.token);
-                    },
-                  ),
-                )
-              ],
+            FavButton(
+              isFav: isFav,
+              onPressed: () async {
+                try {
+                  await adService.setFavoriteAd(widget.ad.id, widget.token);
+                  setState(() {
+                    widget.ad.isFav = !widget.ad.isFav;
+                  });
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text("Не получилось добавить в избранное"),
+                        backgroundColor: MyColorConst.error),
+                  );
+                }
+              },
             )
           ],
         ),

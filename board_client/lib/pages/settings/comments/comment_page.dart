@@ -1,14 +1,12 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../bloc/user_bloc/user_bloc.dart';
-import '../../../data/repository/user_repository.dart';
 import '../../../generated/user.pb.dart';
 import '../../../values/values.dart';
 import '../../../widgets/widgets.dart';
@@ -23,15 +21,12 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-  final _commentBloc = UserBloc(
-    GetIt.I<UserRepository>(),
-  );
 
-  final UserRepository userRepository = GetIt.I<UserRepository>();
+  late final _commentBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    _commentBloc.add(LoadComments(widget.userId));
+    _commentBloc.loadComments(widget.userId);
     super.initState();
   }
 
@@ -41,10 +36,10 @@ class _CommentPageState extends State<CommentPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _commentBloc.add(LoadComments(widget.userId));
+            _commentBloc.loadComments(widget.userId);
           },
-          child: BlocBuilder<UserBloc, UserState>(
-            bloc: _commentBloc,
+          child: BlocConsumer<UserCubit, UserState>(
+            listener: (context, state) {},
             builder: (context, state) {
               if (state is CommentsLoaded) {
                 if (state.comments.isEmpty) {
@@ -80,7 +75,7 @@ class _CommentPageState extends State<CommentPage> {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _commentBloc.add(LoadComments(widget.userId));
+                    _commentBloc.loadComments(widget.userId);
                   },
                 );
               }
@@ -89,7 +84,7 @@ class _CommentPageState extends State<CommentPage> {
           ),
         ),
       ),
-      bottomNavigationBar: (userRepository.getUser()?.id != widget.userId)
+      bottomNavigationBar: (_commentBloc.getUser()?.id != widget.userId)
           ? ElevatedButton(
               onPressed: () {
                 context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");

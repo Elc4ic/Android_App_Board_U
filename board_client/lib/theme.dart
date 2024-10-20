@@ -1,5 +1,6 @@
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 ThemeData mainTheme(BuildContext context) => ThemeData(
@@ -32,98 +33,94 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
           fontWeight: FontWeight.w600,
           fontSize: Markup.size_14,
         ),
-        unselectedItemColor: LightColorConst.text,
-        selectedItemColor: LightColorConst.text,
+        unselectedItemColor: MyColorConst.text,
+        selectedItemColor: MyColorConst.text,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: MyColorConst.card,
+          backgroundColor: MyColorConst.blue2,
           foregroundColor: MyColorConst.text,
-          side: BorderSide(width: 1, color: Colors.black),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
           minimumSize: const Size(0, 50),
         ),
       ),
       cardTheme: const CardTheme(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
-            Radius.circular(0),
+            Radius.circular(12),
           ),
-          /*side: BorderSide(
-            color: MyColorConst.text,
-          ),*/
         ),
         elevation: 0,
-        margin: EdgeInsets.all(0),
+        margin: EdgeInsets.all(8),
+        color: MyColorConst.card,
       ),
       inputDecorationTheme: InputDecorationTheme(
-          labelStyle: GoogleFonts.exo2(
-            fontWeight: FontWeight.w400,
-            fontSize: Markup.size_16,
-          ),
-          floatingLabelStyle: GoogleFonts.exo2(
-            fontWeight: FontWeight.w400,
-            fontSize: Markup.size_12,
-            color: MyColorConst.text,
-          ),
-          helperStyle: GoogleFonts.exo2(
-            fontWeight: FontWeight.w400,
-            fontSize: Markup.size_16,
-          ),
-          prefixStyle: GoogleFonts.exo2(
-            fontWeight: FontWeight.w400,
-            fontSize: Markup.size_16,
-          ),
-          border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
-          ),
-          focusedBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
-          ),
-          enabledBorder: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0)),
-          )),
+        labelStyle: GoogleFonts.exo2(
+          fontWeight: FontWeight.w400,
+          fontSize: Markup.size_16,
+        ),
+        floatingLabelStyle: GoogleFonts.exo2(
+          fontWeight: FontWeight.w400,
+          fontSize: Markup.size_12,
+          color: MyColorConst.text,
+        ),
+        helperStyle: GoogleFonts.exo2(
+          fontWeight: FontWeight.w400,
+          fontSize: Markup.size_16,
+        ),
+        prefixStyle: GoogleFonts.exo2(
+          fontWeight: FontWeight.w400,
+          fontSize: Markup.size_16,
+        ),
+        filled: true,
+        fillColor: Colors.black26,
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+      ),
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           Theme.of(context).platform: NoAnimationPageTransitionsBuilder(),
         },
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          side: BorderSide(color: Colors.black),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          backgroundColor: WidgetStateProperty.all<Color>(
+            Colors.black26,
           ),
-          padding: const EdgeInsets.all(0),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          elevation: WidgetStateProperty.all(8),
         ),
       ),
-      dialogTheme: const DialogTheme(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(0)),
-          side: BorderSide(color: Colors.black, width: 2),
-        ),
-      ),
-      floatingActionButtonTheme: FloatingActionButtonThemeData(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(0),
-          side: BorderSide(color: Colors.black, width: 1),
-        ),
+      appBarTheme: const AppBarTheme(
+        elevation: 0,
+        backgroundColor: MyColorConst.main,
+        foregroundColor: MyColorConst.main,
       ),
       searchBarTheme: SearchBarThemeData(
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(0),
-            ),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            side: BorderSide(color: Colors.black, width: 1),
           ),
         ),
-        side: WidgetStateProperty.all<BorderSide>(
-          const BorderSide(
-            color: Colors.black,
-            width: 1,
-          )
+        backgroundColor: WidgetStateProperty.all<Color>(
+          Colors.black26,
+        ),
+        shadowColor: WidgetStateProperty.all<Color>(
+          Colors.black26,
+        ),
+        elevation: WidgetStateProperty.all<double>(
+          0,
         ),
       ),
     );

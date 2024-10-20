@@ -3,17 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class ShimmeringContainer extends StatefulWidget {
+  const ShimmeringContainer({super.key});
+
   @override
   _ShimmeringContainerState createState() => _ShimmeringContainerState();
 }
 
 class _ShimmeringContainerState extends State<ShimmeringContainer> {
   var _index = 0;
+  late final Timer _timer;
 
   @override
   void initState() {
     super.initState();
-    Timer.periodic(const Duration(milliseconds: 300), (Timer timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 300), (Timer timer) {
       setState(() {
         _index = (_index + 1) % 3;
       });
@@ -22,6 +25,7 @@ class _ShimmeringContainerState extends State<ShimmeringContainer> {
 
   @override
   void dispose() {
+    _timer.cancel();
     super.dispose();
   }
 

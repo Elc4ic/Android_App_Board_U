@@ -1,11 +1,13 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../data/repository/user_repository.dart';
+import '../../data/service/user_service.dart';
 
 class SetAddressPage extends StatefulWidget {
   const SetAddressPage({super.key});
@@ -15,7 +17,7 @@ class SetAddressPage extends StatefulWidget {
 }
 
 class _SetAddressPageState extends State<SetAddressPage> {
-  final userRepository = GetIt.I<UserRepository>();
+  late final userCubit = UserCubit.get(context);
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _blockController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
@@ -179,7 +181,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                 const Spacer(),
                 ElevatedButton(
                   onPressed: () async {
-                    var user = userRepository.getUser();
+                    var user = userCubit.getUser();
                     var korpus = (campusf != "")
                         ? ": к."
                         : (gorodf != "")
@@ -189,7 +191,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     user?.address = (type == 3)
                         ? _addressController.text
                         : "${locf ?? ""}$korpus${campusf ?? ""}${gorodf ?? ""} $room${_blockController.text}";
-                    await userRepository.changeUser(user);
+                    await userCubit.changeUser(user);
                     context.go(SC.SETTINGS_PAGE);
                   },
                   child: Text("Сохранить",

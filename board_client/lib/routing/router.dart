@@ -10,6 +10,7 @@ import 'package:board_client/pages/settings/settings_page.dart';
 import 'package:board_client/pages/settings/comments/user_comment_page.dart';
 import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:fixnum/fixnum.dart';
 

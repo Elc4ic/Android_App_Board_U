@@ -13,16 +13,28 @@ services:
         PG_PASSWORD: ${PG_PASSWORD}
     ports:
       - "9090:9090"
+      - "8080:8080"
     depends_on:
       - db
+      - zipkin
     environment:
       DB_URL: jdbc:postgresql://db/postgres
       PG_USER: boarduser
       PG_PASSWORD: boardpass
+    volumes:
+      - board-data:/var/lib/kotlinserver/data
+
+  zipkin:
+    image: openzipkin/zipkin:latest
+    restart: always
+    container_name: micro_zipkin
+    ports:
+      - "9411:9411"
 
   db:
     container_name: db
     image: postgres:13
+    restart: always
     ports:
       - "5432:5432"
     environment:
@@ -46,6 +58,7 @@ services:
 
 volumes:
   db-data:
+  board-data:
   pgadmin-data:
 
 

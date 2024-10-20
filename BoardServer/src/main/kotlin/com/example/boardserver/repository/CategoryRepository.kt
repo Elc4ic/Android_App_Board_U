@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface CategoryRepository : JpaRepository<Category,Long>{
+interface CategoryRepository : JpaRepository<Category, Long> {
     override fun findById(id: Long): Optional<Category>
 }

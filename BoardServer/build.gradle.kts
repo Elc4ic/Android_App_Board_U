@@ -42,13 +42,25 @@ val grpcServerVersion = "2.15.0.RELEASE"
 
 dependencies {
     //spring
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springdoc:springdoc-openapi-webflux-ui:1.6.12")
+    implementation("io.netty:netty-all:4.1.82.Final")
+
+    //tracing
+    implementation ("io.micrometer:micrometer-tracing-bridge-brave:1.1.4")
+    implementation ("io.zipkin.reporter2:zipkin-reporter-brave:2.16.3")
+
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+
     //grpc
     implementation("io.grpc:grpc-kotlin-stub:${grpcKotlinPlugin}")
     implementation("io.grpc:grpc-protobuf:${grpc}")

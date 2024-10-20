@@ -1,14 +1,13 @@
+import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/pages/advertisement/widget/myad_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
-import '../../data/repository/ad_repository.dart';
-import '../../data/repository/user_repository.dart';
+import '../../data/service/ad_service.dart';
+import '../../data/service/user_service.dart';
 import '../../values/values.dart';
-import '../../widgets/black_containers.dart';
 import '../../widgets/widgets.dart';
 
 class MyAdsPage extends StatefulWidget {
@@ -19,16 +18,13 @@ class MyAdsPage extends StatefulWidget {
 }
 
 class _MyAdsPageState extends State<MyAdsPage> {
-  var userRepository = GetIt.I<UserRepository>();
+  var userService = GetIt.I<UserService>();
 
-  final _adListBloc = AdListBloc(
-    GetIt.I<AdRepository>(),
-    GetIt.I<UserRepository>(),
-  );
+  late final _adListBloc = AdListCubit.get(context);
 
   @override
   void initState() {
-    _adListBloc.add(LoadMyAd());
+    _adListBloc.getMyList();
     super.initState();
   }
 
@@ -43,10 +39,10 @@ class _MyAdsPageState extends State<MyAdsPage> {
         child: SafeArea(
           child: RefreshIndicator(
             onRefresh: () async {
-              _adListBloc.add(LoadMyAd());
+              _adListBloc.getMyList();
             },
-            child: BlocBuilder<AdListBloc, AdListState>(
-              bloc: _adListBloc,
+            child: BlocConsumer<AdListCubit, AdListState>(
+              listener: (context, state) {},
               builder: (context, state) {
                 if (state is AdListLoaded) {
                   if (state.adList.isEmpty) {
@@ -67,24 +63,14 @@ class _MyAdsPageState extends State<MyAdsPage> {
                   }
                   return ListView.builder(
                     itemCount: state.adList.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (index == 0) {
-                        return VBlackBox(
-                          child: AdRow(
-                            ad: state.adList[index],
-                            token: userRepository.getToken(),
-                            adListBloc: _adListBloc,
-                          ),
-                        );
-                      } else if (index == state.adList.length) {
+                    itemBuilder: (context, index) {
+                      if (index == state.adList.length) {
                         return const SizedBox(height: 80);
                       }
-                      return BBlackBox(
-                        child: AdRow(
-                          ad: state.adList[index],
-                          token: userRepository.getToken(),
-                          adListBloc: _adListBloc,
-                        ),
+                      return AdRow(
+                        ad: state.adList[index],
+                        token: userService.getToken(),
+                        adListBloc: _adListBloc,
                       );
                     },
                   );
@@ -93,7 +79,7 @@ class _MyAdsPageState extends State<MyAdsPage> {
                   return TryAgainWidget(
                     exception: state.exception,
                     onPressed: () {
-                      _adListBloc.add(LoadMyAd());
+                      _adListBloc.getMyList();
                     },
                   );
                 }

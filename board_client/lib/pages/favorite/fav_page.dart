@@ -1,13 +1,12 @@
+import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/pages/favorite/widget/row_card.dart';
-import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
-import '../../data/repository/ad_repository.dart';
-import '../../data/repository/user_repository.dart';
+import '../../data/service/ad_service.dart';
+import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 import '../../widgets/widgets.dart';
 
@@ -19,16 +18,13 @@ class FavPage extends StatefulWidget {
 }
 
 class _FavPageState extends State<FavPage> {
-  var userRepository = GetIt.I<UserRepository>();
+  var userService = GetIt.I<UserService>();
 
-  final _adListBloc = AdListBloc(
-    GetIt.I<AdRepository>(),
-    GetIt.I<UserRepository>(),
-  );
+  late final _adListBloc = AdListCubit.get(context);
 
   @override
   void initState() {
-    _adListBloc.add(LoadFavAd());
+    _adListBloc.getFavList();
     super.initState();
   }
 
@@ -36,15 +32,14 @@ class _FavPageState extends State<FavPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Избранное",
-            style: Theme.of(context).textTheme.labelLarge),
+        title: Text("Избранное", style: Theme.of(context).textTheme.labelLarge),
       ),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _adListBloc.add(LoadFavAd());
+            _adListBloc.getFavList();
           },
-          child: BlocBuilder<AdListBloc, AdListState>(
+          child: BlocBuilder<AdListCubit, AdListState>(
             bloc: _adListBloc,
             builder: (context, state) {
               if (state is AdListLoaded) {
@@ -64,21 +59,12 @@ class _FavPageState extends State<FavPage> {
                   );
                 }
                 return ListView.builder(
+                  cacheExtent: Const.cacheExtent,
                   itemCount: state.adList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if(index ==0){
-                      return VBlackBox(
-                        child: RowCard(
-                          ad: state.adList[index],
-                          token: userRepository.getToken(),
-                        ),
-                      );
-                    }
-                    return BBlackBox(
-                      child: RowCard(
-                        ad: state.adList[index],
-                        token: userRepository.getToken(),
-                      ),
+                    return RowCard(
+                      ad: state.adList[index],
+                      token: userService.getToken(),
                     );
                   },
                 );
@@ -87,7 +73,7 @@ class _FavPageState extends State<FavPage> {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _adListBloc.add(LoadFavAd());
+                    _adListBloc.getFavList();
                   },
                 );
               }

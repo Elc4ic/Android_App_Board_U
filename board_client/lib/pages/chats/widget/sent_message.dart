@@ -1,4 +1,4 @@
-import 'package:board_client/data/repository/chat_repository.dart';
+import 'package:board_client/data/service/chat_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -12,12 +12,12 @@ class SentMessageScreen extends StatelessWidget {
   const SentMessageScreen({
     super.key,
     required this.message,
-    required this.chatRepository,
+    required this.chatService,
     required this.token, required this.messages,
   });
 
   final Message message;
-  final ChatRepository chatRepository;
+  final ChatService chatService;
   final String? token;
   final List<Message> messages;
 
@@ -31,7 +31,7 @@ class SentMessageScreen extends StatelessWidget {
           Flexible(
             child: InkWell(
               onLongPress: () => myDialog(context, () async {
-                await chatRepository.deleteMessage(message.id, token);
+                await chatService.deleteMessage(message.id, token);
                 messages.remove(message);
                 context.pop();
               }, SC.DELETE_MESSAGE),

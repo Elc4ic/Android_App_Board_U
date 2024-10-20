@@ -1,17 +1,14 @@
 import 'dart:io';
 
-import 'package:board_client/main.dart';
-import 'package:board_client/widgets/black_containers.dart';
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
+import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fixnum/fixnum.dart';
 
-import '../../bloc/user_bloc/user_bloc.dart';
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/widgets.dart';
 import '../advertisement/widget/my_dialog.dart';
@@ -24,16 +21,12 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final userRepository = GetIt.I<UserRepository>();
-  Int64? userId;
-  final _userBloc = UserBloc(
-    GetIt.I<UserRepository>(),
-  );
+  late final _userBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    userId = userRepository.getUser()!.id;
-    _userBloc.add(LoadUser(userId!));
+    _userBloc.initId();
+    _userBloc.loadUser();
     super.initState();
   }
 
@@ -42,12 +35,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () async {
-          _userBloc.add(LoadUser(userId!));
+          _userBloc.loadUser();
         },
         child: CustomScrollView(
           slivers: [
-            BlocBuilder<UserBloc, UserState>(
-              bloc: _userBloc,
+            BlocConsumer<UserCubit, UserState>(
+              listener: (context, state) {},
               builder: (context, state) {
                 if (state is UserLoaded) {
                   return SliverToBoxAdapter(
@@ -59,7 +52,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     child: TryAgainWidget(
                       exception: state.exception,
                       onPressed: () {
-                        _userBloc.add(LoadUser(userId!));
+                        _userBloc.loadUser();
                       },
                     ),
                   );
@@ -77,14 +70,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       children: [
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => changeDialog(context),
+                            onPressed: () => changeDialog(context, _userBloc),
                             child: Text("Изменить имя",
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ),
                         ),
                         Expanded(
                           child: ElevatedButton(
-                            onPressed: () => avatarDialog(context),
+                            onPressed: () => avatarDialog(context, _userBloc),
                             child: Text("Изменить аватар",
                                 style: Theme.of(context).textTheme.bodyMedium),
                           ),
@@ -113,38 +106,34 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   const SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: TBlackBox(
-                        child: Center(),
-                      )),
-                  VerticalBlackBox(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () => myDialog(context, () async {
-                              await userRepository.logout(userId!);
-                              exit(0);
-                            }, "Выход из аккаунта закроет приложение!"),
-                            child: Text("Выйти из аккаунта",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
+                    width: double.infinity,
+                    height: 50,
+                  ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => myDialog(context, () async {
+                            await _userBloc.logOut();
+                            exit(0);
+                          }, "Выход из аккаунта закроет приложение!"),
+                          child: Text("Выйти из аккаунта",
+                              style: Theme.of(context).textTheme.bodyMedium),
                         ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () => myDialog(context, () async {
-                              await userRepository.deleteUser();
-                              exit(0);
-                            }, "Удаление аккаунта закроет приложение!"),
-                            child: Text("Удалить аккаунт",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => myDialog(context, () async {
+                            _userBloc.deleteUser();
+                            exit(0);
+                          }, "Удаление аккаунта закроет приложение!"),
+                          child: Text("Удалить аккаунт",
+                              style: Theme.of(context).textTheme.bodyMedium),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -156,8 +145,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-Future<void> changeDialog(BuildContext context) async {
-  final userRepository = GetIt.I<UserRepository>();
+Future<void> changeDialog(BuildContext context, UserCubit userBloc) async {
   final nameController = TextEditingController();
   return showDialog<void>(
     context: context,
@@ -190,9 +178,9 @@ Future<void> changeDialog(BuildContext context) async {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    var user = userRepository.getUser();
+                    var user = userBloc.getUser();
                     user?.name = nameController.text;
-                    await userRepository.changeUser(user);
+                    await userBloc.changeUser(user);
                     context.pop();
                   },
                   child:
@@ -207,8 +195,7 @@ Future<void> changeDialog(BuildContext context) async {
   );
 }
 
-Future<void> avatarDialog(BuildContext context) async {
-  final userRepository = GetIt.I<UserRepository>();
+Future<void> avatarDialog(BuildContext context, UserCubit userBloc) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
@@ -234,10 +221,10 @@ Future<void> avatarDialog(BuildContext context) async {
                     final picked = await ImagePicker()
                         .pickImage(source: ImageSource.gallery);
                     if (picked != null) {
-                      var user = userRepository.getUser();
+                      var user = userBloc.getUser();
                       var image = await NavItems.imageFromFile(picked);
                       user?.avatar = await NavItems.avatarToWebp(image);
-                      await userRepository.changeUser(user);
+                      await userBloc.changeUser(user);
                     }
                     context.pop();
                   },

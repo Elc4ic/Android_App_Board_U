@@ -118,13 +118,15 @@ const ChatPreview$json = {
     {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
     {'1': 'target', '3': 2, '4': 1, '5': 11, '6': '.board.User', '10': 'target'},
     {'1': 'ad', '3': 3, '4': 1, '5': 11, '6': '.board.Ad', '10': 'ad'},
+    {'1': 'last_message', '3': 4, '4': 1, '5': 11, '6': '.board.Message', '10': 'lastMessage'},
   ],
 };
 
 /// Descriptor for `ChatPreview`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List chatPreviewDescriptor = $convert.base64Decode(
     'CgtDaGF0UHJldmlldxIOCgJpZBgBIAEoA1ICaWQSIwoGdGFyZ2V0GAIgASgLMgsuYm9hcmQuVX'
-    'NlclIGdGFyZ2V0EhkKAmFkGAMgASgLMgkuYm9hcmQuQWRSAmFk');
+    'NlclIGdGFyZ2V0EhkKAmFkGAMgASgLMgkuYm9hcmQuQWRSAmFkEjEKDGxhc3RfbWVzc2FnZRgE'
+    'IAEoCzIOLmJvYXJkLk1lc3NhZ2VSC2xhc3RNZXNzYWdl');
 
 @$core.Deprecated('Use sendMessageRequestDescriptor instead')
 const SendMessageRequest$json = {

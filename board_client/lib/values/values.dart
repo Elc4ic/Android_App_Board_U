@@ -25,9 +25,20 @@ class Const {
   static const int PhoneWidth = 700;
   static const double HeaderHight = 70;
   static const int cellWidthInt = 190;
+
   static const double cellWidth = 190;
   static const String HOST = "77.246.159.112";
   static const int PORT = 9090;
+
+  static const int cardImageWidth = 320;
+  static const int cardImageHeight = 320;
+  static const int ImageHeight = 120;
+  static const int ImageWidth = 120;
+  static const int miniProfileHeight = 60;
+  static const int miniProfileWidth = 60;
+
+  static const double cardCacheExtent = 100;
+  static const double cacheExtent = 20;
 
   static const List<String> query = ["Старые","Новые","Дорогие","Дешевые","По умолчанию","Популярные"];
 }

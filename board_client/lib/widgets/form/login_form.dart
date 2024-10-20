@@ -1,9 +1,10 @@
+import 'package:board_client/data/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 
 class LoginForm extends StatefulWidget {
@@ -14,7 +15,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _AddAdFormState extends State<LoginForm> {
-  final userRepository = GetIt.I<UserRepository>();
+  final userRepository = GetIt.I<UserService>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -28,7 +29,8 @@ class _AddAdFormState extends State<LoginForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text(e.toString()), backgroundColor: MyColorConst.error),
+              content: Text((e as GrpcError).message!),
+              backgroundColor: MyColorConst.error),
         );
       }
     }

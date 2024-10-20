@@ -1,13 +1,9 @@
-
+import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart';
 
-import '../../bloc/ad_list_bloc/ad_list_bloc.dart';
-import '../../bloc/user_bloc/user_bloc.dart';
-import '../../data/repository/ad_repository.dart';
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
 import '../../widgets/mini_profile.dart';
@@ -24,20 +20,14 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  var userRepository = GetIt.I<UserRepository>();
-  final _adListBloc = AdListBloc(
-    GetIt.I<AdRepository>(),
-    GetIt.I<UserRepository>(),
-  );
-
-  final _userBloc = UserBloc(
-    GetIt.I<UserRepository>(),
-  );
+  late final _adListBloc = AdListCubit.get(context);
+  late final _userBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    _userBloc.add(LoadUser(widget.id));
-    _adListBloc.add(LoadUserAd(widget.id));
+    _userBloc.initId(widget.id);
+    _userBloc.loadUser();
+    _adListBloc.getUserList(widget.id);
     super.initState();
   }
 
@@ -48,13 +38,13 @@ class _UserPageState extends State<UserPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _userBloc.add(LoadUser(widget.id));
-            _adListBloc.add(LoadUserAd(widget.id));
+            _userBloc.loadUser();
+            _adListBloc.getUserList(widget.id);
           },
           child: CustomScrollView(
             slivers: [
-              BlocBuilder<UserBloc, UserState>(
-                bloc: _userBloc,
+              BlocConsumer<UserCubit, UserState>(
+                listener: (context, state) {},
                 builder: (context, state) {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
@@ -66,7 +56,7 @@ class _UserPageState extends State<UserPage> {
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _userBloc.add(LoadUser(widget.id));
+                          _userBloc.loadUser();
                         },
                       ),
                     );
@@ -75,11 +65,9 @@ class _UserPageState extends State<UserPage> {
                       child: Center(child: CircularProgressIndicator()));
                 },
               ),
-            const SliverToBoxAdapter(
-              child: Markup.dividerH10
-            ),
-              BlocBuilder<AdListBloc, AdListState>(
-                bloc: _adListBloc,
+              const SliverToBoxAdapter(child: Markup.dividerH10),
+              BlocConsumer<AdListCubit, AdListState>(
+                listener: (context, state) {},
                 builder: (context, state) {
                   if (state is AdListLoaded) {
                     if (state.adList.isEmpty) {
@@ -100,7 +88,7 @@ class _UserPageState extends State<UserPage> {
                           state.adList.length,
                           (index) => AdCard(
                               ad: state.adList[index],
-                              token: userRepository.getToken())).toList(),
+                              token: _userBloc.getToken())).toList(),
                     );
                   }
                   if (state is AdListLoadingFailure) {
@@ -108,7 +96,7 @@ class _UserPageState extends State<UserPage> {
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _adListBloc.add(LoadUserAd(widget.id));
+                          _adListBloc.getUserList(widget.id);
                         },
                       ),
                     );

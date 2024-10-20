@@ -1,12 +1,13 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
+import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 
-import '../../bloc/user_bloc/user_bloc.dart';
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
 
 class EditCommentForm extends StatefulWidget {
@@ -14,14 +15,14 @@ class EditCommentForm extends StatefulWidget {
       {super.key, required this.comment, required this.commentBloc});
 
   final Comment comment;
-  final UserBloc commentBloc;
+  final UserCubit commentBloc;
 
   @override
   State<EditCommentForm> createState() => _EditCommentFormState();
 }
 
 class _EditCommentFormState extends State<EditCommentForm> {
-  final userRepository = GetIt.I<UserRepository>();
+  final userRepository = GetIt.I<UserService>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textController = TextEditingController();
   double rating = 0;
@@ -29,8 +30,9 @@ class _EditCommentFormState extends State<EditCommentForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false || rating != 0) {
-      Future.delayed(const Duration(seconds: 1), () async {
-        await userRepository.editComment(
+      try {
+        Future.delayed(const Duration(seconds: 1), () async {
+          await userRepository.editComment(
             Comment(
               text: _textController.text,
               rating: rating.toInt(),
@@ -38,10 +40,18 @@ class _EditCommentFormState extends State<EditCommentForm> {
               owner: widget.comment.owner,
               created: widget.comment.created,
             ),
-            ratingPrev.toInt(),);
-      });
-      widget.commentBloc.add(LoadUserComments());
-      context.pop();
+            ratingPrev.toInt(),
+          );
+        });
+        widget.commentBloc.loadUserComments();
+        context.pop();
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text((e as GrpcError).message!),
+              backgroundColor: MyColorConst.error),
+        );
+      }
     }
   }
 
@@ -88,10 +98,8 @@ class _EditCommentFormState extends State<EditCommentForm> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      await userRepository.deleteComment(
-                          widget.comment.id);
-                      widget.commentBloc
-                          .add(LoadUserComments());
+                      await userRepository.deleteComment(widget.comment.id);
+                      widget.commentBloc.loadUserComments();
                       context.pop();
                     },
                     child: Text(SC.DELETE,

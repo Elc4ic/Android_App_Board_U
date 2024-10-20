@@ -1,9 +1,7 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../../bloc/user_bloc/user_bloc.dart';
-import '../../../data/repository/user_repository.dart';
 import '../../../widgets/form/comment_form.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -19,14 +17,12 @@ class AddCommentPage extends StatefulWidget {
 }
 
 class _AddCommentPageState extends State<AddCommentPage> {
-
-  final _userBloc = UserBloc(
-    GetIt.I<UserRepository>(),
-  );
+  late final _userBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    _userBloc.add(LoadUser(widget.convictedId));
+    _userBloc.initId(widget.convictedId);
+    _userBloc.loadUser();
     super.initState();
   }
 
@@ -34,8 +30,8 @@ class _AddCommentPageState extends State<AddCommentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocBuilder<UserBloc, UserState>(
-          bloc: _userBloc,
+        child: BlocConsumer<UserCubit, UserState>(
+          listener: (context, state) {},
           builder: (context, state) {
             if (state is UserLoaded) {
               return CommentForm(user: state.user);
@@ -44,7 +40,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
               return TryAgainWidget(
                 exception: state.exception,
                 onPressed: () {
-                  _userBloc.add(LoadUser(widget.convictedId));
+                  _userBloc.loadUser();
                 },
               );
             }

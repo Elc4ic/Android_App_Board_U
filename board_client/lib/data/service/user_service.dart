@@ -5,9 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../generated/user.pbgrpc.dart';
 import '../../values/values.dart';
-import '../repository/user_repository.dart';
 
-class UserService implements UserRepository {
+class UserService {
   static String? authToken;
   static String? fmcToken;
   late UserAPIClient _client;
@@ -21,48 +20,42 @@ class UserService implements UserRepository {
         credentials: ChannelCredentials.insecure(),
       ),
     );
-    _client = UserAPIClient(channel);
+    _client = UserAPIClient(
+      channel,
+      options: CallOptions(metadata: {'token': authToken ?? ""}),
+    );
   }
 
-  @override
   User? getUser() => appUser;
 
-  @override
   String? getToken() => authToken;
 
-  @override
   String? getFCMToken() => fmcToken;
 
-  @override
   Future<SharedPreferences> getSharedPreferences() async {
     return await SharedPreferences.getInstance();
   }
 
-  @override
-  Future<bool> loadUserAndCheckRefresh() async {
+  Future<String?> loadUserAndCheckRefresh() async {
     final sharedPreferences = await getSharedPreferences();
     authToken = sharedPreferences.getString('token');
-    print(authToken);
     if (authToken != null) {
       final response =
           await _client.getUserAndRefresh(JwtProto(token: authToken));
       authToken = response.token;
-      print(authToken);
       sharedPreferences.setString('token', response.token);
       appUser = response.user;
-      return true;
+      return authToken;
     }
-    return false;
+    return null;
   }
 
-  @override
   Future<bool> updateToken(String token) async {
     final sharedPreferences = await getSharedPreferences();
     authToken = token;
     return sharedPreferences.setString('token', token);
   }
 
-  @override
   Future<bool> logout(Int64 id) async {
     await _client.logOut(UserId(id: id));
     final sharedPreferences = await getSharedPreferences();
@@ -71,7 +64,6 @@ class UserService implements UserRepository {
     return sharedPreferences.remove('token');
   }
 
-  @override
   Future<bool> login(String username, String password) async {
     try {
       final request = LoginRequest(
@@ -85,7 +77,6 @@ class UserService implements UserRepository {
     }
   }
 
-  @override
   Future<bool> signUp(String username, String password, String phone) async {
     try {
       final request =
@@ -97,58 +88,49 @@ class UserService implements UserRepository {
     }
   }
 
-  @override
   Future<bool> changeUser(User? user) async {
     final response =
         await _client.changeUserData(UserToken(user: user, token: authToken));
     return response.login;
   }
 
-  @override
   Future<User> getUserById(Int64 id) async {
     final user = await _client.getUserById(UserId(id: id));
     return user.user;
   }
 
-  @override
   Future<bool> addComment(Comment comment) async {
     final response = await _client
         .addComment(CommentProto(comment: comment, token: authToken));
     return response.login;
   }
 
-  @override
   Future<bool> editComment(Comment comment, int rating_prev) async {
     final response = await _client.editComment(EditCommentRequest(
         comment: comment, ratingPrev: rating_prev, token: authToken));
     return response.login;
   }
 
-  @override
   Future<bool> deleteComment(Int64 id) async {
     final response =
         await _client.deleteComment(IdToken(id: id, token: authToken));
     return response.login;
   }
 
-  @override
   Future<List<Comment>> getComments(Int64 id) async {
     final comments = await _client.getComments(UserId(id: id));
     return comments.comments;
   }
 
-  @override
   Future<List<Comment>> getUserComments() async {
     final comments = await _client.getUserComments(JwtProto(token: authToken));
     return comments.comments;
   }
 
-  @override
   void initFMC(String? token) {
     fmcToken = token;
   }
 
-  @override
   Future<bool> deleteUser() async {
     var response = await _client.deleteUser(JwtProto(token: authToken));
     return response.login;

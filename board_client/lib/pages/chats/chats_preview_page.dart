@@ -1,13 +1,10 @@
+import 'package:board_client/cubit/chat_bloc/chat_cubit.dart';
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/pages/chats/widget/chat_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../bloc/chat_bloc/chat_bloc.dart';
-import '../../data/repository/chat_repository.dart';
-import '../../data/repository/user_repository.dart';
 import '../../values/values.dart';
-import '../../widgets/black_containers.dart';
 import '../../widgets/widgets.dart';
 
 class ChatsPreviewPage extends StatefulWidget {
@@ -18,18 +15,14 @@ class ChatsPreviewPage extends StatefulWidget {
 }
 
 class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
-  final _chatListBloc = ChatBloc(
-    GetIt.I<ChatRepository>(),
-    GetIt.I<UserRepository>(),
-  );
+  late final _chatListBloc = ChatCubit.get(context);
+  late final _userBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    _chatListBloc.add(LoadChatList());
+    _chatListBloc.loadChats();
     super.initState();
   }
-
-  final userRepository = GetIt.I<UserRepository>();
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +33,10 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _chatListBloc.add(LoadChatList());
+            _chatListBloc.loadChats();
           },
-          child: BlocBuilder<ChatBloc, ChatState>(
-            bloc: _chatListBloc,
+          child: BlocConsumer<ChatCubit, ChatState>(
+            listener: (context, state) {},
             builder: (context, state) {
               if (state is ChatLoaded) {
                 if (state.chat.isEmpty) {
@@ -62,23 +55,13 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                   );
                 }
                 return ListView.builder(
+                  cacheExtent: Const.cacheExtent,
                   itemCount: state.chat.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if (index == 0) {
-                      return VBlackBox(
-                        child: ChatRow(
-                          chat: state.chat[index],
-                          token: userRepository.getToken(),
-                          chatBloc: _chatListBloc,
-                        ),
-                      );
-                    }
-                    return BBlackBox(
-                      child: ChatRow(
-                        chat: state.chat[index],
-                        token: userRepository.getToken(),
-                        chatBloc: _chatListBloc,
-                      ),
+                    return ChatRow(
+                      chat: state.chat[index],
+                      token: _userBloc.getToken(),
+                      chatBloc: _chatListBloc,
                     );
                   },
                 );
@@ -87,7 +70,7 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _chatListBloc.add(LoadChatList());
+                    _chatListBloc.loadChats();
                   },
                 );
               }

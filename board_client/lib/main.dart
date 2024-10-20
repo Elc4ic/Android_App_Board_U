@@ -1,26 +1,30 @@
-import 'package:board_client/data/repository/category_repository.dart';
+import 'package:board_client/cubit/observer.dart';
 import 'package:board_client/data/service/ad_service.dart';
+import 'package:board_client/data/service/cache_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'app.dart';
-import 'data/repository/ad_repository.dart';
-import 'data/repository/user_repository.dart';
-import 'data/repository/chat_repository.dart';
 import 'data/service/category_service.dart';
-import 'data/service/notification_service.dart';
 import 'data/service/user_service.dart';
 import 'data/service/chat_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GetIt.I.registerLazySingleton<AdRepository>(() => AdService());
-  GetIt.I.registerLazySingleton<UserRepository>(() => UserService());
-  GetIt.I.registerLazySingleton<CategoryRepository>(() => CategoryService());
-  GetIt.I.registerLazySingleton<ChatRepository>(() => ChatService());
+  Bloc.observer = LogBlocObserver();
+  await CacheService.init();
+  bool? isDark = CacheService.getData(key: 'isDark');
+
+  GetIt.I.registerLazySingleton(() => UserService());
+
+  var token = await GetIt.I<UserService>().loadUserAndCheckRefresh();
+
+  GetIt.I.registerLazySingleton(() => AdService(token));
+  GetIt.I.registerLazySingleton(() => CategoryService(token));
+  GetIt.I.registerLazySingleton(() => ChatService(token));
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -32,42 +36,5 @@ void main() async {
     ),
   );
 
-  NotificationService();
-
-  FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
-    print('Handling a background message: ${message.messageId}');
-  });
-
-  runApp(RestartWidget(child: const MyApp()));
-}
-
-class RestartWidget extends StatefulWidget {
-  RestartWidget({required this.child});
-
-  final Widget child;
-
-  static void restartApp(BuildContext context) {
-    context.findAncestorStateOfType<_RestartWidgetState>()?.restartApp();
-  }
-
-  @override
-  _RestartWidgetState createState() => _RestartWidgetState();
-}
-
-class _RestartWidgetState extends State<RestartWidget> {
-  Key key = UniqueKey();
-
-  void restartApp() {
-    setState(() {
-      key = UniqueKey();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return KeyedSubtree(
-      key: key,
-      child: widget.child,
-    );
-  }
+  runApp(MyApp(isDark: isDark));
 }

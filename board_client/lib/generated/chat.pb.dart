@@ -464,6 +464,7 @@ class ChatPreview extends $pb.GeneratedMessage {
     $fixnum.Int64? id,
     $0.User? target,
     $1.Ad? ad,
+    Message? lastMessage,
   }) {
     final $result = create();
     if (id != null) {
@@ -475,6 +476,9 @@ class ChatPreview extends $pb.GeneratedMessage {
     if (ad != null) {
       $result.ad = ad;
     }
+    if (lastMessage != null) {
+      $result.lastMessage = lastMessage;
+    }
     return $result;
   }
   ChatPreview._() : super();
@@ -485,6 +489,7 @@ class ChatPreview extends $pb.GeneratedMessage {
     ..aInt64(1, _omitFieldNames ? '' : 'id')
     ..aOM<$0.User>(2, _omitFieldNames ? '' : 'target', subBuilder: $0.User.create)
     ..aOM<$1.Ad>(3, _omitFieldNames ? '' : 'ad', subBuilder: $1.Ad.create)
+    ..aOM<Message>(4, _omitFieldNames ? '' : 'lastMessage', subBuilder: Message.create)
     ..hasRequiredFields = false
   ;
 
@@ -539,6 +544,17 @@ class ChatPreview extends $pb.GeneratedMessage {
   void clearAd() => clearField(3);
   @$pb.TagNumber(3)
   $1.Ad ensureAd() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  Message get lastMessage => $_getN(3);
+  @$pb.TagNumber(4)
+  set lastMessage(Message v) { setField(4, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasLastMessage() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLastMessage() => clearField(4);
+  @$pb.TagNumber(4)
+  Message ensureLastMessage() => $_ensure(3);
 }
 
 class SendMessageRequest extends $pb.GeneratedMessage {

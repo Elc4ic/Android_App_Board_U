@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../values/values.dart';
-
 Future<void> myDialog(
     BuildContext context, Function() function, String text) async {
   return showDialog<void>(

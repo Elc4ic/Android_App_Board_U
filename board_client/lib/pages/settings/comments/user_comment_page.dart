@@ -1,10 +1,8 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
-import '../../../bloc/user_bloc/user_bloc.dart';
-import '../../../data/repository/user_repository.dart';
 import '../../../values/values.dart';
 import '../../../widgets/widgets.dart';
 
@@ -17,13 +15,11 @@ class UserCommentPage extends StatefulWidget {
 
 class _UserCommentPageState extends State<UserCommentPage> {
 
-  final _commentBloc = UserBloc(
-    GetIt.I<UserRepository>(),
-  );
+  late final _commentBloc = UserCubit.get(context);
 
   @override
   void initState() {
-    _commentBloc.add(LoadUserComments());
+    _commentBloc.loadUserComments();
     super.initState();
   }
 
@@ -33,10 +29,10 @@ class _UserCommentPageState extends State<UserCommentPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _commentBloc.add(LoadUserComments());
+            _commentBloc.loadUserComments();
           },
-          child: BlocBuilder<UserBloc, UserState>(
-            bloc: _commentBloc,
+          child: BlocConsumer<UserCubit, UserState>(
+            listener:  (context, state) {},
             builder: (context, state) {
               if (state is UserCommentsLoaded) {
                 if (state.comments.isEmpty) {
@@ -58,7 +54,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
                 return ListView.builder(
                   itemCount: state.comments.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return CommentRow(comment: state.comments[index],isMine: true, userBloc: _commentBloc,);
+                    return CommentRow(comment: state.comments[index],isMine: true, userBloc: _commentBloc);
                   },
                 );
               }
@@ -66,7 +62,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _commentBloc.add(LoadUserComments());
+                    _commentBloc.loadUserComments();
                   },
                 );
               }

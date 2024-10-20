@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:board_client/cubit/image_cubit/image_cubit.dart';
+import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:board_client/widgets/shimerring_container.dart';
@@ -9,8 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../bloc/image_bloc/image_bloc.dart';
-import '../../../data/repository/ad_repository.dart';
 import '../../../generated/ad.pb.dart';
 
 class AdCard extends StatefulWidget {
@@ -24,104 +24,103 @@ class AdCard extends StatefulWidget {
 }
 
 class _AdCardState extends State<AdCard> {
-  final adRepository = GetIt.I<AdRepository>();
+  final adRepository = GetIt.I<AdService>();
 
-  final _imageBloc = ImageBloc(
-    GetIt.I<AdRepository>(),
-  );
+  late final _imageBloc = ImageCubit.get(context);
 
   @override
-  void dispose() {
-    _imageBloc.close();
-    super.dispose();
+  void initState() {
+    _imageBloc.loadImages(widget.ad.id, true);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    _imageBloc.add(LoadImageList(widget.ad.id, true));
-    return Card(
-      child: InkWell(
-        onTap: () {
-          context.push("/ad/${widget.ad.id}");
-        },
-        child: Column(
-          children: [
-            Flexible(
-              fit: FlexFit.tight,
-              flex: 5,
-              child: BlocBuilder<ImageBloc, ImageState>(
+    return InkWell(
+      onTap: () {
+        context.push("/ad/${widget.ad.id}");
+      },
+      child: Column(
+        children: [
+          Flexible(
+            fit: FlexFit.tight,
+            flex: 5,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: BlocBuilder<ImageCubit, ImageState>(
                 bloc: _imageBloc,
                 builder: (context, state) {
                   if (state is ImageLoaded) {
-                    Uint8List bytes = Uint8List.fromList(state.images.first);
+                    Uint8List bytes = Uint8List.fromList(state.images[widget.ad.id]!.first);
                     return Image.memory(
                       gaplessPlayback: true,
                       width: Const.cellWidth,
-                      fit: BoxFit.fitWidth,
+                      cacheWidth: Const.cardImageWidth,
+                      cacheHeight: Const.cardImageHeight,
+                      fit: BoxFit.cover,
                       bytes,
                     );
                   }
                   if (state is ImageLoadingFailure) {
-                    return NoImageWidget();
+                    return const NoImageWidget();
                   }
                   return ShimmeringContainer();
                 },
               ),
             ),
-            Flexible(
-              flex: 3,
-              child: Container(
-                padding: Markup.padding_all_8,
-                decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        width: 1,
-                      ),
-                    )
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              widget.ad.title.length < 26
-                                  ? widget.ad.title
-                                  : "${widget.ad.title.substring(0, 24)}...",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          Text("${widget.ad.price} ${SC.RUBLES}",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                          Text(selectAddress(),
-                              style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
+          ),
+          Flexible(
+            flex: 3,
+            child: Container(
+              padding: Markup.padding_all_8,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(Markup.substringText(widget.ad.title, 26),
+                            style: Theme.of(context).textTheme.bodyMedium),
+                        Text("${widget.ad.price} ${SC.RUBLES}",
+                            style: Theme.of(context).textTheme.titleMedium),
+                        Text(selectAddress(),
+                            style: Theme.of(context).textTheme.bodySmall),
+                      ],
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          FavButton(
-                            onPressed: () {
-                              adRepository.setFavoriteAd(
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        FavButton(
+                          onPressed: () async {
+                            try {
+                              await adRepository.setFavoriteAd(
                                   widget.ad.id, widget.token);
                               setState(() {
                                 widget.ad.isFav = !widget.ad.isFav;
                               });
-                            },
-                            isFav: widget.ad.isFav,
-                          )
-                        ],
-                      ),
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        "Не получилось добавить в избранное"),
+                                    backgroundColor: MyColorConst.error),
+                              );
+                            }
+                          },
+                          isFav: widget.ad.isFav,
+                        )
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

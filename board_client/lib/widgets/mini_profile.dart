@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -14,7 +13,7 @@ class MiniProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlackBox(
+    return Container(
       padding: Markup.padding_all_8,
       child: InkWell(
         onTap: () {
@@ -86,6 +85,8 @@ class MiniProfileButton extends StatelessWidget {
               gaplessPlayback: true,
               width: 50,
               height: 50,
+              cacheWidth: Const.miniProfileWidth,
+              cacheHeight: Const.miniProfileHeight,
               fit: BoxFit.cover,
               Uint8List.fromList(user.avatar),
             ),
@@ -116,14 +117,14 @@ class Profile extends StatelessWidget {
       children: [
         Padding(
           padding: Markup.padding_all_16,
-          child: BlackBox(
-            child: Image.memory(
-              gaplessPlayback: true,
-              width: 100,
-              height: 100,
-              fit: BoxFit.cover,
-              Uint8List.fromList(user.avatar),
-            ),
+          child: Image.memory(
+            gaplessPlayback: true,
+            width: 100,
+            height: 100,
+            cacheWidth: Const.ImageWidth,
+            cacheHeight: Const.ImageHeight,
+            fit: BoxFit.cover,
+            Uint8List.fromList(user.avatar),
           ),
         ),
         const Divider(height: 1,),
@@ -141,26 +142,24 @@ class Profile extends StatelessWidget {
             ),
             Expanded(
               flex: 2,
-              child: LBlackBox(
-                child: ElevatedButton(
-                  onPressed: () {
-                    context.push("${SC.COMMENT_PAGE}/${user.id}");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(Markup.countRating(user.ratingAll, user.ratingNum),
-                          style: Theme
-                              .of(context)
-                              .textTheme
-                              .titleMedium),
-                      const Icon(
-                        size: 30,
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                    ],
-                  ),
+              child: ElevatedButton(
+                onPressed: () {
+                  context.push("${SC.COMMENT_PAGE}/${user.id}");
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(Markup.countRating(user.ratingAll, user.ratingNum),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .titleMedium),
+                    const Icon(
+                      size: 30,
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                  ],
                 ),
               ),
             )
@@ -169,7 +168,7 @@ class Profile extends StatelessWidget {
         const Divider(height: 1,),
         Row(
           children: [
-            RBlackBox(
+            Container(
               padding: Markup.padding_all_8,
               child: Text("Адрес",
                   style: Theme
@@ -189,29 +188,27 @@ class Profile extends StatelessWidget {
             )
           ],
         ),
-        VerticalBlackBox(
-          child: Row(
-            children: [
-              RBlackBox(
+        Row(
+          children: [
+            Container(
+              padding: Markup.padding_all_8,
+              child: Text("Телефон",
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyLarge),
+            ),
+            Expanded(
+              child: Padding(
                 padding: Markup.padding_all_8,
-                child: Text("Телефон",
+                child: Text(user.phone ?? "-",
                     style: Theme
                         .of(context)
                         .textTheme
-                        .bodyLarge),
+                        .bodyMedium),
               ),
-              Expanded(
-                child: Padding(
-                  padding: Markup.padding_all_8,
-                  child: Text(user.phone ?? "-",
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .bodyMedium),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         )
       ],
     );

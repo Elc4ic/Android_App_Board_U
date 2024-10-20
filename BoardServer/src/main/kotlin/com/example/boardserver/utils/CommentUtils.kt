@@ -14,7 +14,7 @@ object CommentUtils {
             .setRating(comment.rating)
             .setCreated(comment.created)
             .setConvicted(UserUtils.toUserGrpc(comment.convicted))
-            .setOwner(UserUtils.toUserGrpc(comment.owner))
+            .setOwner(UserUtils.toUserGrpc(comment.creator))
             .build()
     }
 
@@ -28,7 +28,7 @@ object CommentUtils {
             text = comment.text,
             rating = comment.rating,
             created = comment.created,
-            owner = owner,
+            creator = owner,
             convicted = convicted
         )
     }

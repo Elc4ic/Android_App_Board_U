@@ -1,9 +1,8 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/values/values.dart';
-import 'package:board_client/widgets/black_containers.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
 
-import '../../../bloc/user_bloc/user_bloc.dart';
 import '../../../generated/user.pb.dart';
 import '../../../widgets/form/edit_comment_form.dart';
 
@@ -16,7 +15,7 @@ class CommentRow extends StatelessWidget {
 
   final bool isMine;
   final Comment comment;
-  final UserBloc userBloc;
+  final UserCubit userBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -37,13 +36,11 @@ class CommentRow extends StatelessWidget {
                   ),
                   Visibility(
                     visible: isMine,
-                    child: VBlackBox(
-                      child: IconButton(
-                        tooltip: SC.EDIT,
-                        icon: const Icon(Icons.mode_edit),
-                        onPressed: () =>
-                            editCommentDialog(context, userBloc, comment),
-                      ),
+                    child: IconButton(
+                      tooltip: SC.EDIT,
+                      icon: const Icon(Icons.mode_edit),
+                      onPressed: () =>
+                          editCommentDialog(context, userBloc, comment),
                     ),
                   ),
                 ],
@@ -55,7 +52,7 @@ class CommentRow extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          BBlackBox(
+                          Container(
                             padding: Markup.padding_all_12,
                             child: Row(
                               children: [
@@ -73,7 +70,7 @@ class CommentRow extends StatelessWidget {
                         ],
                       ),
                       Expanded(
-                        child: BLBlackBox(
+                        child: Container(
                           padding: Markup.padding_all_4,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +102,7 @@ class CommentRow extends StatelessWidget {
 }
 
 Future<void> editCommentDialog(
-    BuildContext context, UserBloc commentBloc, Comment comment) async {
+    BuildContext context, UserCubit commentBloc, Comment comment) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog.fullscreen(

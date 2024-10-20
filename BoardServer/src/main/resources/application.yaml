@@ -15,6 +15,7 @@ spring:
   server:
     port: 8080
   grpc:
+    reflection-service-enabled: true
     server:
       port: 9090
       maxInboundMessageSize: 25MB
@@ -23,6 +24,16 @@ spring:
     enabled: true
     baselineOnMigrate: true
 
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+    export:
+      zipkin:
+        enabled: true
+        endpoint: http://micro_zipkin:9411/api/v2/spans
+
 jwt:
   secret:
     access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
@@ -30,3 +41,8 @@ jwt:
 
 firebase:
   secretKey: 8ClknOAu9iNb/DE0CWYjo2u54qbEg6i6NSgJdTgYf80=
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true

@@ -17,6 +17,6 @@ class Comment(
     val convicted: User,
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
-    val owner: User,
+    @JoinColumn(name = "creator_id")
+    val creator: User,
 )

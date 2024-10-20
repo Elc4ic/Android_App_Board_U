@@ -10,4 +10,5 @@ import java.util.*
 interface AdRepository : JpaSpecificationExecutor<Ad>,JpaRepository<Ad, Long> {
     override fun findById(id: Long): Optional<Ad>
     fun findByUserId(id: Long): MutableList<Ad>
+    fun findByUserIdOrderByViewsDesc(id: Long): MutableList<Ad>
 }

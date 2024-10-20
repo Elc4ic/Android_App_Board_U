@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:board_client/data/repository/chat_repository.dart';
+import 'package:board_client/cubit/image_cubit/image_cubit.dart';
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:board_client/pages/chats/widget/received_message.dart';
 import 'package:board_client/pages/chats/widget/sent_message.dart';
 import 'package:board_client/values/values.dart';
-import 'package:board_client/widgets/black_containers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -16,9 +16,9 @@ import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:go_router/go_router.dart';
 
 import '../../../widgets/shimerring_container.dart';
-import '../../bloc/image_bloc/image_bloc.dart';
-import '../../data/repository/ad_repository.dart';
-import '../../data/repository/user_repository.dart';
+import '../../data/service/ad_service.dart';
+import '../../data/service/chat_service.dart';
+import '../../data/service/user_service.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key, required this.chatId});
@@ -30,8 +30,7 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  var chatRepository = GetIt.I<ChatRepository>();
-  var userRepository = GetIt.I<UserRepository>();
+  var chatService = GetIt.I<ChatService>();
   ChatPreview? chat;
   final TextEditingController controller = TextEditingController();
   List<Message> messages = [];
@@ -39,9 +38,8 @@ class _MessagePageState extends State<MessagePage> {
   final StreamController<SendMessageRequest> streamController =
       StreamController<SendMessageRequest>();
   final ScrollController scrollController = ScrollController();
-  final _imageBloc = ImageBloc(
-    GetIt.I<AdRepository>(),
-  );
+  late final _imageBloc = ImageCubit.get(context);
+  late final _userBloc = UserCubit.get(context);
 
   String? error;
 
@@ -60,7 +58,7 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void startListeningMessageRequest() {
-    final stream = chatRepository.sendMessage(streamController.stream);
+    final stream = chatService.sendMessage(streamController.stream);
     stream.listen((value) {
       if (value.sender != "Server") {
         setState(() {
@@ -71,7 +69,7 @@ class _MessagePageState extends State<MessagePage> {
   }
 
   void addMessage(String message) {
-    final user = userRepository.getUser();
+    final user = _userBloc.getUser();
     final req = SendMessageRequest(
         message: message,
         receiver: user?.id,
@@ -97,10 +95,10 @@ class _MessagePageState extends State<MessagePage> {
       setState(() {
         isLoading = true;
       });
-      final res = await chatRepository.getMessages(
-          widget.chatId, userRepository.getToken());
+      final res =
+          await chatService.getMessages(widget.chatId, _userBloc.getToken());
       chat = res.chat;
-      _imageBloc.add(LoadImageList(chat!.ad.id, true));
+      _imageBloc.loadImages(chat!.ad.id, true);
       messages.addAll(res.messages);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -146,33 +144,34 @@ class _MessagePageState extends State<MessagePage> {
               onTap: () {
                 context.push("/ad/${chat?.ad.id}");
               },
-              child: VBlackBox(
+              child: SizedBox(
                 height: 50,
                 child: Padding(
                   padding: Markup.padding_all_8,
                   child: Row(
                     children: [
-                      BlocBuilder<ImageBloc, ImageState>(
-                        bloc: _imageBloc,
+                      BlocConsumer<ImageCubit, ImageState>(
+                        listener: (context, state) {},
                         builder: (context, state) {
                           if (state is ImageLoaded) {
                             return Image.memory(
                               width: 44,
                               height: 44,
                               fit: BoxFit.fitWidth,
-                              Uint8List.fromList(state.images.first),
+                              Uint8List.fromList(
+                                  state.images[chat?.ad.id]!.first),
                             );
                           }
                           if (state is ImageLoadingFailure) {
                             return Container(
-                              width: 60,
-                              height: 60,
+                              width: 44,
+                              height: 44,
                               color: Colors.black12,
                             );
                           }
-                          return SizedBox(
-                              width: 60,
-                              height: 60,
+                          return const SizedBox(
+                              width: 44,
+                              height: 44,
                               child: ShimmeringContainer());
                         },
                       ),
@@ -202,13 +201,13 @@ class _MessagePageState extends State<MessagePage> {
                             itemBuilder: ((context, index) {
                               Message message =
                                   messages[messages.length - index - 1];
-                              final user = userRepository.getUser();
+                              final user = _userBloc.getUser();
                               return (message.sender.username.toLowerCase() ==
                                       user?.username.toLowerCase())
                                   ? SentMessageScreen(
                                       message: message,
-                                      chatRepository: chatRepository,
-                                      token: userRepository.getToken(),
+                                      chatService: chatService,
+                                      token: _userBloc.getToken(),
                                       messages: messages,
                                     )
                                   : ReceivedMessageScreen(message: message);
