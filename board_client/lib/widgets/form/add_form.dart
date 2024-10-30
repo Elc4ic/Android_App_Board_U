@@ -52,15 +52,14 @@ class _AddAdFormState extends State<AddAdForm> {
                   widget.ad == null ? Markup.dateNow() : widget.ad?.created,
             ),
             images,
-            userRepository.getToken(),
           );
         });
         context.go(SC.AD_PAGE);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text((e as GrpcError).message!),
-              backgroundColor: MyColorConst.error),
+            content: Text((e as GrpcError).message!),
+          ),
         );
       }
     }

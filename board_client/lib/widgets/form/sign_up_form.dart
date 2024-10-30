@@ -33,8 +33,7 @@ class _AddAdFormState extends State<SignUpForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text((e as GrpcError).message!),
-                backgroundColor: MyColorConst.error
+                content: Text(e.toString()),
             ),);
       }
     }

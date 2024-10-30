@@ -1,4 +1,3 @@
-
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/image_cubit/image_cubit.dart';
@@ -30,7 +29,7 @@ class _AdRowState extends State<AdRow> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.ad.isActive ? MyColorConst.card : Colors.black12,
+      color: widget.ad.isActive ? null : Colors.black12,
       child: InkWell(
         onTap: () {
           context.push("/ad/${widget.ad.id}");
@@ -50,8 +49,8 @@ class _AdRowState extends State<AdRow> {
                       width: Const.cellWidth,
                       cacheWidth: Const.cardImageWidth,
                       cacheHeight: Const.cardImageHeight,
-                      fit: BoxFit.cover,
-                      "http://api.dvfuboard.ru:8080/images/${widget.ad.id}"),
+                      fit: BoxFit.fitWidth,
+                      "${Const.image_ad_api}${widget.ad.id}"),
                 ),
               ),
             ),
@@ -60,8 +59,8 @@ class _AdRowState extends State<AdRow> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("${widget.ad.price} P",
-                      style: Theme.of(context).textTheme.titleMedium),
+                  Text("${widget.ad.price} ${SC.RUBLES}",
+                      style: Theme.of(context).textTheme.bodyMedium),
                   Text(Markup.substringText(widget.ad.title, 17),
                       style: Theme.of(context).textTheme.bodyMedium),
                   Text(widget.ad.isActive ? SC.ACTIVE : SC.UNACTIVE,
@@ -87,7 +86,7 @@ class _AdRowState extends State<AdRow> {
                             icon: const Icon(
                                 Icons.closed_caption_disabled_outlined),
                             onPressed: () => myDialog(context, () async {
-                              _adBloc.muteAd(widget.ad.id, widget.token);
+                              _adBloc.muteAd(widget.ad.id);
                               widget.adListBloc.getMyList();
                               context.pop();
                             }, "Вы уверенны, что хотите ${widget.ad.isActive ? "скрыть" : "показать"} объявление?"),
@@ -96,7 +95,7 @@ class _AdRowState extends State<AdRow> {
                             tooltip: SC.CLOSE,
                             icon: const Icon(Icons.close),
                             onPressed: () => myDialog(context, () async {
-                              _adBloc.deleteAd(widget.ad.id, widget.token);
+                              _adBloc.deleteAd(widget.ad.id);
                               widget.adListBloc.getMyList();
                               context.pop();
                             }, SC.DELETE_AD),

@@ -1,10 +1,14 @@
+import 'package:board_client/cubit/app_cubit/app_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-ThemeData mainTheme(BuildContext context) => ThemeData(
-      colorScheme: dark,
+ThemeData mainTheme(BuildContext context) {
+  final appBloc = AppCubit.get(context);
+  final scheme = appBloc.scheme;
+  return ThemeData(
+      colorScheme: scheme,
       textTheme: TextTheme(
         bodyLarge: GoogleFonts.exo2(fontSize: Markup.size_20),
         bodyMedium: GoogleFonts.exo2(fontSize: Markup.size_16),
@@ -33,25 +37,26 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
           fontWeight: FontWeight.w600,
           fontSize: Markup.size_14,
         ),
-        unselectedItemColor: MyColorConst.text,
-        selectedItemColor: MyColorConst.text,
+        backgroundColor: scheme.secondary,
+        unselectedItemColor: scheme.onSurface,
+        selectedItemColor: scheme.primary,
+        type: BottomNavigationBarType.shifting,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: MyColorConst.blue2,
-          foregroundColor: MyColorConst.text,
-          minimumSize: const Size(0, 50),
+          backgroundColor: scheme.primary,
+          foregroundColor: scheme.onSurface,
         ),
       ),
-      cardTheme: const CardTheme(
-        shape: RoundedRectangleBorder(
+      cardTheme: CardTheme(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
         ),
         elevation: 0,
-        margin: EdgeInsets.all(8),
-        color: MyColorConst.card,
+        margin: Markup.padding_h_8_v_4,
+        color: scheme.secondary,
       ),
       inputDecorationTheme: InputDecorationTheme(
         labelStyle: GoogleFonts.exo2(
@@ -61,7 +66,7 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
         floatingLabelStyle: GoogleFonts.exo2(
           fontWeight: FontWeight.w400,
           fontSize: Markup.size_12,
-          color: MyColorConst.text,
+          color: scheme.onSurface,
         ),
         helperStyle: GoogleFonts.exo2(
           fontWeight: FontWeight.w400,
@@ -72,7 +77,7 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
           fontSize: Markup.size_16,
         ),
         filled: true,
-        fillColor: Colors.black26,
+        fillColor: scheme.onSurface.withAlpha(25),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
@@ -83,6 +88,7 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
+
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           Theme.of(context).platform: NoAnimationPageTransitionsBuilder(),
@@ -91,7 +97,7 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
       dropdownMenuTheme: DropdownMenuThemeData(
         menuStyle: MenuStyle(
           backgroundColor: WidgetStateProperty.all<Color>(
-            Colors.black26,
+            scheme.onSurface.withAlpha(25),
           ),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
@@ -101,29 +107,30 @@ ThemeData mainTheme(BuildContext context) => ThemeData(
           elevation: WidgetStateProperty.all(8),
         ),
       ),
-      appBarTheme: const AppBarTheme(
-        elevation: 0,
-        backgroundColor: MyColorConst.main,
-        foregroundColor: MyColorConst.main,
+      appBarTheme: AppBarTheme(
+        elevation: 20,
+        backgroundColor: scheme.surface,
+        foregroundColor: scheme.onSurface,
       ),
       searchBarTheme: SearchBarThemeData(
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-          const RoundedRectangleBorder(
+          RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
-            side: BorderSide(color: Colors.black, width: 1),
+            side: BorderSide(color: scheme.onSurface, width: 1),
           ),
         ),
         backgroundColor: WidgetStateProperty.all<Color>(
-          Colors.black26,
+          scheme.onSurface.withAlpha(25),
         ),
         shadowColor: WidgetStateProperty.all<Color>(
-          Colors.black26,
+          scheme.onSurface.withAlpha(25),
         ),
         elevation: WidgetStateProperty.all<double>(
           0,
         ),
       ),
-    );
+      snackBarTheme: SnackBarThemeData(backgroundColor: scheme.error));
+}
 
 class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
   @override

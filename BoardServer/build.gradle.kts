@@ -46,12 +46,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springdoc:springdoc-openapi-webflux-ui:1.6.12")
     implementation("io.netty:netty-all:4.1.82.Final")
 
     //tracing
-    implementation ("io.micrometer:micrometer-tracing-bridge-brave:1.1.4")
-    implementation ("io.zipkin.reporter2:zipkin-reporter-brave:2.16.3")
+    implementation("io.micrometer:micrometer-tracing-bridge-otel")
+
+    // OpenTelemetry and Zipkin
+    implementation("io.opentelemetry:opentelemetry-exporter-zipkin")
+    implementation("io.opentelemetry:opentelemetry-extension-kotlin")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

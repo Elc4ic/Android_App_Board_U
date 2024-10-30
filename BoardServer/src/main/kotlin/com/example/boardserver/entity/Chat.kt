@@ -32,7 +32,7 @@ fun Chat.toChatGrpc(): board.Chat.ChatPreview {
     return board.Chat.ChatPreview.newBuilder()
         .setId(this.id)
         .setAd(this.ad.toAdGrpc())
-        .setLastMessage(this.lastMessage!!.toMessageGrpc())
+        .setLastMessage(this.lastMessage?.toMessageGrpc() ?: board.Chat.Message.getDefaultInstance())
         .setTarget(this.receiver.toUserGrpc())
         .build()
 }

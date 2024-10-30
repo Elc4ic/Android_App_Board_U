@@ -8,8 +8,8 @@ Future<void> myDialog(
       backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
-        width: 200,
-        height: 150,
+        width: 240,
+        height: 180,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

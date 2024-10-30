@@ -1,41 +1,56 @@
 part of 'values.dart';
 
-/*class LightColorConst {
-  static const Color main = Color(0xff509EEF);
-  static const Color background = Color(0xfff2f2f2);
-  static const Color text = Color(0xff001021);
-  static const Color card = Color(0xff82aed3);
+class themeColors {
+  Brightness brightness = Brightness.light;
+  Color main = const Color(0xfff2f2f2);
+  Color card = const Color(0xffd7dce3);
+  Color primary = const Color(0xff0d456b);
+  Color text = const Color(0xff211f20);
+  Color error = const Color(0xfff31d59);
 }
 
-class DColorConst {
-  static const Color main = Color(0xff509EEF);
-  static const Color background = Color(0xff012b5b);
-  static const Color text = Color(0xfff9fcff);
-  static const Color card = Color(0xff00468c);
-}*/
-
-class MyColorConst {
-  static const Color main = Color(0xfff2f2f2);
-  static const Color blue1 = Color(0xff96BDE4);
-  static const Color card = Color(0xffe7e7e7);
-  static const Color blue2 = Color(0xff1572B8);
-  static const Color blue3 = Color(0xff0d456b);
-  static const Color darkblue = Color(0xff062233);
-  static const Color text = Color(0xff211f20);
-  static const Color error = Color(0xfff31d59);
+class darkColors implements themeColors {
+  @override
+  Brightness brightness = Brightness.dark;
+  @override
+  Color main = const Color(0xff1F1F1F);
+  @override
+  Color card = const Color(0xff424040);
+  @override
+  Color primary = const Color(0xff1874B7);
+  @override
+  Color text = const Color(0xffF5E9DD);
+  @override
+  Color error = const Color(0xfff31d59);
 }
 
-/*8aa3b3*/
-ColorScheme dark = const ColorScheme(
-  brightness: Brightness.light,
-  primary: MyColorConst.blue2,
-  onPrimary: MyColorConst.text,
-  secondary: MyColorConst.blue2,
-  onSecondary: MyColorConst.text,
-  tertiary: MyColorConst.blue2,
-  onTertiary: MyColorConst.blue2,
-  error: MyColorConst.error,
-  onError: MyColorConst.text,
-  surface: MyColorConst.main,
-  onSurface: MyColorConst.text,
-);
+class beigeColors implements themeColors {
+  @override
+  Brightness brightness = Brightness.light;
+  @override
+  Color main = const Color(0xffF5E9DD);
+  @override
+  Color card = const Color(0xff827777);
+  @override
+  Color primary = const Color(0xffE75E54);
+  @override
+  Color text = const Color(0xff3B2929);
+  @override
+  Color error = const Color(0xff880015);
+}
+
+ColorScheme scheme(themeColors colors) {
+  return ColorScheme(
+    brightness: colors.brightness,
+    primary: colors.primary,
+    onPrimary: colors.text,
+    secondary: colors.card,
+    onSecondary: colors.text,
+    tertiary: colors.primary,
+    onTertiary: colors.text,
+    error: colors.error,
+    onError: colors.text,
+    surface: colors.main,
+    onSurface: colors.text,
+  );
+}

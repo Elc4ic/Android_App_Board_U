@@ -9,7 +9,7 @@ import '../../values/values.dart';
 class ChatService {
   late ChatAPIClient _client;
 
-  ChatService(String? token) {
+  void initClient(String? token) {
     final channel = ClientChannel(
       Const.HOST,
       port: Const.PORT,
@@ -23,14 +23,14 @@ class ChatService {
     );
   }
 
-  Future<List<ChatPreview>> getChatsPreview(String? token) async {
-    final response = await _client.getChatsPreview(JwtProto(token: token));
+  Future<List<ChatPreview>> getChatsPreview() async {
+    final response = await _client.getChatsPreview(Empty());
     return response.chats;
   }
 
-  Future<GetAllMessagesResponse> getMessages(int id, String? token) async {
+  Future<GetAllMessagesResponse> getMessages(int id) async {
     final response = await _client
-        .getAllMessage(GetAllMessagesRequest(chatId: Int64(id), token: token));
+        .getAllMessage(GetAllMessagesRequest(chatId: Int64(id)));
     return response;
   }
 
@@ -38,18 +38,18 @@ class ChatService {
     return _client.sendMessage(stream);
   }
 
-  Future<Int64> startChat(Ad ad, String? token) async {
+  Future<Int64> startChat(Ad ad) async {
     final response =
-        await _client.startChat(StartRequest(ad: ad, token: token));
+        await _client.startChat(StartRequest(ad: ad));
     return response.chatId;
   }
 
-  Future<void> deleteChat(Int64 chatId, String? token) async {
-    await _client.deleteChat(DeleteChatRequest(chatId: chatId, token: token));
+  Future<void> deleteChat(Int64 chatId) async {
+    await _client.deleteChat(DeleteChatRequest(chatId: chatId));
   }
 
-  Future<void> deleteMessage(Int64 messageId, String? token) async {
+  Future<void> deleteMessage(Int64 messageId) async {
     await _client
-        .deleteMessage(DeleteChatRequest(chatId: messageId, token: token));
+        .deleteMessage(DeleteChatRequest(chatId: messageId));
   }
 }

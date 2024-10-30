@@ -6,7 +6,6 @@ import 'package:board_client/generated/image.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 
@@ -28,6 +27,8 @@ class Const {
 
   static const double cellWidth = 190;
   static const String HOST = "77.246.159.112";
+  static const String image_api = "http://api.dvfuboard.ru:8080/images/";
+  static const String image_ad_api = "http://api.dvfuboard.ru:8080/images/ad/";
   static const int PORT = 9090;
 
   static const int cardImageWidth = 320;

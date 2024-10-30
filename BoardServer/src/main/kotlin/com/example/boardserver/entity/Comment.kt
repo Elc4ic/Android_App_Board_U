@@ -28,8 +28,8 @@ fun Comment.toCommentGrpc(): UserOuterClass.Comment {
         .setText(this.text)
         .setRating(this.rating)
         .setCreated(this.created)
-        .setConvicted(this.convicted.toUserGrpc())
-        .setOwner(this.creator.toUserGrpc())
+        .setConvicted(this.convicted.toUserMini())
+        .setOwner(this.creator.toUserMini())
         .build()
 }
 

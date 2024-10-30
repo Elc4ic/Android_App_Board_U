@@ -33,31 +33,6 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> loadUserComments() async {
-    try {
-      if (state is! UserCommentsLoaded) {
-        emit(UserLoading());
-      }
-      final comments = await userService.getUserComments();
-      emit(UserCommentsLoaded(comments: comments));
-    } catch (e) {
-      emit(UserLoadingFailure(exception: e));
-    }
-  }
-
-  Future<void> loadComments(Int64 userId) async {
-    try {
-      if (state is! CommentsLoaded) {
-        emit(UserLoading());
-      }
-      final comments = await userService.getComments(userId);
-      final user = await userService.getUserById(userId);
-      emit(CommentsLoaded(comments: comments, user: user));
-    } catch (e) {
-      emit(UserLoadingFailure(exception: e));
-    }
-  }
-
   Future<void> logOut() async {
     await userService.logout(userId!);
   }

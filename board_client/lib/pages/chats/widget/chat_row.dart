@@ -30,21 +30,11 @@ class ChatRow extends StatefulWidget {
 }
 
 class _ChatRowState extends State<ChatRow> {
-
-  late final _imageBloc = ImageCubit.get(context);
-
-  @override
-  void initState() {
-    _imageBloc.loadImages(widget.chat.ad.id, true);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onLongPress: () => myDialog(context, () async {
-        GetIt.I<ChatService>().deleteChat(widget.chat.id, widget.token);
+        GetIt.I<ChatService>().deleteChat(widget.chat.id);
         widget.chatBloc.loadChats();
         context.pop();
       }, "Вы уверенны, что хотите удалить чат?"),
@@ -52,7 +42,6 @@ class _ChatRowState extends State<ChatRow> {
         context.push("/chat/${widget.chat.id}");
       },
       child: Card(
-        color: MyColorConst.card,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -63,24 +52,13 @@ class _ChatRowState extends State<ChatRow> {
                 child: SizedBox(
                   width: 120,
                   height: 120,
-                  child: BlocConsumer<ImageCubit, ImageState>(
-                    listener: (context, state) {},
-                    builder: (context, state) {
-                      if (state is ImageLoaded) {
-                        return Image.memory(
-                          gaplessPlayback: true,
-                          fit: BoxFit.fill,
-                          cacheWidth: Const.ImageWidth,
-                          cacheHeight: Const.ImageHeight,
-                          Uint8List.fromList(state.images[widget.chat.ad.id]!.first),
-                        );
-                      }
-                      if (state is ImageLoadingFailure) {
-                        return const NoImageWidget();
-                      }
-                      return ShimmeringContainer();
-                    },
-                  ),
+                  child: Image.network(
+                      gaplessPlayback: true,
+                      width: Const.cellWidth,
+                      cacheWidth: Const.cardImageWidth,
+                      cacheHeight: Const.cardImageHeight,
+                      fit: BoxFit.fitWidth,
+                      "${Const.image_ad_api}${widget.chat.ad.id}"),
                 ),
               ),
             ),
@@ -106,24 +84,25 @@ class _ChatRowState extends State<ChatRow> {
                         ),
                         Markup.dividerW5,
                         Text(widget.chat.target.username,
-                            style: Theme.of(context).textTheme.labelSmall),
+                            style: Theme.of(context).textTheme.bodySmall),
                       ],
                     ),
                     Row(
                       children: [
-                        Text("${widget.chat.ad.price}P",
-                            style: Theme.of(context).textTheme.labelMedium),
+                        Text("${widget.chat.ad.price} ${SC.RUBLES}",
+                            style: Theme.of(context).textTheme.bodySmall),
                         Markup.dividerW5,
                         Text(Markup.substringText(widget.chat.ad.title, 21),
                             style: Theme.of(context).textTheme.bodyMedium),
                       ],
                     ),
                     Text("Последнее сообщение:",
-                        style: Theme.of(context).textTheme.bodySmall),
-                       Text(
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    Text(
                       (widget.chat.lastMessage.message.length < 18)
                           ? (widget.chat.lastMessage.message ?? "")
                           : "${widget.chat.lastMessage.message.substring(0, 17)}...",
+                      style: Theme.of(context).textTheme.bodySmall,
                     )
                   ],
                 ),

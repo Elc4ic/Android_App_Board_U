@@ -1,7 +1,6 @@
 package com.example.boardserver.controller
 
 import com.example.boardserver.repository.ImageRepository
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -12,20 +11,15 @@ import java.io.IOException
 
 @RestController
 @RequestMapping("/images")
-class ImageController {
-
-    private var imageRepository: ImageRepository? = null
-
-    @Autowired
-    fun ImageController(repository: ImageRepository?) {
-        this.imageRepository = repository
-    }
+class ImageController(
+    private var imageRepository: ImageRepository
+) {
 
     @GetMapping("/ad/{id}")
     fun getAdImage(@PathVariable("id") id: String): ResponseEntity<ByteArray?>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository?.findFirstByAdId(id.toLong())?.get()?.imageBytes ?: ByteArray(0)
+            image = imageRepository.findFirstByAdId(id.toLong()).get().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -36,7 +30,18 @@ class ImageController {
     fun getImage(@PathVariable("id") id: String): ResponseEntity<ByteArray>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository?.findById(id.toLong())?.get()?.imageBytes ?: ByteArray(0)
+            image = imageRepository.findById(id.toLong()).get().imageBytes
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image)
+    }
+
+    @GetMapping("avatar/{userId}")
+    fun getAvatar(@PathVariable("userId") userId: String): ResponseEntity<ByteArray>? {
+        var image = ByteArray(0)
+        try {
+            image = imageRepository.findById(userId.toLong()).get().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }

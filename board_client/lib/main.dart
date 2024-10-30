@@ -16,15 +16,16 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = LogBlocObserver();
   await CacheService.init();
-  bool? isDark = CacheService.getData(key: 'isDark');
 
   GetIt.I.registerLazySingleton(() => UserService());
+  GetIt.I.registerLazySingleton(() => AdService());
+  GetIt.I.registerLazySingleton(() => CategoryService());
+  GetIt.I.registerLazySingleton(() => ChatService());
 
   var token = await GetIt.I<UserService>().loadUserAndCheckRefresh();
-
-  GetIt.I.registerLazySingleton(() => AdService(token));
-  GetIt.I.registerLazySingleton(() => CategoryService(token));
-  GetIt.I.registerLazySingleton(() => ChatService(token));
+  GetIt.I<AdService>().initClient(token);
+  GetIt.I<CategoryService>().initClient(token);
+  GetIt.I<ChatService>().initClient(token);
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(
@@ -36,5 +37,5 @@ void main() async {
     ),
   );
 
-  runApp(MyApp(isDark: isDark));
+  runApp(const MyApp());
 }

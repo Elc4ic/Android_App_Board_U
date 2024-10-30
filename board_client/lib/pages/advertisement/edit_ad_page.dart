@@ -3,14 +3,13 @@ import 'dart:io';
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
 import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/widgets/form/add_form.dart';
+import 'package:board_client/widgets/try_again.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:fixnum/fixnum.dart';
 
-import '../../data/service/ad_service.dart';
-import '../../widgets/widgets.dart';
 
 class EditAdPage extends StatefulWidget {
   const EditAdPage({super.key, required this.adId});
@@ -62,7 +61,7 @@ class _EditAdPageState extends State<EditAdPage> {
 
   @override
   void initState() {
-    _adBloc.loadAd(id: widget.adId, token: token);
+    _adBloc.loadAd(id: widget.adId);
     super.initState();
   }
 
@@ -103,7 +102,7 @@ class _EditAdPageState extends State<EditAdPage> {
                     return TryAgainWidget(
                       exception: state.exception,
                       onPressed: () {
-                        _adBloc.loadAd(id: widget.adId, token: token);
+                        _adBloc.loadAd(id: widget.adId);
                       },
                     );
                   } else {

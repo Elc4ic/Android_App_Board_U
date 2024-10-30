@@ -39,7 +39,7 @@ fun AdOuterClass.Ad.fromAdGrpc(): Ad {
     )
 }
 
-fun Ad.toAdGrpc(isFav: Boolean = false): AdOuterClass.Ad {
+fun Ad.toAdGrpc(isFav: Boolean = false, images: List<Long> = emptyList()): AdOuterClass.Ad {
     return AdOuterClass.Ad.newBuilder()
         .setId(this.id)
         .setTitle(this.title)
@@ -49,22 +49,52 @@ fun Ad.toAdGrpc(isFav: Boolean = false): AdOuterClass.Ad {
         .setIsActive(this.isActive)
         .setViews(this.views)
         .setCreated(this.created)
-        .setUser(this.user.toUserGrpc())
+        .setUser(this.user.toUserMini())
         .setCategory(this.category.toCategoryGrpc())
+        .addAllImages(images)
+        .build()
+}
+
+fun Ad.toMyAd(): AdOuterClass.Ad {
+    return AdOuterClass.Ad.newBuilder()
+        .setId(this.id)
+        .setTitle(this.title)
+        .setPrice(this.price)
+        .setIsActive(this.isActive)
+        .setViews(this.views)
+        .setCreated(this.created)
+        .build()
+}
+
+fun Ad.toAdPreview(isFav: Boolean = false): AdOuterClass.Ad {
+    return AdOuterClass.Ad.newBuilder()
+        .setId(this.id)
+        .setTitle(this.title)
+        .setPrice(this.price)
+        .setIsFav(isFav)
+        .setUser(this.user.toUserPreview())
         .build()
 }
 
 fun List<Ad>.toRepeatedAdGrpc(): AdOuterClass.RepeatedAdResponse {
     val ads = mutableListOf<AdOuterClass.Ad>()
-    this.forEach { ad -> ads.add(ad.toAdGrpc()) }
+    this.forEach { ad -> ads.add(ad.toAdPreview()) }
     return AdOuterClass.RepeatedAdResponse.newBuilder()
         .addAllData(ads)
         .build()
 }
 
-fun List<Favorites>.toFavRepeatedAdGrpc(): AdOuterClass.RepeatedAdResponse {
+fun List<Ad>.toRepeatedMyAd(): AdOuterClass.RepeatedAdResponse {
     val ads = mutableListOf<AdOuterClass.Ad>()
-    this.forEach { fav -> ads.add(fav.ad.toAdGrpc()) }
+    this.forEach { ad -> ads.add(ad.toMyAd()) }
+    return AdOuterClass.RepeatedAdResponse.newBuilder()
+        .addAllData(ads)
+        .build()
+}
+
+fun List<Favorites>.toFavRepeatedAdPreviews(): AdOuterClass.RepeatedAdResponse {
+    val ads = mutableListOf<AdOuterClass.Ad>()
+    this.forEach { fav -> ads.add(fav.ad.toAdPreview(true)) }
     return AdOuterClass.RepeatedAdResponse.newBuilder()
         .addAllData(ads)
         .build()

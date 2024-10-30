@@ -15,6 +15,8 @@ class AdListCubit extends Cubit<AdListState> {
 
   static AdListCubit get(context) => BlocProvider.of<AdListCubit>(context);
 
+  int getPageSize() => pageSize;
+
   List<Ad> adList = [];
 
   String search = "";
@@ -36,8 +38,8 @@ class AdListCubit extends Cubit<AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adService.getManyAd(search, priceMax, priceMin, address,
-          category, query, page, pageSize, userService.getToken());
+      final ads = await adService.getManyAd(
+          search, priceMax, priceMin, address, category, query, page, pageSize);
       if (clear) {
         adList.clear();
       }
@@ -53,7 +55,7 @@ class AdListCubit extends Cubit<AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adService.getMyAds(userService.getToken());
+      final ads = await adService.getMyAds();
       print(ads.data.toString());
       emit(AdListLoaded(adList: ads.data, hasMore: false));
     } catch (e) {
@@ -66,7 +68,7 @@ class AdListCubit extends Cubit<AdListState> {
       if (state is! AdListLoaded) {
         emit(AdListLoading());
       }
-      final ads = await adService.getFavoriteAds(userService.getToken());
+      final ads = await adService.getFavoriteAds();
 
       emit(AdListLoaded(adList: ads.data, hasMore: false));
     } catch (e) {
@@ -74,7 +76,7 @@ class AdListCubit extends Cubit<AdListState> {
     }
   }
 
-  Future<void> getUserList(Int64 id) async{
+  Future<void> getUserList(Int64 id) async {
     try {
       if (state is! AdListLoaded) {
         emit(AdListLoading());

@@ -15,21 +15,21 @@ class AdCubit extends Cubit<AdState> {
 
   static AdCubit get(context) => BlocProvider.of<AdCubit>(context);
 
-  Future<void> loadAd({required Int64 id, required String? token}) async {
+  Future<void> loadAd({required Int64 id}) async {
     emit(AdLoading());
-    final ad = await adService.getOneAd(id, token);
+    final ad = await adService.getOneAd(id);
     emit(AdLoaded(ad: ad));
   }
 
-  Future<void> setFavorite(Int64 id, String? token) async {
-    await adService.setFavoriteAd(id, token);
+  Future<void> setFavorite(Int64 id) async {
+    await adService.setFavoriteAd(id);
   }
 
-  Future<void> muteAd(Int64 id, String? token) async {
-    await adService.muteAd(id, token);
+  Future<void> muteAd(Int64 id) async {
+    await adService.muteAd(id);
   }
 
-  Future<void> deleteAd(Int64 id, String? token) async {
-    await adService.deleteAd(id, token);
+  Future<void> deleteAd(Int64 id) async {
+    await adService.deleteAd(id);
   }
 }

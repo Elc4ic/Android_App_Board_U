@@ -1,10 +1,10 @@
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
+import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
 import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../values/values.dart';
-import '../../../widgets/widgets.dart';
+import '../../../widgets/try_again.dart';
 
 class UserCommentPage extends StatefulWidget {
   const UserCommentPage({super.key});
@@ -15,7 +15,7 @@ class UserCommentPage extends StatefulWidget {
 
 class _UserCommentPageState extends State<UserCommentPage> {
 
-  late final _commentBloc = UserCubit.get(context);
+  late final _commentBloc = CommentCubit.get(context);
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _UserCommentPageState extends State<UserCommentPage> {
           onRefresh: () async {
             _commentBloc.loadUserComments();
           },
-          child: BlocConsumer<UserCubit, UserState>(
+          child: BlocConsumer<CommentCubit, CommentState>(
             listener:  (context, state) {},
             builder: (context, state) {
               if (state is UserCommentsLoaded) {
@@ -54,11 +54,11 @@ class _UserCommentPageState extends State<UserCommentPage> {
                 return ListView.builder(
                   itemCount: state.comments.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return CommentRow(comment: state.comments[index],isMine: true, userBloc: _commentBloc);
+                    return CommentRow(comment: state.comments[index],isMine: true, commentBloc: _commentBloc);
                   },
                 );
               }
-              if (state is UserLoadingFailure) {
+              if (state is CommentLoadingFailure) {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {

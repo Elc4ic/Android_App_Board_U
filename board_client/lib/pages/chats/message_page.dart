@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:typed_data';
 
-import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:board_client/pages/chats/widget/received_message.dart';
@@ -10,14 +8,11 @@ import 'package:board_client/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:go_router/go_router.dart';
 
-import '../../../widgets/shimerring_container.dart';
 import '../../data/service/chat_service.dart';
-import '../../data/service/user_service.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key, required this.chatId});
@@ -37,7 +32,6 @@ class _MessagePageState extends State<MessagePage> {
   final StreamController<SendMessageRequest> streamController =
       StreamController<SendMessageRequest>();
   final ScrollController scrollController = ScrollController();
-  late final _imageBloc = ImageCubit.get(context);
   late final _userBloc = UserCubit.get(context);
 
   String? error;
@@ -95,9 +89,8 @@ class _MessagePageState extends State<MessagePage> {
         isLoading = true;
       });
       final res =
-          await chatService.getMessages(widget.chatId, _userBloc.getToken());
+          await chatService.getMessages(widget.chatId);
       chat = res.chat;
-      _imageBloc.loadImages(chat!.ad.id, true);
       messages.addAll(res.messages);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -145,35 +138,18 @@ class _MessagePageState extends State<MessagePage> {
               },
               child: SizedBox(
                 height: 50,
+                width: 50,
                 child: Padding(
                   padding: Markup.padding_all_8,
                   child: Row(
                     children: [
-                      BlocConsumer<ImageCubit, ImageState>(
-                        listener: (context, state) {},
-                        builder: (context, state) {
-                          if (state is ImageLoaded) {
-                            return Image.memory(
-                              width: 44,
-                              height: 44,
-                              fit: BoxFit.fitWidth,
-                              Uint8List.fromList(
-                                  state.images[chat?.ad.id]!.first),
-                            );
-                          }
-                          if (state is ImageLoadingFailure) {
-                            return Container(
-                              width: 44,
-                              height: 44,
-                              color: Colors.black12,
-                            );
-                          }
-                          return const SizedBox(
-                              width: 44,
-                              height: 44,
-                              child: ShimmeringContainer());
-                        },
-                      ),
+                      Image.network(
+                          gaplessPlayback: true,
+                          width: Const.cellWidth,
+                          cacheWidth: Const.cardImageWidth,
+                          cacheHeight: Const.cardImageHeight,
+                          fit: BoxFit.cover,
+                          "${Const.image_ad_api}${chat?.ad.id}"),
                       Markup.dividerW10,
                       Text(
                           (chat!.ad.title.length > 30)

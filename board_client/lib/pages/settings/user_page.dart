@@ -1,13 +1,19 @@
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
+import 'package:board_client/data/service/chat_service.dart';
+import 'package:board_client/widgets/service_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../data/service/ad_service.dart';
+import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
 import '../../widgets/mini_profile.dart';
-import '../../widgets/widgets.dart';
+import '../../widgets/try_again.dart';
 import '../main/widget/ad_card.dart';
 
 class UserPage extends StatefulWidget {
@@ -20,8 +26,9 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  late final _adListBloc = AdListCubit.get(context);
-  late final _userBloc = UserCubit.get(context);
+  late final _adListBloc =
+      AdListCubit(GetIt.I<AdService>(), GetIt.I<UserService>());
+  late final _userBloc = UserCubit(GetIt.I<UserService>());
 
   @override
   void initState() {
@@ -29,6 +36,13 @@ class _UserPageState extends State<UserPage> {
     _userBloc.loadUser();
     _adListBloc.getUserList(widget.id);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _adListBloc.close();
+    _userBloc.close();
+    super.dispose();
   }
 
   @override
@@ -43,12 +57,25 @@ class _UserPageState extends State<UserPage> {
           },
           child: CustomScrollView(
             slivers: [
-              BlocConsumer<UserCubit, UserState>(
-                listener: (context, state) {},
+              BlocBuilder<UserCubit, UserState>(
+                bloc: _userBloc,
                 builder: (context, state) {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
-                      child: Profile(user: state.user),
+                      child: Profile(
+                        user: state.user,
+                        own: false,
+                        child: Column(
+                          children: [
+                            ServicePanel(
+                              onTap: () => context
+                                  .push("${SC.COMMENT_PAGE}/${widget.id}"),
+                              title: "Комментарии",
+                              icon: Icons.connect_without_contact,
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }
                   if (state is UserLoadingFailure) {
@@ -62,12 +89,14 @@ class _UserPageState extends State<UserPage> {
                     );
                   }
                   return const SliverFillRemaining(
-                      child: Center(child: CircularProgressIndicator()));
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 },
               ),
-              const SliverToBoxAdapter(child: Markup.dividerH10),
-              BlocConsumer<AdListCubit, AdListState>(
-                listener: (context, state) {},
+              BlocBuilder<AdListCubit, AdListState>(
+                bloc: _adListBloc,
                 builder: (context, state) {
                   if (state is AdListLoaded) {
                     if (state.adList.isEmpty) {

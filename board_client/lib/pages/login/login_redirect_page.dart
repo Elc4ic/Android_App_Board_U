@@ -17,15 +17,15 @@ class LoginChecker extends StatefulWidget {
 }
 
 class _LoginCheckerState extends State<LoginChecker> {
-  final userRepository = GetIt.I<UserService>();
+  final userService = GetIt.I<UserService>();
   bool update = true;
 
   @override
   Widget build(BuildContext context) {
-    if (userRepository.getToken() == null && update) {
+    if (userService.getToken() == null && update) {
       Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {
-          if (userRepository.getToken() != null) {
+          if (userService.getToken() != null) {
             update = false;
             timer.cancel();
           }

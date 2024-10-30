@@ -29,7 +29,6 @@ class _RowCardState extends State<RowCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: MyColorConst.card,
       child: InkWell(
         onTap: () {
           context.push("/ad/${widget.ad.id}");
@@ -49,8 +48,8 @@ class _RowCardState extends State<RowCard> {
                       width: Const.cellWidth,
                       cacheWidth: Const.cardImageWidth,
                       cacheHeight: Const.cardImageHeight,
-                      fit: BoxFit.cover,
-                      "http://api.dvfuboard.ru:8080/images/${widget.ad.id}"),
+                      fit: BoxFit.fitWidth,
+                      "${Const.image_ad_api}${widget.ad.id}"),
                 ),
               ),
             ),
@@ -60,7 +59,7 @@ class _RowCardState extends State<RowCard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("${widget.ad.price} P",
+                    Text("${widget.ad.price} ${SC.RUBLES}",
                         style: Theme.of(context).textTheme.bodyMedium),
                     Text(Markup.substringText(widget.ad.title, 21),
                         style: Theme.of(context).textTheme.bodyMedium),
@@ -71,18 +70,10 @@ class _RowCardState extends State<RowCard> {
             FavButton(
               isFav: isFav,
               onPressed: () async {
-                try {
-                  await adService.setFavoriteAd(widget.ad.id, widget.token);
-                  setState(() {
-                    isFav = !isFav;
-                  });
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text("Не получилось добавить в избранное"),
-                        backgroundColor: MyColorConst.error),
-                  );
-                }
+                await adService.setFavoriteAd(widget.ad.id);
+                setState(() {
+                  isFav = !isFav;
+                });
               },
             )
           ],

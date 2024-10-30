@@ -1,6 +1,7 @@
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/pages/favorite/widget/row_card.dart';
+import 'package:board_client/widgets/try_again.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:get_it/get_it.dart';
 
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
-import '../../widgets/widgets.dart';
 
 class FavPage extends StatefulWidget {
   const FavPage({super.key});

@@ -1,9 +1,9 @@
 version: '3.9'
 
 services:
-  kotlinserver:
-    container_name: kotlinserver
-    image: kotlinserver:latest
+  boardserver:
+    container_name: boardserver
+    image: boardserver:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,18 +18,24 @@ services:
       - db
       - zipkin
     environment:
-      DB_URL: jdbc:postgresql://db/postgres
-      PG_USER: boarduser
-      PG_PASSWORD: boardpass
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db/postgres
+      - SPRING_DATASOURCE_USER=boarduser
+      - SPRING_DATASOURCE_PASSWORD=boardpass
+      - SPRING_APPLICATION_NAME=microservice
+      - SERVER_PORT=8080
+      - SPRING_ZIPKIN_BASE_URL=http://host.docker.internal:9411
+      - SPRING_REDIS_HOST=host.docker.internal
     volumes:
-      - board-data:/var/lib/kotlinserver/data
+      - board-data:/var/lib/boardserver/data
+    networks: [ "microservices" ]
 
   zipkin:
     image: openzipkin/zipkin:latest
     restart: always
-    container_name: micro_zipkin
+    container_name: zipkin
     ports:
       - "9411:9411"
+    networks: [ "microservices" ]
 
   db:
     container_name: db
@@ -43,6 +49,7 @@ services:
       POSTGRES_PASSWORD: boardpass
     volumes:
       - db-data:/var/lib/postgresql/data
+    networks: [ "microservices" ]
 
   pgadmin:
     container_name: pgadmin4
@@ -55,10 +62,15 @@ services:
       - "5050:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+    networks: [ "microservices" ]
 
 volumes:
   db-data:
   board-data:
   pgadmin-data:
+
+networks:
+  microservices:
+    name: microservices
 
 

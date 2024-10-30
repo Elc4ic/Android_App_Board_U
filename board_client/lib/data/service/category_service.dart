@@ -1,3 +1,4 @@
+import 'package:board_client/generated/user.pb.dart';
 import 'package:grpc/grpc.dart';
 
 import '../../generated/ad.pbgrpc.dart';
@@ -7,7 +8,7 @@ class CategoryService {
   static List<Category>? categories;
   late CategoryAPIClient _client;
 
-  CategoryService(String? token) {
+  void initClient(String? token) {
     final channel = ClientChannel(
       Const.HOST,
       port: Const.PORT,
@@ -15,10 +16,8 @@ class CategoryService {
         credentials: ChannelCredentials.insecure(),
       ),
     );
-    _client = CategoryAPIClient(
-      channel,
-      options: CallOptions(metadata: {'token': token ?? ""}),
-    );
+    _client = CategoryAPIClient(channel,
+        options: CallOptions(metadata: {'token': token ?? ""}));
   }
 
   Future<GetAllCategoriesResponse> loadCategories() async {

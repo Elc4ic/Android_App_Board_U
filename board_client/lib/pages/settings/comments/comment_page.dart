@@ -1,3 +1,4 @@
+import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:board_client/widgets/shimerring_container.dart';
@@ -9,7 +10,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../generated/user.pb.dart';
 import '../../../values/values.dart';
-import '../../../widgets/widgets.dart';
+import '../../../widgets/try_again.dart';
 
 class CommentPage extends StatefulWidget {
   const CommentPage({super.key, required this.userId});
@@ -22,7 +23,7 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
 
-  late final _commentBloc = UserCubit.get(context);
+  late final _commentBloc = CommentCubit.get(context);
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _CommentPageState extends State<CommentPage> {
           onRefresh: () async {
             _commentBloc.loadComments(widget.userId);
           },
-          child: BlocConsumer<UserCubit, UserState>(
+          child: BlocConsumer<CommentCubit, CommentState>(
             listener: (context, state) {},
             builder: (context, state) {
               if (state is CommentsLoaded) {
@@ -66,12 +67,12 @@ class _CommentPageState extends State<CommentPage> {
                       return CommentRow(
                           comment: state.comments[index - 1],
                           isMine: false,
-                          userBloc: _commentBloc);
+                          commentBloc: _commentBloc);
                     }
                   },
                 );
               }
-              if (state is UserLoadingFailure) {
+              if (state is CommentLoadingFailure) {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {

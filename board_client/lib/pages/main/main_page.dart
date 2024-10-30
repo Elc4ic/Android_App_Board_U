@@ -5,7 +5,6 @@ import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/pages/main/widget/ad_card.dart';
 import 'package:board_client/widgets/custom_grid.dart';
 import 'package:board_client/values/values.dart';
-import 'package:board_client/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -14,6 +13,7 @@ import 'package:get_it/get_it.dart';
 import '../../data/service/category_service.dart';
 import '../../data/service/user_service.dart';
 import '../../generated/ad.pb.dart';
+import '../../widgets/try_again.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -28,7 +28,7 @@ class _MainPageState extends State<MainPage> {
 
   late final _adListBloc = AdListCubit(GetIt.I<AdService>(),GetIt.I<UserService>());
   late final _catListBloc = CategoryCubit.get(context);
-  late final _imageBloc = ImageCubit.get(context);
+
 
   @override
   void initState() {
@@ -52,6 +52,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+
   @override
   void dispose() {
     _catListBloc.close();
@@ -59,6 +60,8 @@ class _MainPageState extends State<MainPage> {
     _scrollController.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {

@@ -40,8 +40,8 @@ class _CommentFormState extends State<CommentForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text((e as GrpcError).message!),
-              backgroundColor: MyColorConst.error),
+            content: Text((e as GrpcError).message!),
+          ),
         );
       }
     }

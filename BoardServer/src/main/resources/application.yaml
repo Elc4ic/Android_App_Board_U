@@ -2,9 +2,9 @@ spring:
   application:
     name: boardserver
   datasource:
-    url: ${DB_URL}
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USER}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: false
     hibernate:
@@ -18,8 +18,6 @@ spring:
     reflection-service-enabled: true
     server:
       port: 9090
-      maxInboundMessageSize: 25MB
-      maxOutboundMessageSize: 25MB
   flyway:
     enabled: true
     baselineOnMigrate: true
@@ -27,12 +25,22 @@ spring:
 management:
   tracing:
     enabled: true
-    sampling:
-      probability: 1.0
-    export:
-      zipkin:
-        enabled: true
-        endpoint: http://micro_zipkin/api/v2/spans
+    tags:
+      service.name: boardserver
+  endpoints:
+    web:
+      exposure:
+        include: tracing
+
+otel:
+  traces:
+    exporter:
+      otlp:
+        endpoint: "http://localhost:4317"
+    zipkin:
+      service.name: boardserver
+      enabled: true
+      endpoint: http://localhost:9411/api/v2/spans
 
 jwt:
   secret:
@@ -41,8 +49,3 @@ jwt:
 
 firebase:
   secretKey: 8ClknOAu9iNb/DE0CWYjo2u54qbEg6i6NSgJdTgYf80=
-
-springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
-    enabled: true

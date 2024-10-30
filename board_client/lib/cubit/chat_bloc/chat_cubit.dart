@@ -21,7 +21,7 @@ class ChatCubit extends Cubit<ChatState> {
       if (state is! ChatLoaded) {
         emit(ChatLoading());
       }
-      final chats = await chatService.getChatsPreview(userService.getToken());
+      final chats = await chatService.getChatsPreview();
       emit(ChatLoaded(chat: chats));
     } catch (e) {
       emit(ChatLoadingFailure(exception: e));

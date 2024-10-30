@@ -1,15 +1,15 @@
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
-import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/app_cubit/app_cubit.dart';
 import 'package:board_client/cubit/category_cubit/category_cubit.dart';
 import 'package:board_client/cubit/chat_bloc/chat_cubit.dart';
-import 'package:board_client/cubit/image_cubit/image_cubit.dart';
+import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/data/service/category_service.dart';
 import 'package:board_client/data/service/chat_service.dart';
 import 'package:board_client/data/service/notification_service.dart';
 import 'package:board_client/data/service/user_service.dart';
+import 'package:board_client/generated/user.pb.dart';
 import 'package:board_client/routing/router.dart';
 import 'package:board_client/theme.dart';
 import 'package:board_client/values/values.dart';
@@ -19,9 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, this.isDark});
-
-  final bool? isDark;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +38,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => CategoryCubit(GetIt.I<CategoryService>())),
         BlocProvider(create: (context) => AppCubit()),
-        BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>()))
+        BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>())),
+        BlocProvider(create: (context) => CommentCubit(GetIt.I<UserService>()))
       ],
       child: BlocConsumer<AppCubit, AppState>(
         listener: (context, state) {},
@@ -48,10 +47,6 @@ class MyApp extends StatelessWidget {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: SC.APP_TITLE,
-            themeMode: AppCubit.get(context).isDark!
-                ? ThemeMode.dark
-                : ThemeMode.light,
-            darkTheme: mainTheme(context),
             theme: mainTheme(context),
             routerConfig: router,
           );

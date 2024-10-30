@@ -29,8 +29,8 @@ class _AddAdFormState extends State<LoginForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text((e as GrpcError).message!),
-              backgroundColor: MyColorConst.error),
+            content: Text((e as GrpcError).message!),
+          ),
         );
       }
     }

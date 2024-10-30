@@ -2,6 +2,7 @@ package com.example.boardserver.entity
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import board.UserOuterClass
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.google.protobuf.kotlin.toByteString
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcType
@@ -15,6 +16,7 @@ class User(
     val id: Long = 0L,
     val name: String,
     val username: String,
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     val password: String,
     val email: String,
     val phone: String,
@@ -47,13 +49,42 @@ fun User.toUserGrpc(): UserOuterClass.User {
         .setId(this.id)
         .setName(this.name)
         .setUsername(this.username)
-        .setPassword(this.password)
         .setEmail(this.email)
         .setPhone(this.phone)
         .setAddress(this.address)
         .setAvatar(this.avatar.toByteString())
         .setRatingAll(this.ratingAll)
         .setRatingNum(this.ratingNum)
+        .build()
+}
+
+fun User.toUserMini(): UserOuterClass.User {
+    return UserOuterClass.User.newBuilder()
+        .setId(this.id)
+        .setName(this.name)
+        .setAvatar(this.avatar.toByteString())
+        .setRatingAll(this.ratingAll)
+        .setRatingNum(this.ratingNum)
+        .build()
+}
+
+fun User.toAnotherUser(): UserOuterClass.User {
+    return UserOuterClass.User.newBuilder()
+        .setId(this.id)
+        .setName(this.name)
+        .setEmail(this.email)
+        .setPhone(this.phone)
+        .setAddress(this.address)
+        .setAvatar(this.avatar.toByteString())
+        .setRatingAll(this.ratingAll)
+        .setRatingNum(this.ratingNum)
+        .build()
+}
+
+fun User.toUserPreview(): UserOuterClass.User {
+    return UserOuterClass.User.newBuilder()
+        .setId(this.id)
+        .setAddress(this.address)
         .build()
 }
 

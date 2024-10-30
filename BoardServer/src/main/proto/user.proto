@@ -6,16 +6,19 @@ package board;
 service UserAPI {
     rpc GetSignUp (SignupRequest) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
-    rpc GetUserAndRefresh (JwtProto) returns (UserToken);
+    rpc GetUserAndRefresh (Empty) returns (UserToken);
     rpc GetUserById (UserId) returns (UserToken);
     rpc LogOut (UserId) returns (IsSuccess);
     rpc ChangeUserData (UserToken) returns (IsSuccess);
-    rpc DeleteUser (JwtProto) returns (IsSuccess);
+    rpc DeleteUser (Empty) returns (IsSuccess);
     rpc AddComment (CommentProto) returns (IsSuccess);
     rpc EditComment (EditCommentRequest) returns (IsSuccess);
-    rpc DeleteComment (IdToken) returns (IsSuccess);
+    rpc DeleteComment (Id) returns (IsSuccess);
     rpc GetComments (UserId) returns (CommentsResponse);
-    rpc GetUserComments (JwtProto) returns (CommentsResponse);
+    rpc GetUserComments (Empty) returns (CommentsResponse);
+}
+
+message Empty {
 }
 
 message IsSuccess {
@@ -48,10 +51,6 @@ message UserToken {
     string token = 2;
 }
 
-message JwtProto {
-    string token = 1;
-}
-
 message User {
     uint64 id = 1;
     string name = 2;
@@ -77,18 +76,15 @@ message Comment {
 message EditCommentRequest {
     Comment comment = 1;
     int32 rating_prev = 2;
-    string token = 3;
 }
 
 message CommentProto {
     Comment comment = 1;
-    string token = 2;
 }
 message CommentsResponse {
     repeated Comment comments = 1;
 }
 
-message IdToken {
+message Id{
     int64 id = 1;
-    string token = 2;
 }

@@ -1,3 +1,4 @@
+import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/mini_profile.dart';
@@ -11,11 +12,11 @@ class CommentRow extends StatelessWidget {
       {super.key,
       required this.comment,
       required this.isMine,
-      required this.userBloc});
+      required this.commentBloc});
 
   final bool isMine;
   final Comment comment;
-  final UserCubit userBloc;
+  final CommentCubit commentBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,7 @@ class CommentRow extends StatelessWidget {
                       tooltip: SC.EDIT,
                       icon: const Icon(Icons.mode_edit),
                       onPressed: () =>
-                          editCommentDialog(context, userBloc, comment),
+                          editCommentDialog(context, commentBloc, comment),
                     ),
                   ),
                 ],
@@ -102,7 +103,7 @@ class CommentRow extends StatelessWidget {
 }
 
 Future<void> editCommentDialog(
-    BuildContext context, UserCubit commentBloc, Comment comment) async {
+    BuildContext context, CommentCubit commentBloc, Comment comment) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog.fullscreen(

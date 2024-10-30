@@ -8,7 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/service/ad_service.dart';
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
-import '../../widgets/widgets.dart';
+import '../../widgets/try_again.dart';
 
 class MyAdsPage extends StatefulWidget {
   const MyAdsPage({super.key});

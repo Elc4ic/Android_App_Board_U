@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../values/values.dart';
-import '../../widgets/widgets.dart';
+import '../../widgets/try_again.dart';
 
 class ChatsPreviewPage extends StatefulWidget {
   const ChatsPreviewPage({super.key});

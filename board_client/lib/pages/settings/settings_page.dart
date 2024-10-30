@@ -1,16 +1,17 @@
 import 'dart:io';
 
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
-import 'package:board_client/data/service/user_service.dart';
+import 'package:board_client/generated/user.pb.dart';
+import 'package:board_client/widgets/buttons/theme_button.dart';
 import 'package:board_client/widgets/mini_profile.dart';
+import 'package:board_client/widgets/service_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../values/values.dart';
-import '../../widgets/widgets.dart';
+import '../../widgets/try_again.dart';
 import '../advertisement/widget/my_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late final _userBloc = UserCubit.get(context);
+  late User user;
 
   @override
   void initState() {
@@ -39,12 +41,66 @@ class _SettingsPageState extends State<SettingsPage> {
         },
         child: CustomScrollView(
           slivers: [
-            BlocConsumer<UserCubit, UserState>(
-              listener: (context, state) {},
+            BlocBuilder<UserCubit, UserState>(
+              bloc: _userBloc,
               builder: (context, state) {
                 if (state is UserLoaded) {
+                  user = state.user;
                   return SliverToBoxAdapter(
-                    child: Profile(user: state.user),
+                    child: Stack(
+                      children: [
+                        Profile(
+                          own: true,
+                          user: state.user,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ServicePanel(
+                                  onTap: () => changeDialog(context, _userBloc),
+                                  title: "Изменить имя",
+                                  icon: Icons.accessibility_new),
+                              ServicePanel(
+                                  onTap: () => avatarDialog(context, _userBloc),
+                                  title: "Изменить аватар",
+                                  icon: Icons.account_box),
+                              ServicePanel(
+                                  onTap: () => context.push("/setaddress"),
+                                  title: "Настроить адресс",
+                                  icon: Icons.home),
+                              Text("  Комментарии",
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
+                              ServicePanel(
+                                  onTap: () => context.push("/usercomments"),
+                                  title: "Полученные",
+                                  icon: Icons.comment),
+                              ServicePanel(
+                                  onTap: () => context
+                                      .push("${SC.COMMENT_PAGE}/${user.id}"),
+                                  title: "Отправленные",
+                                  icon: Icons.connect_without_contact),
+                              Text("  Настройки",
+                                  style:
+                                      Theme.of(context).textTheme.titleSmall),
+                              ServicePanel(
+                                  onTap: () => myDialog(context, () async {
+                                        await _userBloc.logOut();
+                                        exit(0);
+                                      }, "Выход из аккаунта закроет приложение!"),
+                                  title: "Выйти из аккаунта",
+                                  icon: Icons.exit_to_app),
+                              ServicePanel(
+                                  onTap: () => myDialog(context, () async {
+                                        _userBloc.deleteUser();
+                                        exit(0);
+                                      }, "Удаление аккаунта закроет приложение!"),
+                                  title: "Удалить аккаунт",
+                                  icon: Icons.delete),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
                 if (state is UserLoadingFailure) {
@@ -60,83 +116,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 return const SliverFillRemaining(
                     child: Center(child: CircularProgressIndicator()));
               },
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => changeDialog(context, _userBloc),
-                            child: Text("Изменить имя",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
-                        ),
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () => avatarDialog(context, _userBloc),
-                            child: Text("Изменить аватар",
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push("/setaddress");
-                      },
-                      child: Text("Настроить адресс",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ),
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.push("/usercomments");
-                      },
-                      child: Text("Отправленные комментарии",
-                          style: Theme.of(context).textTheme.bodyMedium),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => myDialog(context, () async {
-                            await _userBloc.logOut();
-                            exit(0);
-                          }, "Выход из аккаунта закроет приложение!"),
-                          child: Text("Выйти из аккаунта",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => myDialog(context, () async {
-                            _userBloc.deleteUser();
-                            exit(0);
-                          }, "Удаление аккаунта закроет приложение!"),
-                          child: Text("Удалить аккаунт",
-                              style: Theme.of(context).textTheme.bodyMedium),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
             ),
           ],
         ),

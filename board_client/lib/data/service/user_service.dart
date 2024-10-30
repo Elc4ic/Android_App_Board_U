@@ -7,12 +7,22 @@ import '../../generated/user.pbgrpc.dart';
 import '../../values/values.dart';
 
 class UserService {
-  static String? authToken;
-  static String? fmcToken;
+  static String? _authToken;
+  static String? _fmcToken;
   late UserAPIClient _client;
-  static User? appUser;
+  static User? _appUser;
 
-  UserService() {
+  User? getUser() => _appUser;
+
+  String? getToken() => _authToken;
+
+  String? getFCMToken() => _fmcToken;
+
+  Future<SharedPreferences> getSharedPreferences() async {
+    return await SharedPreferences.getInstance();
+  }
+
+  void initClient() {
     final channel = ClientChannel(
       Const.HOST,
       port: Const.PORT,
@@ -22,58 +32,51 @@ class UserService {
     );
     _client = UserAPIClient(
       channel,
-      options: CallOptions(metadata: {'token': authToken ?? ""}),
+      options: CallOptions(metadata: {'token': _authToken ?? ""}),
     );
-  }
-
-  User? getUser() => appUser;
-
-  String? getToken() => authToken;
-
-  String? getFCMToken() => fmcToken;
-
-  Future<SharedPreferences> getSharedPreferences() async {
-    return await SharedPreferences.getInstance();
   }
 
   Future<String?> loadUserAndCheckRefresh() async {
     final sharedPreferences = await getSharedPreferences();
-    authToken = sharedPreferences.getString('token');
-    if (authToken != null) {
+    _authToken = sharedPreferences.getString('token');
+    initClient();
+    try {
       final response =
-          await _client.getUserAndRefresh(JwtProto(token: authToken));
-      authToken = response.token;
+          await _client.getUserAndRefresh(Empty());
+      _authToken = response.token;
       sharedPreferences.setString('token', response.token);
-      appUser = response.user;
-      return authToken;
+      _appUser = response.user;
+      return _authToken;
+    } catch (e) {
+      return _authToken;
     }
-    return null;
   }
 
   Future<bool> updateToken(String token) async {
     final sharedPreferences = await getSharedPreferences();
-    authToken = token;
+    _authToken = token;
+    initClient();
     return sharedPreferences.setString('token', token);
   }
 
   Future<bool> logout(Int64 id) async {
     await _client.logOut(UserId(id: id));
     final sharedPreferences = await getSharedPreferences();
-    authToken = null;
-    appUser = null;
+    _authToken = null;
+    _appUser = null;
     return sharedPreferences.remove('token');
   }
 
   Future<bool> login(String username, String password) async {
     try {
       final request = LoginRequest(
-          username: username, password: password, deviceToken: fmcToken);
+          username: username, password: password, deviceToken: _fmcToken);
       final response = await _client.getLogin(request);
       await updateToken(response.accessToken);
-      appUser = response.user;
+      _appUser = response.user;
       return true;
     } catch (e) {
-      throw Exception(e);
+      rethrow;
     }
   }
 
@@ -84,13 +87,13 @@ class UserService {
       await _client.getSignUp(request);
       return true;
     } catch (e) {
-      throw Exception(e);
+      rethrow;
     }
   }
 
   Future<bool> changeUser(User? user) async {
     final response =
-        await _client.changeUserData(UserToken(user: user, token: authToken));
+        await _client.changeUserData(UserToken(user: user, token: _authToken));
     return response.login;
   }
 
@@ -101,19 +104,19 @@ class UserService {
 
   Future<bool> addComment(Comment comment) async {
     final response = await _client
-        .addComment(CommentProto(comment: comment, token: authToken));
+        .addComment(CommentProto(comment: comment));
     return response.login;
   }
 
   Future<bool> editComment(Comment comment, int rating_prev) async {
     final response = await _client.editComment(EditCommentRequest(
-        comment: comment, ratingPrev: rating_prev, token: authToken));
+        comment: comment, ratingPrev: rating_prev));
     return response.login;
   }
 
   Future<bool> deleteComment(Int64 id) async {
     final response =
-        await _client.deleteComment(IdToken(id: id, token: authToken));
+        await _client.deleteComment(Id(id: id));
     return response.login;
   }
 
@@ -123,16 +126,16 @@ class UserService {
   }
 
   Future<List<Comment>> getUserComments() async {
-    final comments = await _client.getUserComments(JwtProto(token: authToken));
+    final comments = await _client.getUserComments(Empty());
     return comments.comments;
   }
 
   void initFMC(String? token) {
-    fmcToken = token;
+    _fmcToken = token;
   }
 
   Future<bool> deleteUser() async {
-    var response = await _client.deleteUser(JwtProto(token: authToken));
+    var response = await _client.deleteUser(Empty());
     return response.login;
   }
 }

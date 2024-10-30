@@ -17,7 +17,11 @@ class _AppScaffoldState extends State<AppScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.body,
+      body: Stack(
+        children: [
+          widget.body,
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _calculateSelectedIndex(context),
         onTap: onTap,

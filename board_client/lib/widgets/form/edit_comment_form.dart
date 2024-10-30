@@ -1,3 +1,4 @@
+import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/generated/user.pb.dart';
@@ -15,7 +16,7 @@ class EditCommentForm extends StatefulWidget {
       {super.key, required this.comment, required this.commentBloc});
 
   final Comment comment;
-  final UserCubit commentBloc;
+  final CommentCubit commentBloc;
 
   @override
   State<EditCommentForm> createState() => _EditCommentFormState();
@@ -48,8 +49,8 @@ class _EditCommentFormState extends State<EditCommentForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text((e as GrpcError).message!),
-              backgroundColor: MyColorConst.error),
+            content: Text((e as GrpcError).message!),
+          ),
         );
       }
     }
