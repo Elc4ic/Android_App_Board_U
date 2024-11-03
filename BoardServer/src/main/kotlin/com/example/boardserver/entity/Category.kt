@@ -1,21 +1,22 @@
 package com.example.boardserver.entity
 
 import board.AdOuterClass
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import java.util.*
 
 @Entity
 @Table(name = "category")
 class Category(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long,
-    val name: String,
-    val path: String,
+    @Id val id: UUID? = null,
+    val name: String = "",
+    val path: String = "",
 )
 
 fun Category.toCategoryGrpc(): AdOuterClass.Category {
     return AdOuterClass.Category.newBuilder()
-        .setId(this.id)
+        .setId(this.id.toString())
         .setName(this.name)
         .setPath(this.path)
         .build()
@@ -23,7 +24,6 @@ fun Category.toCategoryGrpc(): AdOuterClass.Category {
 
 fun AdOuterClass.Category.fromCategoryGrpc(): Category {
     return Category(
-        id = this.id,
         name = this.name,
         path = this.path
     )

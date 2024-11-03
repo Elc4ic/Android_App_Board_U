@@ -10,9 +10,7 @@ import 'package:board_client/pages/settings/settings_page.dart';
 import 'package:board_client/pages/settings/comments/user_comment_page.dart';
 import 'package:board_client/widgets/footers/navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fixnum/fixnum.dart';
 
 import '../pages/advertisement/edit_ad_page.dart';
 import '../pages/chats/message_page.dart';
@@ -31,14 +29,14 @@ GoRouter router = GoRouter(
       path: '/ad/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return AdPage(idAd: Int64(int.parse(id)));
+        return AdPage(idAd: id);
       },
     ),
     GoRoute(
       path: '/comments/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return CommentPage(userId: Int64(int.parse(id)));
+        return CommentPage(userId: id);
       },
     ),
     GoRoute(
@@ -51,7 +49,7 @@ GoRouter router = GoRouter(
           path: 'change/:id',
           builder: (context, state) {
             final id = state.pathParameters['id']!;
-            return EditAdPage(adId: Int64(int.parse(id)));
+            return EditAdPage(adId: id);
           },
         ),
       ],
@@ -60,14 +58,14 @@ GoRouter router = GoRouter(
       path: '/user/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return UserPage(id: Int64(int.parse(id)));
+        return UserPage(id: id);
       },
     ),
     GoRoute(
       path: '/chat/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return MessagePage(chatId: int.parse(id));
+        return MessagePage(chatId: id);
       },
     ),
     GoRoute(
@@ -80,7 +78,7 @@ GoRouter router = GoRouter(
       path: '/addcomment/:id',
       builder: (context, state) {
         final id = state.pathParameters['id']!;
-        return AddCommentPage(convictedId: Int64(int.parse(id)));
+        return AddCommentPage(convictedId: id);
       },
     ),
     GoRoute(
@@ -126,7 +124,7 @@ GoRouter router = GoRouter(
                   path: 'change/:id',
                   builder: (context, state) {
                     final id = state.pathParameters['id']!;
-                    return EditAdPage(adId: Int64(int.parse(id)));
+                    return EditAdPage(adId: id);
                   },
                 ),
               ],

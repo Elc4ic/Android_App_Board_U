@@ -45,7 +45,11 @@ ThemeData mainTheme(BuildContext context) {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: scheme.primary,
-          foregroundColor: scheme.onSurface,
+          foregroundColor: scheme.surface,
+          textStyle: GoogleFonts.jost(
+              color: scheme.surface,
+              fontWeight: FontWeight.w700,
+              fontSize: Markup.size_16),
         ),
       ),
       cardTheme: CardTheme(
@@ -54,7 +58,6 @@ ThemeData mainTheme(BuildContext context) {
             Radius.circular(12),
           ),
         ),
-        elevation: 0,
         margin: Markup.padding_h_8_v_4,
         color: scheme.secondary,
       ),
@@ -88,7 +91,6 @@ ThemeData mainTheme(BuildContext context) {
           borderRadius: BorderRadius.all(Radius.circular(8)),
         ),
       ),
-
       pageTransitionsTheme: PageTransitionsTheme(
         builders: {
           Theme.of(context).platform: NoAnimationPageTransitionsBuilder(),
@@ -112,6 +114,9 @@ ThemeData mainTheme(BuildContext context) {
         backgroundColor: scheme.surface,
         foregroundColor: scheme.onSurface,
       ),
+      dialogTheme: DialogTheme(
+        backgroundColor: scheme.surface,
+      ),
       searchBarTheme: SearchBarThemeData(
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -128,8 +133,12 @@ ThemeData mainTheme(BuildContext context) {
         elevation: WidgetStateProperty.all<double>(
           0,
         ),
+
       ),
-      snackBarTheme: SnackBarThemeData(backgroundColor: scheme.error));
+      snackBarTheme: SnackBarThemeData(backgroundColor: scheme.error),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        foregroundColor: scheme.surface,
+      ));
 }
 
 class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {

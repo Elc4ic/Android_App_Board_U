@@ -38,14 +38,14 @@ message FilterQuery {
 }
 
 message GetByIdRequest {
-    int64 id = 1;
+    string id = 1;
 }
 message ChangeAdRequest {
     Ad ad = 1;
     repeated ImageProto images = 2;
 }
 message GetByIdWithBoolRequest {
-    int64 id = 1;
+    string id = 1;
     bool value = 3;
 }
 
@@ -53,12 +53,12 @@ message PaginatedAd {
     repeated Ad data = 1;
     int64 count = 2 [jstype = JS_NUMBER];
     int64 total = 3 [jstype = JS_NUMBER];
-    int32 page = 4 ;
+    int32 page = 4;
     int64 page_count = 5 [jstype = JS_NUMBER];
 }
 
 message Ad {
-    int64 id = 1;
+    string id = 1;
     string title = 2;
     int64 price = 3;
     string description = 4;
@@ -68,7 +68,7 @@ message Ad {
     string created = 10;
     User user = 11;
     Category category = 12;
-    repeated int64 images = 13;
+    repeated string images = 13;
 }
 message RepeatedAdResponse {
     repeated Ad data = 1;
@@ -83,7 +83,7 @@ message GetAllCategoriesResponse {
 }
 
 message Category {
-    uint64 id = 1;
+    string id = 1;
     string name = 2;
     string path = 3;
 }

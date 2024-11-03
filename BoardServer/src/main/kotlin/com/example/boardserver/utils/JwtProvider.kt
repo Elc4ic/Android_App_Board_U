@@ -25,7 +25,7 @@ class JwtProvider(
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret))
     }
 
-    fun createJwt(userId: Long): String {
+    fun createJwt(userId: UUID): String {
         return Jwts.builder()
             .header().add("typ", "JWT")
             .and()

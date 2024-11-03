@@ -12,7 +12,7 @@ class ImageLoaded extends ImageState {
     required this.images,
   });
 
-  final Map<Int64,List<List<int>>> images;
+  final Map<String,List<List<int>>> images;
 }
 
 class ImageLoadingFailure extends ImageState {

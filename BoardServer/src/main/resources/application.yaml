@@ -6,9 +6,9 @@ spring:
     username: ${SPRING_DATASOURCE_USER}
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -17,30 +17,19 @@ spring:
   grpc:
     reflection-service-enabled: true
     server:
-      port: 9090
+      port: 9000
   flyway:
-    enabled: true
+    enabled: false
     baselineOnMigrate: true
 
 management:
   tracing:
-    enabled: true
-    tags:
-      service.name: boardserver
+    sampling:
+      probability: 1.0
   endpoints:
     web:
       exposure:
-        include: tracing
-
-otel:
-  traces:
-    exporter:
-      otlp:
-        endpoint: "http://localhost:4317"
-    zipkin:
-      service.name: boardserver
-      enabled: true
-      endpoint: http://localhost:9411/api/v2/spans
+        include: prometheus
 
 jwt:
   secret:

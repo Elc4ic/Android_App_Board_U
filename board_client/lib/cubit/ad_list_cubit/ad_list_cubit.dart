@@ -76,7 +76,7 @@ class AdListCubit extends Cubit<AdListState> {
     }
   }
 
-  Future<void> getUserList(Int64 id) async {
+  Future<void> getUserList(String id) async {
     try {
       if (state is! AdListLoaded) {
         emit(AdListLoading());

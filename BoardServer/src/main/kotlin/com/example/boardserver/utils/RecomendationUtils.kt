@@ -50,8 +50,8 @@ object RecommendationUtils {
 
     private fun calculatePriceSimilarity(cb: CriteriaBuilder, root: Root<Ad?>, price2: Long): Double {
         var count = 0.0
-        if (cb.greaterThanOrEqualTo(root.get("price"), price2 * 1.3).isNegated) count += 0.5
-        if (cb.lessThanOrEqualTo(root.get("price"), price2 * 0.70).isNegated) count += 0.5
+        if (cb.greaterThanOrEqualTo(root.get("price"), (price2 * 1.3).toInt()).isNegated) count += 0.5
+        if (cb.lessThanOrEqualTo(root.get("price"), (price2 * 0.7).toInt()).isNegated) count += 0.5
         return count
     }
 

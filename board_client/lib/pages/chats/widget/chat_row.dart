@@ -83,7 +83,7 @@ class _ChatRowState extends State<ChatRow> {
                           ),
                         ),
                         Markup.dividerW5,
-                        Text(widget.chat.target.username,
+                        Text(widget.chat.target.name,
                             style: Theme.of(context).textTheme.bodySmall),
                       ],
                     ),

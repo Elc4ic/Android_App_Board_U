@@ -1,3 +1,4 @@
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -13,6 +14,7 @@ class AppScaffold extends StatefulWidget {
 
 class _AppScaffoldState extends State<AppScaffold> {
   int prev_index = 0;
+  late UserCubit user = UserCubit.get(context);
 
   @override
   Widget build(BuildContext context) {
@@ -25,15 +27,18 @@ class _AppScaffoldState extends State<AppScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _calculateSelectedIndex(context),
         onTap: onTap,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: SC.MAIN_LABEL),
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: SC.MAIN_LABEL),
+          const BottomNavigationBarItem(
               icon: Icon(Icons.favorite), label: SC.FAVORITE_LABEL),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
               icon: Icon(Icons.view_kanban), label: SC.AD_LABEL),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_box), label: SC.CHATS_LABEL),
-          BottomNavigationBarItem(
+              icon: Badge(
+                  label: user.newChat == 0 ? null : Text("${user.newChat}"),
+                  child: const Icon(Icons.account_box)),
+              label: SC.CHATS_LABEL),
+          const BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: SC.SETTINGS_LABEL),
         ],
       ),

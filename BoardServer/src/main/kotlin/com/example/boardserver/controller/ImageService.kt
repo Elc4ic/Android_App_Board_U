@@ -1,5 +1,6 @@
 package com.example.boardserver.controller
 
+import com.example.boardserver.entity.uuid
 import com.example.boardserver.repository.ImageRepository
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -19,7 +20,7 @@ class ImageController(
     fun getAdImage(@PathVariable("id") id: String): ResponseEntity<ByteArray?>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository.findFirstByAdId(id.toLong()).get().imageBytes
+            image = imageRepository.findFirstByAdId(id.uuid()).get().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -30,7 +31,7 @@ class ImageController(
     fun getImage(@PathVariable("id") id: String): ResponseEntity<ByteArray>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository.findById(id.toLong()).get().imageBytes
+            image = imageRepository.findById(id.uuid()).get().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -41,7 +42,7 @@ class ImageController(
     fun getAvatar(@PathVariable("userId") userId: String): ResponseEntity<ByteArray>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository.findById(userId.toLong()).get().imageBytes
+            image = imageRepository.findById(userId.uuid()).get().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }

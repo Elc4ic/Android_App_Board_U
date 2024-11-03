@@ -103,16 +103,14 @@ class _EditCommentFormState extends State<EditCommentForm> {
                       widget.commentBloc.loadUserComments();
                       context.pop();
                     },
-                    child: Text(SC.DELETE,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text(SC.DELETE),
                   ),
                 ),
                 Markup.dividerW10,
                 Expanded(
                   child: ElevatedButton(
                     onPressed: _submitForm,
-                    child: Text(SC.EDIT,
-                        style: Theme.of(context).textTheme.bodyMedium),
+                    child: Text(SC.EDIT,),
                   ),
                 ),
               ],

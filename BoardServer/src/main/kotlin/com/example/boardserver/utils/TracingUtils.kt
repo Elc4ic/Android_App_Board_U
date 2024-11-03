@@ -1,31 +1,28 @@
 package com.example.boardserver.utils
 
+import brave.ScopedSpan
+import brave.Tracer
 
-import io.opentelemetry.api.trace.Span
-import io.opentelemetry.api.trace.Tracer
 
-
-inline fun <T, R> T.runWithTracing(span: Span, block: T.() -> R): R {
+inline fun <T, R> T.runWithTracing(span: ScopedSpan, block: T.() -> R): R {
     return try {
         block()
     } catch (ex: Exception) {
-        span.setStatus(io.opentelemetry.api.trace.StatusCode.ERROR, ex.message ?: "Unknown error")
-        span.end()
+        span.error(ex)
         throw ex
     } finally {
-        span.end()
+        span.finish()
     }
 }
 
 inline fun <T, R> T.runWithTracing(tracer: Tracer, name: String, block: T.() -> R): R {
-    val span = tracer.spanBuilder(name).startSpan()
+    val span = tracer.startScopedSpan(name)
     return try {
         block()
     } catch (ex: Exception) {
-        span.setStatus(io.opentelemetry.api.trace.StatusCode.ERROR, ex.message ?: "Unknown error")
-        span.end()
+        span.error(ex)
         throw ex
     } finally {
-        span.end()
+        span.finish()
     }
 }

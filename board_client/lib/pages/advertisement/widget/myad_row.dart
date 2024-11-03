@@ -29,7 +29,7 @@ class _AdRowState extends State<AdRow> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.ad.isActive ? null : Colors.black12,
+      color: widget.ad.isActive ? null : Theme.of(context).colorScheme.primary.withAlpha(16),
       child: InkWell(
         onTap: () {
           context.push("/ad/${widget.ad.id}");
@@ -86,7 +86,7 @@ class _AdRowState extends State<AdRow> {
                             icon: const Icon(
                                 Icons.closed_caption_disabled_outlined),
                             onPressed: () => myDialog(context, () async {
-                              _adBloc.muteAd(widget.ad.id);
+                              await _adBloc.muteAd(widget.ad.id);
                               widget.adListBloc.getMyList();
                               context.pop();
                             }, "Вы уверенны, что хотите ${widget.ad.isActive ? "скрыть" : "показать"} объявление?"),
@@ -95,7 +95,7 @@ class _AdRowState extends State<AdRow> {
                             tooltip: SC.CLOSE,
                             icon: const Icon(Icons.close),
                             onPressed: () => myDialog(context, () async {
-                              _adBloc.deleteAd(widget.ad.id);
+                              await _adBloc.deleteAd(widget.ad.id);
                               widget.adListBloc.getMyList();
                               context.pop();
                             }, SC.DELETE_AD),

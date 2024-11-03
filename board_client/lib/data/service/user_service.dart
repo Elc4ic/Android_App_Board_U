@@ -10,9 +10,9 @@ class UserService {
   static String? _authToken;
   static String? _fmcToken;
   late UserAPIClient _client;
-  static User? _appUser;
+  static User _appUser = User.getDefault();
 
-  User? getUser() => _appUser;
+  User getUser() => _appUser;
 
   String? getToken() => _authToken;
 
@@ -39,10 +39,11 @@ class UserService {
   Future<String?> loadUserAndCheckRefresh() async {
     final sharedPreferences = await getSharedPreferences();
     _authToken = sharedPreferences.getString('token');
+    print(_authToken);
     initClient();
     try {
-      final response =
-          await _client.getUserAndRefresh(Empty());
+      final response = await _client.getUserAndRefresh(Empty());
+      initClient();
       _authToken = response.token;
       sharedPreferences.setString('token', response.token);
       _appUser = response.user;
@@ -59,11 +60,11 @@ class UserService {
     return sharedPreferences.setString('token', token);
   }
 
-  Future<bool> logout(Int64 id) async {
+  Future<bool> logout(String id) async {
     await _client.logOut(UserId(id: id));
     final sharedPreferences = await getSharedPreferences();
     _authToken = null;
-    _appUser = null;
+    _appUser = User.getDefault();
     return sharedPreferences.remove('token');
   }
 
@@ -97,30 +98,28 @@ class UserService {
     return response.login;
   }
 
-  Future<User> getUserById(Int64 id) async {
+  Future<User> getUserById(String id) async {
     final user = await _client.getUserById(UserId(id: id));
     return user.user;
   }
 
   Future<bool> addComment(Comment comment) async {
-    final response = await _client
-        .addComment(CommentProto(comment: comment));
+    final response = await _client.addComment(CommentProto(comment: comment));
     return response.login;
   }
 
   Future<bool> editComment(Comment comment, int rating_prev) async {
-    final response = await _client.editComment(EditCommentRequest(
-        comment: comment, ratingPrev: rating_prev));
+    final response = await _client.editComment(
+        EditCommentRequest(comment: comment, ratingPrev: rating_prev));
     return response.login;
   }
 
-  Future<bool> deleteComment(Int64 id) async {
-    final response =
-        await _client.deleteComment(Id(id: id));
+  Future<bool> deleteComment(String id) async {
+    final response = await _client.deleteComment(Id(id: id));
     return response.login;
   }
 
-  Future<List<Comment>> getComments(Int64 id) async {
+  Future<List<Comment>> getComments(String id) async {
     final comments = await _client.getComments(UserId(id: id));
     return comments.comments;
   }

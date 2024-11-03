@@ -23,14 +23,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   late final _userBloc = UserCubit.get(context);
-  late User user;
-
-  @override
-  void initState() {
-    _userBloc.initId();
-    _userBloc.loadUser();
-    super.initState();
-  }
+  late User user = _userBloc.getUser();
 
   @override
   Widget build(BuildContext context) {
@@ -41,81 +34,59 @@ class _SettingsPageState extends State<SettingsPage> {
         },
         child: CustomScrollView(
           slivers: [
-            BlocBuilder<UserCubit, UserState>(
-              bloc: _userBloc,
-              builder: (context, state) {
-                if (state is UserLoaded) {
-                  user = state.user;
-                  return SliverToBoxAdapter(
-                    child: Stack(
+            SliverToBoxAdapter(
+              child: Stack(
+                children: [
+                  Profile(
+                    own: true,
+                    user: user,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Profile(
-                          own: true,
-                          user: state.user,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              ServicePanel(
-                                  onTap: () => changeDialog(context, _userBloc),
-                                  title: "Изменить имя",
-                                  icon: Icons.accessibility_new),
-                              ServicePanel(
-                                  onTap: () => avatarDialog(context, _userBloc),
-                                  title: "Изменить аватар",
-                                  icon: Icons.account_box),
-                              ServicePanel(
-                                  onTap: () => context.push("/setaddress"),
-                                  title: "Настроить адресс",
-                                  icon: Icons.home),
-                              Text("  Комментарии",
-                                  style:
-                                      Theme.of(context).textTheme.titleSmall),
-                              ServicePanel(
-                                  onTap: () => context.push("/usercomments"),
-                                  title: "Полученные",
-                                  icon: Icons.comment),
-                              ServicePanel(
-                                  onTap: () => context
-                                      .push("${SC.COMMENT_PAGE}/${user.id}"),
-                                  title: "Отправленные",
-                                  icon: Icons.connect_without_contact),
-                              Text("  Настройки",
-                                  style:
-                                      Theme.of(context).textTheme.titleSmall),
-                              ServicePanel(
-                                  onTap: () => myDialog(context, () async {
-                                        await _userBloc.logOut();
-                                        exit(0);
-                                      }, "Выход из аккаунта закроет приложение!"),
-                                  title: "Выйти из аккаунта",
-                                  icon: Icons.exit_to_app),
-                              ServicePanel(
-                                  onTap: () => myDialog(context, () async {
-                                        _userBloc.deleteUser();
-                                        exit(0);
-                                      }, "Удаление аккаунта закроет приложение!"),
-                                  title: "Удалить аккаунт",
-                                  icon: Icons.delete),
-                            ],
-                          ),
-                        ),
+                        ServicePanel(
+                            onTap: () => changeDialog(context, _userBloc),
+                            title: "Изменить имя",
+                            icon: Icons.accessibility_new),
+                        ServicePanel(
+                            onTap: () => avatarDialog(context, _userBloc),
+                            title: "Изменить аватар",
+                            icon: Icons.account_box),
+                        ServicePanel(
+                            onTap: () => context.push("/setaddress"),
+                            title: "Настроить адресс",
+                            icon: Icons.home),
+                        Text("  Комментарии",
+                            style: Theme.of(context).textTheme.titleSmall),
+                        ServicePanel(
+                            onTap: () => context.push("/usercomments"),
+                            title: "Полученные",
+                            icon: Icons.comment),
+                        ServicePanel(
+                            onTap: () =>
+                                context.push("${SC.COMMENT_PAGE}/${user.id}"),
+                            title: "Отправленные",
+                            icon: Icons.connect_without_contact),
+                        Text("  Настройки",
+                            style: Theme.of(context).textTheme.titleSmall),
+                        ServicePanel(
+                            onTap: () => myDialog(context, () async {
+                                  await _userBloc.logOut();
+                                  exit(0);
+                                }, "Выход из аккаунта закроет приложение!"),
+                            title: "Выйти из аккаунта",
+                            icon: Icons.exit_to_app),
+                        ServicePanel(
+                            onTap: () => myDialog(context, () async {
+                                  _userBloc.deleteUser();
+                                  exit(0);
+                                }, "Удаление аккаунта закроет приложение!"),
+                            title: "Удалить аккаунт",
+                            icon: Icons.delete),
                       ],
                     ),
-                  );
-                }
-                if (state is UserLoadingFailure) {
-                  return SliverFillRemaining(
-                    child: TryAgainWidget(
-                      exception: state.exception,
-                      onPressed: () {
-                        _userBloc.loadUser();
-                      },
-                    ),
-                  );
-                }
-                return const SliverFillRemaining(
-                    child: Center(child: CircularProgressIndicator()));
-              },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -129,7 +100,6 @@ Future<void> changeDialog(BuildContext context, UserCubit userBloc) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
-      backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 300,
@@ -162,8 +132,7 @@ Future<void> changeDialog(BuildContext context, UserCubit userBloc) async {
                     await userBloc.changeUser(user);
                     context.pop();
                   },
-                  child:
-                      Text("Ок", style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text("Ок"),
                 ),
               ],
             ),
@@ -178,7 +147,6 @@ Future<void> avatarDialog(BuildContext context, UserCubit userBloc) async {
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
-      backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 300,
@@ -193,8 +161,10 @@ Future<void> avatarDialog(BuildContext context, UserCubit userBloc) async {
               child: Container(
                 height: 100,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(width: 2)),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                      width: 2, color: Theme.of(context).colorScheme.onSurface),
+                ),
                 child: InkWell(
                   onTap: () async {
                     final picked = await ImagePicker()

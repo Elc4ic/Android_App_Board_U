@@ -13,14 +13,13 @@ class NotificationService {
       GetIt.I<UserService>().initFMC(token);
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      context.push("/chat/${message.data["id"]}");
-    });
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
+        print(message.notification!.body);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
+            duration: const Duration(seconds: 2),
+            backgroundColor: Theme.of(context).colorScheme.surface,
             behavior: SnackBarBehavior.floating,
             content: Column(
               children: [
@@ -39,6 +38,8 @@ class NotificationService {
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {});
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      context.go("/chats");
+    });
   }
 }

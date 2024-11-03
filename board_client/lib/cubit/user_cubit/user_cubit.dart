@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:fixnum/fixnum.dart';
 
 import '../../data/service/user_service.dart';
 import '../../generated/user.pb.dart';
@@ -9,16 +8,29 @@ import '../../generated/user.pb.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit(this.userService) : super(UserInitial());
+  UserCubit(this.userService) : super(UserInitial()) {
+    userId = userService.getUser().id;
+  }
 
   final UserService userService;
+  late String userId;
+  int newChat = 0;
+  bool auth = false;
 
   static UserCubit get(context) => BlocProvider.of<UserCubit>(context);
 
-  Int64? userId;
+  int getChat(context) => newChat;
 
-  void initId([Int64? id]) {
-    userId = (id != null) ? id : userService.getUser()!.id;
+  void initId([String? id]) {
+    userId = (id != null) ? id : userService.getUser().id;
+  }
+
+  void newMessage() {
+    newChat += 1;
+  }
+
+  void resetNewMessage() {
+    newChat = 0;
   }
 
   Future<void> loadUser() async {
@@ -33,19 +45,29 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  Future<void> logOut() async {
-    await userService.logout(userId!);
-  }
+  User getUser() => UserService().getUser();
+
+  String? getToken() => UserService().getToken();
 
   Future<void> changeUser(User? user) async {
     await userService.changeUser(user);
   }
 
-  User? getUser() => UserService().getUser();
-
-  String? getToken() => UserService().getToken();
+  Future<void> logOut() async {
+    if (state is! UserInitial) {
+      emit(UserLoading());
+    }
+    await userService.logout(userId);
+    auth = false;
+    emit(UserInitial());
+  }
 
   Future<void> deleteUser() async {
+    if (state is! UserInitial) {
+      emit(UserLoading());
+    }
     await userService.deleteUser();
+    auth = false;
+    emit(UserInitial());
   }
 }

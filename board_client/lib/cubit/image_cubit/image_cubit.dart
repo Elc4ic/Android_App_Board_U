@@ -7,7 +7,7 @@ import 'package:fixnum/fixnum.dart';
 part 'image_state.dart';
 
 class ImageCubit extends Cubit<ImageState> {
-  Map<Int64, List<List<int>>> images = {};
+  Map<String, List<List<int>>> images = {};
 
   ImageCubit(this.adService) : super(ImageInitial());
 
@@ -15,7 +15,7 @@ class ImageCubit extends Cubit<ImageState> {
 
   final AdService adService;
 
-  Future<void> loadImages(Int64 adId, bool preview) async {
+  Future<void> loadImages(String adId, bool preview) async {
     emit(ImageLoading());
     if (images[adId] == null) {
       var img = await adService.loadImages(adId, preview);

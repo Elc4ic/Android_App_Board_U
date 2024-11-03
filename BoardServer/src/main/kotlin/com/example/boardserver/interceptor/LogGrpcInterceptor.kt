@@ -15,19 +15,19 @@ class LogGrpcInterceptor(
     ): ServerCall.Listener<ReqT> {
 
         val methodName = call.methodDescriptor.fullMethodName
-        val token = headers.get(METADATA_TOKEN)
+        val token: String? = headers.get(METADATA_TOKEN)
         val userId = jwtProvider.validateJwt(token!!)
+        val authorize: Boolean = userId != null
 
-        headers.put(USER_ID, userId.toString())
-        log.info("Service: ${methodName}, userId: $userId, token: $token")
-        if (userId == null && methodName !in excludedMethods) {
+        log.info("method: $methodName, authorize: $authorize, userId: $userId, token: $token")
+        if (!authorize && methodName !in excludedMethods) {
             call.close(Status.UNAUTHENTICATED.withDescription("Invalid or missing token"), headers)
             return object : ServerCall.Listener<ReqT>() {}
         }
         val context = Context.current()
-            .withValue(ContextKeys.USER_ID_KEY, userId.toString())
             .withValue(ContextKeys.TOKEN_KEY, token)
-
+            .withValue(ContextKeys.AUTH_KEY, authorize.toString())
+            .withValue(ContextKeys.USER_ID_KEY, userId.toString())
         return Contexts.interceptCall(context, call, headers, next)
     }
 
@@ -36,8 +36,6 @@ class LogGrpcInterceptor(
 
         val METADATA_TOKEN: Metadata.Key<String> =
             Metadata.Key.of("token", Metadata.ASCII_STRING_MARSHALLER)
-        val USER_ID: Metadata.Key<String> =
-            Metadata.Key.of("userId", Metadata.ASCII_STRING_MARSHALLER)
         private val excludedMethods = listOf(
             "board.AdAPI/GetManyAd",
             "board.AdAPI/GetOneAd",
@@ -56,5 +54,6 @@ class LogGrpcInterceptor(
 object ContextKeys {
     val USER_ID_KEY: Context.Key<String> = Context.key("userId")
     val TOKEN_KEY: Context.Key<String> = Context.key("token")
+    val AUTH_KEY: Context.Key<String> = Context.key("authorize")
 }
 

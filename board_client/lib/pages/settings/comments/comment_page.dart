@@ -1,5 +1,4 @@
 import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/pages/settings/comments/comment_row.dart';
 import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import '../../../widgets/try_again.dart';
 class CommentPage extends StatefulWidget {
   const CommentPage({super.key, required this.userId});
 
-  final Int64 userId;
+  final String userId;
 
   @override
   State<CommentPage> createState() => _CommentPageState();

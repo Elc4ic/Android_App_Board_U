@@ -1,16 +1,18 @@
 package com.example.boardserver.entity
+
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 @Table(name = "tokens")
-class DeviceToken (
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = 0,
+class DeviceToken(
+    @Id val id: UUID? = null,
 
     @OneToOne
     @JoinColumn(name = "user_id")
     val user: User,
 
-    val deviceToken: String,
+    val deviceToken: String = "",
 )
+
+fun String.uuid(): UUID = UUID.fromString(this)

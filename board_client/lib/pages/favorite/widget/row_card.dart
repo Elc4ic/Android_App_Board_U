@@ -1,11 +1,6 @@
-import 'dart:typed_data';
-
-import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
-import 'package:board_client/widgets/shimerring_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,7 +19,6 @@ class RowCard extends StatefulWidget {
 
 class _RowCardState extends State<RowCard> {
   final adService = GetIt.I<AdService>();
-  late bool isFav = widget.ad.isFav;
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +62,11 @@ class _RowCardState extends State<RowCard> {
               ),
             ),
             FavButton(
-              isFav: isFav,
+              isFav: widget.ad.isFav,
               onPressed: () async {
                 await adService.setFavoriteAd(widget.ad.id);
                 setState(() {
-                  isFav = !isFav;
+                  widget.ad.isFav = !widget.ad.isFav;
                 });
               },
             )

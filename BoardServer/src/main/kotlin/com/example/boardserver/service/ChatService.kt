@@ -4,6 +4,7 @@ import board.Chat
 import board.Chat.RepeatedChatPreview
 import board.Chat.SendMessageRequest
 import board.UserOuterClass
+import brave.Tracer
 import com.example.boardserver.entity.*
 import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.interceptor.LogGrpcInterceptor
@@ -18,16 +19,13 @@ import com.google.firebase.messaging.FirebaseMessagingException
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import io.grpc.Context
-import io.opentelemetry.api.trace.Tracer
-import io.opentelemetry.extension.kotlin.asContextElement
-import jakarta.transaction.Transactional
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
+import org.springframework.transaction.annotation.Transactional
 import com.example.boardserver.entity.Chat as EntityChat
 
 
@@ -44,28 +42,21 @@ class ChatService(
 
     override suspend fun startChat(request: Chat.StartRequest): Chat.StartResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(StartChat).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    val userId = ContextKeys.USER_ID_KEY.get(Context.current()).toLong()
-                    val user = userRepository.findById(userId).get()
-                    val chat: EntityChat
-                    if (chatRepository.countByOwnerIdAndReceiverIdAndAdId(
-                            request.ad.user.id,
-                            user.id,
-                            request.ad.id
-                        ) == 0L
-                    ) {
-                        chat = request.ad.createChatGrpc(request.ad.user, user)
-                        chatRepository.save(chat)
-                    } else {
-                        chat = chatRepository.findByOwnerIdAndReceiverIdAndAdId(request.ad.user.id, user.id, request.ad.id)
-                            .get()
-                    }
-                    val response = Chat.StartResponse.newBuilder().setChatId(chat.id).build()
-                    response.also { it ->
-                        log.info("start chat: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(StartChat)
+            runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val ownerId = request.ad.user.id.uuid()
+                val adId = request.ad.id.uuid()
+                val user = userRepository.findById(userId).get()
+                val chat: EntityChat
+                if (chatRepository.existsByOwnerIdAndReceiverIdAndAdId(ownerId, userId, adId)) {
+                    chat = request.ad.createChat(request.ad.user, user)
+                    chatRepository.save(chat)
+                } else {
+                    chat = chatRepository.findByOwnerIdAndReceiverIdAndAdId(ownerId, userId, adId).get()
+                }
+                chat.toStartResponse().also { it ->
+                    log.info("start chat: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }
@@ -73,14 +64,11 @@ class ChatService(
     @Transactional
     override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.Empty =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(DeleteChat).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    messageRepository.deleteAllByChatId(request.chatId)
-                    chatRepository.deleteById(request.chatId)
-                    UserOuterClass.Empty.getDefaultInstance().also { it ->
-                        log.info("delete chat: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(DeleteChat)
+            runWithTracing(span) {
+                chatRepository.deleteById(request.chatId.uuid())
+                UserOuterClass.Empty.getDefaultInstance().also { it ->
+                    log.info("delete chat: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }
@@ -88,17 +76,15 @@ class ChatService(
 
     override suspend fun getChatsPreview(request: UserOuterClass.Empty): RepeatedChatPreview =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(GetChatPreview).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    val userId = ContextKeys.USER_ID_KEY.get(Context.current()).toLong()
-                    val chats = chatRepository.findByOwnerId(userId, Sort.by(Sort.Direction.DESC, "lastMessage.data"))
-                    val response = RepeatedChatPreview.newBuilder()
-                        .addAllChats(chats.toRepeatedChat())
-                        .build()
-                    response.also { it ->
-                        log.info("get chats: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(GetChatPreview)
+            runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val chats = chatRepository.findByOwnerId(userId, Sort.by(Sort.Direction.DESC, "lastMessage.data"))
+                val response = RepeatedChatPreview.newBuilder()
+                    .addAllChats(chats.toRepeatedChat(userId))
+                    .build()
+                response.also { it ->
+                    log.info("get chats: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }
@@ -106,69 +92,68 @@ class ChatService(
 
     override suspend fun getAllMessage(request: Chat.GetAllMessagesRequest): Chat.GetAllMessagesResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(GetAllMessage).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    val chat = chatRepository.findById(request.chatId).get()
-                    val message = messageRepository.findByChatId(request.chatId)
-                    val response = Chat.GetAllMessagesResponse.newBuilder()
-                        .addAllMessages(message.toMessageList())
-                        .setChat(chat.toChatGrpc())
-                        .build()
-                    response.also { it ->
-                        log.info("get messages: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(GetAllMessage)
+            runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val chat = chatRepository.findById(request.chatId.uuid()).get()
+                val response = Chat.GetAllMessagesResponse.newBuilder()
+                    .addAllMessages(chat.messages.toMessageList())
+                    .setChat(chat.toChatGrpc(userId))
+                    .build()
+                response.also { it ->
+                    log.info("get messages: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }
 
 
+    @Transactional
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.Empty =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(DeleteMessage).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    messageRepository.deleteById(request.chatId)
-                    val response = UserOuterClass.Empty.getDefaultInstance()
-                    response.also { it ->
-                        log.info("deleted message: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(DeleteMessage)
+            runWithTracing(span) {
+                messageRepository.deleteById(request.chatId.uuid())
+                val response = UserOuterClass.Empty.getDefaultInstance()
+                response.also { it ->
+                    log.info("deleted message: $it").also { span.tag("response", it.toString()) }
                 }
             }
-
         }
 
 
     override fun sendMessage(requests: Flow<SendMessageRequest>): Flow<Chat.Message> = flow {
         runWithTracing(tracer, SendMessage) {
             requests.collect { request ->
-                val user = userRepository.findById(request.receiver).get()
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val user = userRepository.findById(request.receiver.uuid()).get()
                 val message = createMessageGrpc(request.message, user, request.data)
-                val chat = chatRepository.findById(request.chatId).get()
+                val chat = chatRepository.findById(request.chatId.uuid()).get()
                 val messageEntity = message.fromMessageGrpc(chat)
-                chat.lastMessage = messageEntity
                 messageRepository.save(messageEntity)
                 chatRepository.save(chat)
                 try {
-                    val to = if (chat.owner.id == request.receiver) chat.receiver.id else chat.owner.id
-                    val token = tokenRepository.findByUserId(to)
+                    val to = chat.members.first { userId != request.receiver.uuid() }
+                    if (to.notify) {
+                        val token = tokenRepository.findByUserId(to.id).get()
 
-                    val fireMessage: Message = Message.builder()
-                        .setToken(fmcProvider.decrypt(token.deviceToken))
-                        .putData("id", chat.id.toString())
-                        .setNotification(
-                            Notification.builder()
-                                .setTitle("Новое сообщение от ${user.name}")
-                                .setBody(request.message)
-                                .build()
-                        )
-                        .build()
-                    firebaseMessaging.send(fireMessage)
-                    log.info("send notification ${message.id}")
-                } catch (_: FirebaseMessagingException) {
+                        val fireMessage: Message = Message.builder()
+                            .setToken(fmcProvider.decrypt(token.deviceToken))
+                            .putData("id", chat.id.toString())
+                            .setNotification(
+                                Notification.builder()
+                                    .setTitle("Новое сообщение от ${user.name}")
+                                    .setBody(request.message)
+                                    .build()
+                            )
+                            .build()
+                        firebaseMessaging.send(fireMessage)
+                        log.info("send notification ${message.id}")
+                    }
+                } catch (ex: FirebaseMessagingException) {
                     log.error("error send notification ${message.id}")
+                } finally {
+                    emit(message)
                 }
-                emit(message)
             }
         }
     }

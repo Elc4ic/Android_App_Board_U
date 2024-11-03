@@ -1,4 +1,4 @@
- library values;
+library values;
 
 import 'dart:io';
 
@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-
 
 part 'colors.dart';
 
@@ -27,9 +26,9 @@ class Const {
 
   static const double cellWidth = 190;
   static const String HOST = "77.246.159.112";
+  static const int PORT = 9000;
   static const String image_api = "http://api.dvfuboard.ru:8080/images/";
   static const String image_ad_api = "http://api.dvfuboard.ru:8080/images/ad/";
-  static const int PORT = 9090;
 
   static const int cardImageWidth = 320;
   static const int cardImageHeight = 320;
@@ -41,7 +40,14 @@ class Const {
   static const double cardCacheExtent = 100;
   static const double cacheExtent = 20;
 
-  static const List<String> query = ["Старые","Новые","Дорогие","Дешевые","По умолчанию","Популярные"];
+  static const List<String> query = [
+    "Старые",
+    "Новые",
+    "Дорогие",
+    "Дешевые",
+    "По умолчанию",
+    "Популярные"
+  ];
 }
 
 class Address {

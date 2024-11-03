@@ -36,13 +36,42 @@ class _AdCardState extends State<AdCard> {
               flex: 5,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                    gaplessPlayback: true,
-                    width: Const.cellWidth,
-                    cacheWidth: Const.cardImageWidth,
-                    cacheHeight: Const.cardImageHeight,
-                    fit: BoxFit.fitWidth,
-                    "${Const.image_ad_api}${widget.ad.id}"),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Image.network(
+                          gaplessPlayback: true,
+                          width: Const.cellWidth,
+                          fit: BoxFit.fitWidth,
+                          "${Const.image_ad_api}${widget.ad.id}"),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            color: Theme.of(context).colorScheme.surface,
+                            child: Center(
+                              child: FavButton(
+                                onPressed: () async {
+                                  await adRepository.setFavoriteAd(widget.ad.id);
+                                  setState(() {
+                                    widget.ad.isFav = !widget.ad.isFav;
+                                  });
+                                },
+                                isFav: widget.ad.isFav,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             Flexible(
@@ -52,7 +81,6 @@ class _AdCardState extends State<AdCard> {
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 4,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -62,23 +90,6 @@ class _AdCardState extends State<AdCard> {
                               style: Theme.of(context).textTheme.bodyMedium),
                           Text(selectAddress(),
                               style: Theme.of(context).textTheme.bodySmall),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          FavButton(
-                            onPressed: () async {
-                              await adRepository.setFavoriteAd(widget.ad.id);
-                              setState(() {
-                                widget.ad.isFav = !widget.ad.isFav;
-                              });
-                            },
-                            isFav: widget.ad.isFav,
-                          )
                         ],
                       ),
                     ),

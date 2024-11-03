@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    NotificationService(context: context);
+
 
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message: ${message.messageId}');

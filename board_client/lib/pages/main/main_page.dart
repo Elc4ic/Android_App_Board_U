@@ -1,7 +1,7 @@
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/category_cubit/category_cubit.dart';
-import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/data/service/ad_service.dart';
+import 'package:board_client/data/service/notification_service.dart';
 import 'package:board_client/pages/main/widget/ad_card.dart';
 import 'package:board_client/widgets/custom_grid.dart';
 import 'package:board_client/values/values.dart';
@@ -32,6 +32,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
+    NotificationService(context: context);
     Future.delayed(const Duration(milliseconds: 500), () {
       _adListBloc.getAdList(true);
       _catListBloc.loadCategories();
@@ -231,7 +232,6 @@ Future<void> filterDialog(
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog.fullscreen(
-      backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 320,
@@ -325,8 +325,7 @@ Future<void> filterDialog(
                       cubit.getAdList(true);
                       Navigator.pop(context);
                     },
-                    child: Text("Сбросить",
-                        style: Theme.of(context).textTheme.titleMedium),
+                    child: Text("Сбросить"),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -344,8 +343,7 @@ Future<void> filterDialog(
                         Navigator.pop(context);
                       }
                     },
-                    child: Text("Ок",
-                        style: Theme.of(context).textTheme.titleMedium),
+                    child: Text("Ок",),
                   ),
                 ],
               ),

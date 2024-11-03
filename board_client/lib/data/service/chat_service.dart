@@ -28,9 +28,9 @@ class ChatService {
     return response.chats;
   }
 
-  Future<GetAllMessagesResponse> getMessages(int id) async {
+  Future<GetAllMessagesResponse> getMessages(String id) async {
     final response = await _client
-        .getAllMessage(GetAllMessagesRequest(chatId: Int64(id)));
+        .getAllMessage(GetAllMessagesRequest(chatId: id));
     return response;
   }
 
@@ -38,17 +38,17 @@ class ChatService {
     return _client.sendMessage(stream);
   }
 
-  Future<Int64> startChat(Ad ad) async {
+  Future<String> startChat(Ad ad) async {
     final response =
         await _client.startChat(StartRequest(ad: ad));
     return response.chatId;
   }
 
-  Future<void> deleteChat(Int64 chatId) async {
+  Future<void> deleteChat(String chatId) async {
     await _client.deleteChat(DeleteChatRequest(chatId: chatId));
   }
 
-  Future<void> deleteMessage(Int64 messageId) async {
+  Future<void> deleteMessage(String messageId) async {
     await _client
         .deleteMessage(DeleteChatRequest(chatId: messageId));
   }

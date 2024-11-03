@@ -12,21 +12,47 @@ services:
         PG_USER: ${PG_USER}
         PG_PASSWORD: ${PG_PASSWORD}
     ports:
-      - "9090:9090"
+      - "9000:9000"
       - "8080:8080"
     depends_on:
       - db
+      - prometheus
+      - grafana
       - zipkin
+      - node_exporter
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db/postgres
       - SPRING_DATASOURCE_USER=boarduser
       - SPRING_DATASOURCE_PASSWORD=boardpass
-      - SPRING_APPLICATION_NAME=microservice
+      - SPRING_APPLICATION_NAME=boardserver
       - SERVER_PORT=8080
       - SPRING_ZIPKIN_BASE_URL=http://host.docker.internal:9411
       - SPRING_REDIS_HOST=host.docker.internal
     volumes:
       - board-data:/var/lib/boardserver/data
+    networks: [ "microservices" ]
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks: [ "microservices" ]
+
+  node_exporter:
+    container_name: microservices_node_exporter
+    restart: always
+    image: prom/node-exporter
+    ports:
+      - '9101:9100'
+    networks: [ "microservices" ]
+
+  grafana:
+    container_name: microservices_grafana
+    restart: always
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
     networks: [ "microservices" ]
 
   zipkin:

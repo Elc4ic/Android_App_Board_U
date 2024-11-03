@@ -1,17 +1,14 @@
 package com.example.boardserver.entity
 
-import board.AdOuterClass
-import com.google.protobuf.kotlin.toByteString
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcType
 import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
+import java.util.*
 
 @Entity
 @Table(name = "images")
 class Image(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long = 0L,
+    @Id val id: UUID? = null,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
@@ -23,12 +20,6 @@ class Image(
     val ad: Ad
 )
 
-fun Image.toImageGrpc(): board.Image.ImageProto {
-    return board.Image.ImageProto.newBuilder()
-        .setChunk(this.imageBytes.toByteString())
-        .build()
-}
-
 fun board.Image.ImageProto.fromImageGrpc(ad: Ad): Image {
     return Image(
         ad = ad,
@@ -36,14 +27,8 @@ fun board.Image.ImageProto.fromImageGrpc(ad: Ad): Image {
     )
 }
 
-fun List<Image>.toImageGrpcList(): AdOuterClass.RepeatedImageResponse {
-    val imagesGrpc = mutableListOf<board.Image.ImageProto>()
-    this.forEach { imagesGrpc.add(it.toImageGrpc()) }
-    return AdOuterClass.RepeatedImageResponse.newBuilder().addAllData(imagesGrpc).build()
-}
-
-fun List<board.Image.ImageProto>.fromImageGrpcList(ad: Ad): List<Image> {
-    val images = mutableListOf<Image>()
+fun List<board.Image.ImageProto>.fromImageGrpcList(ad: Ad): Set<Image> {
+    val images = mutableSetOf<Image>()
     this.forEach { images.add(it.fromImageGrpc(ad)) }
     return images
 }

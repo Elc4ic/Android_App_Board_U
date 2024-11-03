@@ -2,13 +2,11 @@ package com.example.boardserver.service
 
 import board.AdOuterClass
 import board.UserOuterClass
+import brave.Tracer
 import com.example.boardserver.entity.toCategoriesResponse
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.repository.CategoryRepository
 import com.example.boardserver.utils.runWithTracing
-import io.opentelemetry.api.trace.Tracer
-import io.opentelemetry.extension.kotlin.asContextElement
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
@@ -21,13 +19,11 @@ class CategoryService(
 
     override suspend fun getAllCategories(request: UserOuterClass.Empty): AdOuterClass.GetAllCategoriesResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.spanBuilder(GetAllCategories).startSpan()
-            withContext(span.asContextElement()) {
-                runWithTracing(span) {
-                    val category = categoryRepository.findAll()
-                    category.toCategoriesResponse().also { it ->
-                        log.info("get all categories: $it").also { span.setAttribute("response", it.toString()) }
-                    }
+            val span = tracer.startScopedSpan(GetAllCategories)
+            runWithTracing(span) {
+                val category = categoryRepository.findAll()
+                category.toCategoriesResponse().also { it ->
+                    log.info("get all categories: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }

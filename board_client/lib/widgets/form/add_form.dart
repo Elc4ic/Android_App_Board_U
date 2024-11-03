@@ -142,8 +142,7 @@ class _AddAdFormState extends State<AddAdForm> {
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.PUBLISH_AD,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(SC.PUBLISH_AD),
             ),
           ],
         ),

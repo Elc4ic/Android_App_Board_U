@@ -14,7 +14,7 @@ import 'package:fixnum/fixnum.dart';
 class EditAdPage extends StatefulWidget {
   const EditAdPage({super.key, required this.adId});
 
-  final Int64 adId;
+  final String adId;
 
   @override
   State<EditAdPage> createState() => _EditAdPageState();

@@ -21,7 +21,7 @@ class FcmProvider(
         this.key = SecretKeySpec(decodedKey, 0, decodedKey.size, "AES")
     }
 
-    fun createTokenEntity(user: User, token: String): DeviceToken{
+    fun createTokenEntity(user: User, token: String): DeviceToken {
         return DeviceToken(
             id = user.id,
             user = user,

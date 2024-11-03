@@ -2,16 +2,16 @@ package com.example.boardserver.entity
 
 import board.UserOuterClass
 import jakarta.persistence.*
+import java.time.LocalDateTime
+import java.util.*
 
 @Entity
 @Table(name = "comments")
 class Comment(
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Long,
-    var rating: Int,
-    val text: String,
-    val created: String,
+    @Id val id: UUID? = null,
+    var rating: Int = 0,
+    val text: String = "",
+    val created: LocalDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "convicted_id")
@@ -24,26 +24,22 @@ class Comment(
 
 fun Comment.toCommentGrpc(): UserOuterClass.Comment {
     return UserOuterClass.Comment.newBuilder()
-        .setId(this.id)
+        .setId(this.id.toString())
         .setText(this.text)
         .setRating(this.rating)
-        .setCreated(this.created)
+        .setCreated(this.created.toString())
         .setConvicted(this.convicted.toUserMini())
         .setOwner(this.creator.toUserMini())
         .build()
 }
 
-fun UserOuterClass.Comment.fromCommentGrpc(
-    owner: User,
-    convicted: User,
-): Comment {
+fun UserOuterClass.Comment.fromCommentGrpc(): Comment {
     return Comment(
-        id = this.id,
         text = this.text,
         rating = this.rating,
-        created = this.created,
-        creator = owner,
-        convicted = convicted
+        created = LocalDateTime.now(),
+        creator = this.owner.fromUserGrpc(),
+        convicted = this.convicted.fromUserGrpc()
     )
 }
 

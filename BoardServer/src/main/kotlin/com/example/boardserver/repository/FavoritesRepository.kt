@@ -6,10 +6,10 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface FavoritesRepository : JpaRepository<Favorites, Long> {
-    fun deleteAllByAdId(id: Long)
-    fun deleteAllByUserId(id: Long)
-    fun findByUserId(id: Long): MutableList<Favorites>
-    fun findByAdIdAndUserId(adId: Long, userId: Long): Optional<Favorites>
-    fun countByUserIdAndAdId(userId: Long, adId: Long): Long
+interface FavoritesRepository : JpaRepository<Favorites, UUID> {
+    fun deleteAllByAdId(id: UUID)
+    fun deleteAllByUserId(id: UUID)
+    fun findByUserId(id: UUID): MutableList<Favorites>
+    fun findByAdIdAndUserId(adId: UUID, userId: UUID): Optional<Favorites>
+    fun existsByUserIdAndAdId(userId: UUID, adId: UUID): Boolean
 }

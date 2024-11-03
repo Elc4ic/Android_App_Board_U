@@ -5,8 +5,6 @@ import 'package:board_client/widgets/form/add_form.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
-
 class AddAdPage extends StatefulWidget {
   const AddAdPage({super.key});
 
@@ -61,7 +59,13 @@ class _AddAdPageState extends State<AddAdPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: SizedBox(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                        width: 2,
+                        color: Theme.of(context).colorScheme.onSurface),
+                  ),
                   height: 150,
                   child: InkWell(
                     onTap: _imagePick,

@@ -32,7 +32,7 @@ class SentMessageScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppCubit.get(context).scheme.secondary,
+          color: AppCubit.get(context).scheme.primary.withAlpha(100),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(10),
             topRight: Radius.circular(10),

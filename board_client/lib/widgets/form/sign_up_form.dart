@@ -32,9 +32,10 @@ class _AddAdFormState extends State<SignUpForm> {
         context.go(SC.LOGIN_PAGE);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(e.toString()),
-            ),);
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
       }
     }
   }
@@ -114,8 +115,7 @@ class _AddAdFormState extends State<SignUpForm> {
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.SIGNING_UP,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(SC.SIGNING_UP),
             ),
           ],
         ),

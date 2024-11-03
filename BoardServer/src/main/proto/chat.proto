@@ -16,11 +16,11 @@ service ChatAPI {
 
 
 message GetAllMessagesRequest {
-    int64 chat_id = 2;
+    string chat_id = 2;
 }
 
 message DeleteChatRequest {
-    int64 chat_id = 2;
+    string chat_id = 2;
 }
 
 message GetAllMessagesResponse {
@@ -37,26 +37,26 @@ message StartRequest {
 }
 
 message StartResponse {
-    int64 chat_id = 1;
+    string chat_id = 1;
 }
 
 message Message {
-    int64 id = 1;
+    string id = 1;
     User sender = 2;
     string message = 4;
     string created_at = 5;
 }
 
 message ChatPreview {
-    int64 id = 1;
+    string id = 1;
     User target = 2;
     Ad ad = 3;
     Message last_message = 4;
 }
 
 message SendMessageRequest {
-    int64 receiver = 1;
-    int64 chat_id = 2;
+    string receiver = 1;
+    string chat_id = 2;
     string message = 3;
     string data = 4;
 }

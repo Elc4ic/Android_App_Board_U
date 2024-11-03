@@ -19,7 +19,7 @@ import '../main/widget/ad_card.dart';
 class UserPage extends StatefulWidget {
   const UserPage({super.key, required this.id});
 
-  final Int64 id;
+  final String id;
 
   @override
   State<UserPage> createState() => _UserPageState();

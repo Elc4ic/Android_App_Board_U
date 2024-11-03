@@ -5,7 +5,6 @@ Future<void> myDialog(
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog(
-      backgroundColor: Colors.white,
       child: Container(
         padding: const EdgeInsets.all(20),
         width: 240,
@@ -20,7 +19,7 @@ Future<void> myDialog(
                 ElevatedButton(
                   onPressed: function,
                   child:
-                      Text("Ок", style: Theme.of(context).textTheme.bodySmall),
+                      const Text("Ок"),
                 ),
               ],
             ),

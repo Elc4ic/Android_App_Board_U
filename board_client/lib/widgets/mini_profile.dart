@@ -38,12 +38,18 @@ class MiniProfile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(user.name, style: Theme.of(context).textTheme.labelMedium),
+                Text(user.name, style: Theme
+                    .of(context)
+                    .textTheme
+                    .labelMedium),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(Markup.countRating(user.ratingAll, user.ratingNum),
-                        style: Theme.of(context).textTheme.bodyMedium),
+                        style: Theme
+                            .of(context)
+                            .textTheme
+                            .bodyMedium),
                     const Icon(
                       size: 20,
                       Icons.star,
@@ -91,7 +97,10 @@ class MiniProfileButton extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(user.name, style: Theme.of(context).textTheme.labelMedium),
+              Text(user.name, style: Theme
+                  .of(context)
+                  .textTheme
+                  .labelMedium),
             ],
           ),
         ],
@@ -101,8 +110,12 @@ class MiniProfileButton extends StatelessWidget {
 }
 
 class Profile extends StatelessWidget {
-  const Profile(
-      {super.key, required this.user, required this.child,required this.own, });
+  const Profile({
+    super.key,
+    required this.user,
+    required this.child,
+    required this.own,
+  });
 
   final bool own;
   final Widget? child;
@@ -110,13 +123,19 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
+    var height = MediaQuery
+        .of(context)
+        .size
+        .height;
     var off = 6;
     return Stack(
       children: [
         Container(
           height: height / 2,
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme
+              .of(context)
+              .colorScheme
+              .primary,
         ),
         Container(
           margin: EdgeInsets.only(top: height / off),
@@ -124,10 +143,16 @@ class Profile extends StatelessWidget {
             borderRadius: Markup.clip_t_20,
             child: Container(
               padding: EdgeInsets.only(top: 80),
-              color: Theme.of(context).colorScheme.surface,
+              color: Theme
+                  .of(context)
+                  .colorScheme
+                  .surface,
               child: Column(
                 children: [
-                  Text(user.name, style: Theme.of(context).textTheme.bodyLarge),
+                  Text(user.name, style: Theme
+                      .of(context)
+                      .textTheme
+                      .bodyLarge),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -137,54 +162,39 @@ class Profile extends StatelessWidget {
                         color: Colors.amber,
                       ),
                       Text(Markup.countRating(user.ratingAll, user.ratingNum),
-                          style: Theme.of(context).textTheme.bodyMedium),
+                          style: Theme
+                              .of(context)
+                              .textTheme
+                              .bodyMedium),
                     ],
                   ),
                   Card(
-                    child: Padding(
+                    child: Container(
+                      width: double.infinity,
                       padding: Markup.padding_all_16,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Общая информация",
-                              style: Theme.of(context).textTheme.titleSmall),
-                          Row(
-                            children: [
-                              Container(
-                                padding: Markup.padding_all_8,
-                                child: Text("Адрес",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: Markup.padding_all_8,
-                                  child: Text(user.address ?? "-",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium),
-                                ),
-                              )
-                            ],
+                              style: Theme
+                                  .of(context)
+                                  .textTheme
+                                  .titleSmall),
+                          Container(
+                            padding: Markup.padding_all_8,
+                            child: Text("Адрес: ${user.address}",
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyMedium),
                           ),
-                          Row(
-                            children: [
-                              Container(
-                                padding: Markup.padding_all_8,
-                                child: Text("Телефон",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium),
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: Markup.padding_all_8,
-                                  child: Text(user.phone ?? "-",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium),
-                                ),
-                              )
-                            ],
+                          Container(
+                            padding: Markup.padding_all_8,
+                            child: Text("Телефон: ${user.phone}",
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .bodyMedium),
                           )
                         ],
                       ),
@@ -193,50 +203,34 @@ class Profile extends StatelessWidget {
                   Visibility(
                     visible: own,
                     child: Card(
-                      child: Padding(
+                      child: Container(
+                        width: double.infinity,
                         padding: Markup.padding_all_16,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Приватная информация",
-                                style: Theme.of(context).textTheme.titleSmall),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: Markup.padding_all_8,
-                                  child: Text("Логин",
-                                      style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: Markup.padding_all_8,
-                                    child: Text(user.username ?? "-",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium),
-                                  ),
-                                )
-                              ],
+                                style: Theme
+                                    .of(context)
+                                    .textTheme
+                                    .titleSmall),
+                            Container(
+                              padding: Markup.padding_all_8,
+                              child: Text("Логин: ${user.username}",
+                                  style:
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyMedium),
                             ),
-                            Row(
-                              children: [
-                                Container(
-                                  padding: Markup.padding_all_8,
-                                  child: Text("Почта",
-                                      style:
-                                      Theme.of(context).textTheme.bodyMedium),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: Markup.padding_all_8,
-                                    child: Text(user.email ?? "-",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium),
-                                  ),
-                                )
-                              ],
+                            Container(
+                              padding: Markup.padding_all_8,
+                              child: Text("Почта: ${user.email}",
+                                  style:
+                                  Theme
+                                      .of(context)
+                                      .textTheme
+                                      .bodyMedium),
                             )
                           ],
                         ),
@@ -244,6 +238,7 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                   child ?? const SizedBox(height: 0),
+                  Markup.dividerH10,
                 ],
               ),
             ),

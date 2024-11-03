@@ -9,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
-import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:go_router/go_router.dart';
 
 import '../../data/service/chat_service.dart';
@@ -17,7 +16,7 @@ import '../../data/service/chat_service.dart';
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key, required this.chatId});
 
-  final int chatId;
+  final String chatId;
 
   @override
   State<MessagePage> createState() => _MessagePageState();
@@ -67,7 +66,7 @@ class _MessagePageState extends State<MessagePage> {
         message: message,
         receiver: user?.id,
         data: Markup.dateNow(),
-        chatId: fnum.Int64(widget.chatId));
+        chatId: widget.chatId);
     streamController.sink.add(req);
   }
 
@@ -88,8 +87,7 @@ class _MessagePageState extends State<MessagePage> {
       setState(() {
         isLoading = true;
       });
-      final res =
-          await chatService.getMessages(widget.chatId);
+      final res = await chatService.getMessages(widget.chatId);
       chat = res.chat;
       messages.addAll(res.messages);
     } catch (e) {
@@ -126,67 +124,43 @@ class _MessagePageState extends State<MessagePage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: Text("${chat?.target.username}"),
+        title: Text("${chat?.target.name}"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Card(
-            child: InkWell(
-              onTap: () {
-                context.push("/ad/${chat?.ad.id}");
-              },
-              child: SizedBox(
-                height: 50,
-                width: 50,
-                child: Padding(
-                  padding: Markup.padding_all_8,
-                  child: Row(
-                    children: [
-                      Image.network(
-                          gaplessPlayback: true,
-                          width: Const.cellWidth,
-                          cacheWidth: Const.cardImageWidth,
-                          cacheHeight: Const.cardImageHeight,
-                          fit: BoxFit.cover,
-                          "${Const.image_ad_api}${chat?.ad.id}"),
-                      Markup.dividerW10,
-                      Text(
-                          (chat!.ad.title.length > 30)
-                              ? "${chat?.ad.title.substring(0, 29)}..."
-                              : chat!.ad.title,
-                          style: Theme.of(context).textTheme.bodyMedium)
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
           isLoading
               ? loadingWidget()
               : error != null
                   ? errorWidget()
                   : messages.isNotEmpty
                       ? Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            reverse: true,
-                            controller: scrollController,
-                            itemCount: messages.length,
-                            itemBuilder: ((context, index) {
-                              Message message =
-                                  messages[messages.length - index - 1];
-                              final user = _userBloc.getUser();
-                              return (message.sender.username.toLowerCase() ==
-                                      user?.username.toLowerCase())
-                                  ? SentMessageScreen(
-                                      message: message,
-                                      chatService: chatService,
-                                      token: _userBloc.getToken(),
-                                      messages: messages,
-                                    )
-                                  : ReceivedMessageScreen(message: message);
-                            }),
+                          child: Column(
+                            children: [
+                              cardWidget(),
+                              Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  reverse: true,
+                                  controller: scrollController,
+                                  itemCount: messages.length,
+                                  itemBuilder: ((context, index) {
+                                    Message message =
+                                        messages[messages.length - index - 1];
+                                    final user = _userBloc.getUser();
+                                    return (message.sender.username.toLowerCase() ==
+                                            user?.username.toLowerCase())
+                                        ? SentMessageScreen(
+                                            message: message,
+                                            chatService: chatService,
+                                            token: _userBloc.getToken(),
+                                            messages: messages,
+                                          )
+                                        : ReceivedMessageScreen(message: message);
+                                  }),
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       : Center(
@@ -225,7 +199,42 @@ class _MessagePageState extends State<MessagePage> {
     );
   }
 
-  loadingWidget() => const Center(child: CircularProgressIndicator());
+  loadingWidget() => Expanded(child: Center(child: CircularProgressIndicator()));
+
+  cardWidget() => Card(
+    child: InkWell(
+      onTap: () {
+        context.push("/ad/${chat?.ad.id}");
+      },
+      child: Padding(
+        padding: Markup.padding_all_8,
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: SizedBox(
+                height: 60,
+                width: 60,
+                child: Image.network(
+                    gaplessPlayback: true,
+                    width: Const.cellWidth,
+                    cacheWidth: Const.cardImageWidth,
+                    cacheHeight: Const.cardImageHeight,
+                    fit: BoxFit.cover,
+                    "${Const.image_ad_api}${chat?.ad.id}"),
+              ),
+            ),
+            Markup.dividerW10,
+            Text(
+                (chat!.ad.title.length > 30)
+                    ? "${chat?.ad.title.substring(0, 29)}..."
+                    : chat!.ad.title,
+                style: Theme.of(context).textTheme.bodyMedium)
+          ],
+        ),
+      ),
+    ),
+  );
 
   errorWidget() => Center(
       child: Text(error ?? "Something went wrong",

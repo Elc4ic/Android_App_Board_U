@@ -48,12 +48,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("io.netty:netty-all:4.1.82.Final")
 
-    //tracing
-    implementation("io.micrometer:micrometer-tracing-bridge-otel")
-
-    // OpenTelemetry and Zipkin
-    implementation("io.opentelemetry:opentelemetry-exporter-zipkin")
-    implementation("io.opentelemetry:opentelemetry-extension-kotlin")
+    //tracing/logging
+    implementation("io.micrometer:micrometer-tracing-bridge-brave")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+//    implementation("com.github.loki4j:loki-logback-appender")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")

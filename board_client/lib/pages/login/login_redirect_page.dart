@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:board_client/data/service/user_service.dart';
+import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../values/values.dart';
@@ -17,16 +16,15 @@ class LoginChecker extends StatefulWidget {
 }
 
 class _LoginCheckerState extends State<LoginChecker> {
-  final userService = GetIt.I<UserService>();
-  bool update = true;
+  late final userBloc = UserCubit.get(context);
 
   @override
   Widget build(BuildContext context) {
-    if (userService.getToken() == null && update) {
+    if (userBloc.getToken() == null && !userBloc.auth) {
       Timer.periodic(const Duration(seconds: 1), (timer) {
         setState(() {
-          if (userService.getToken() != null) {
-            update = false;
+          if (userBloc.getToken() != null) {
+            userBloc.auth = true;
             timer.cancel();
           }
         });
@@ -36,7 +34,7 @@ class _LoginCheckerState extends State<LoginChecker> {
           onPressed: () {
             context.push(SC.LOGIN_PAGE);
           },
-          child: Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
+          child: Text(SC.LOGIN),
         ),
       );
     }

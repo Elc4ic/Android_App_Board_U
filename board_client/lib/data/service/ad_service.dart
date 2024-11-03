@@ -53,17 +53,17 @@ class AdService {
     return response;
   }
 
-  Future<Ad> getOneAd(fnum.Int64 id) async {
+  Future<Ad> getOneAd(String id) async {
     final ad = await _client.getOneAd(GetByIdRequest(id: id));
     return ad;
   }
 
-  Future<bool> setFavoriteAd(fnum.Int64 id) async {
+  Future<bool> setFavoriteAd(String id) async {
     var response = await _client.setFavoriteAd(GetByIdRequest(id: id));
     return response.login;
   }
 
-  Future<IsSuccess> deleteAd(fnum.Int64 id) async {
+  Future<IsSuccess> deleteAd(String id) async {
     return await _client.deleteAd(GetByIdRequest(id: id));
   }
 
@@ -75,15 +75,15 @@ class AdService {
     return await _client.getMyAds(Empty());
   }
 
-  Future<RepeatedAdResponse> getByUserId(fnum.Int64 id) {
+  Future<RepeatedAdResponse> getByUserId(String id) {
     return _client.getByUserId(GetByIdRequest(id: id));
   }
 
-  Future<IsSuccess> muteAd(fnum.Int64 id) async {
+  Future<IsSuccess> muteAd(String id) async {
     return await _client.muteAd(GetByIdRequest(id: id));
   }
 
-  Future<List<List<int>>> loadImages(fnum.Int64 id, bool preview) async {
+  Future<List<List<int>>> loadImages(String id, bool preview) async {
     final res =
         await _client.loadImage(GetByIdWithBoolRequest(id: id, value: preview));
     final resList = <List<int>>[];

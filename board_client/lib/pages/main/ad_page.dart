@@ -14,7 +14,7 @@ import '../../widgets/try_again.dart';
 class AdPage extends StatefulWidget {
   const AdPage({super.key, required this.idAd});
 
-  final Int64 idAd;
+  final String idAd;
 
   @override
   State<AdPage> createState() => _AdPageState();
@@ -111,12 +111,7 @@ class _AdPageState extends State<AdPage> {
                                       await chatService.startChat(state.ad);
                                   context.push("/chat/$chatId");
                                 },
-                                child: Expanded(
-                                  child: Text("Написать",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge),
-                                ),
+                                child: const Text("Написать"),
                               ),
                             ],
                           ),

@@ -12,6 +12,7 @@ class SC {
 
   static const String SEARCH_NOTHING = "Ничего не найдено";
 
+
   //login
   static const String LOGIN = "Войти";
   static const String USERNAME = "Логин";

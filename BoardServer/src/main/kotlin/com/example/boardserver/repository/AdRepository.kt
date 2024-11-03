@@ -7,8 +7,8 @@ import org.springframework.stereotype.Repository
 import java.util.*
 
 @Repository
-interface AdRepository : JpaSpecificationExecutor<Ad>,JpaRepository<Ad, Long> {
-    override fun findById(id: Long): Optional<Ad>
-    fun findByUserId(id: Long): MutableList<Ad>
-    fun findByUserIdOrderByViewsDesc(id: Long): MutableList<Ad>
+interface AdRepository : JpaSpecificationExecutor<Ad>,JpaRepository<Ad, UUID> {
+    override fun findById(id: UUID): Optional<Ad>
+    fun findByUserId(id: UUID): MutableList<Ad>
+    fun findByUserIdOrderByViewsDesc(id: UUID): MutableList<Ad>
 }

@@ -46,6 +46,10 @@ class Markup {
   static const BorderRadius clip_t_20 = BorderRadius.only(
       topLeft: Radius.circular(20), topRight: Radius.circular(20));
 
+  static BoxDecoration clip_container_10 = BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+  );
+
   //dividers
   static const Widget dividerH5 = SizedBox(height: 5);
   static const Widget dividerH10 = SizedBox(height: 10);

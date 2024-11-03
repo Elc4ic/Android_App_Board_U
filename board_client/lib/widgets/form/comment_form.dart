@@ -84,8 +84,7 @@ class _CommentFormState extends State<CommentForm> {
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.ADD_COMMENT,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(SC.ADD_COMMENT),
             ),
           ],
         ),

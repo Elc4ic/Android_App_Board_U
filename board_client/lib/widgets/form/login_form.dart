@@ -29,7 +29,7 @@ class _AddAdFormState extends State<LoginForm> {
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text((e as GrpcError).message!),
+            content: Text(e.toString()),
           ),
         );
       }
@@ -86,7 +86,7 @@ class _AddAdFormState extends State<LoginForm> {
             ElevatedButton(
               onPressed: _submitForm,
               child:
-                  Text(SC.LOGIN, style: Theme.of(context).textTheme.bodyMedium),
+                  Text(SC.LOGIN),
             ),
           ],
         ),

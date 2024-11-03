@@ -10,7 +10,7 @@ import '../../../widgets/try_again.dart';
 class AddCommentPage extends StatefulWidget {
   const AddCommentPage({super.key, required this.convictedId});
 
-  final Int64 convictedId;
+  final String convictedId;
 
   @override
   State<AddCommentPage> createState() => _AddCommentPageState();

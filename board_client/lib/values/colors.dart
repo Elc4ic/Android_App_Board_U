@@ -3,8 +3,8 @@ part of 'values.dart';
 class themeColors {
   Brightness brightness = Brightness.light;
   Color main = const Color(0xfff2f2f2);
-  Color card = const Color(0xffd7dce3);
-  Color primary = const Color(0xff0d456b);
+  Color card = const Color(0xffd3d9e1);
+  Color primary = const Color(0xff0d4b75);
   Color text = const Color(0xff211f20);
   Color error = const Color(0xfff31d59);
 }
@@ -17,7 +17,7 @@ class darkColors implements themeColors {
   @override
   Color card = const Color(0xff424040);
   @override
-  Color primary = const Color(0xff1874B7);
+  Color primary = const Color(0xffD5FF5F);
   @override
   Color text = const Color(0xffF5E9DD);
   @override

@@ -27,7 +27,7 @@ class CommentCubit extends Cubit<CommentState> {
     }
   }
 
-  Future<void> loadComments(Int64 userId) async {
+  Future<void> loadComments(String userId) async {
     try {
       if (state is! CommentsLoaded) {
         emit(CommentLoading());
