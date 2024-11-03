@@ -2,20 +2,19 @@ syntax = "proto3";
 
 package board;
 
-import "image.proto";
 import "user.proto";
 
 service AdAPI {
     rpc GetManyAd (GetManyAdRequest) returns (PaginatedAd);
     rpc GetOneAd (GetByIdRequest) returns (Ad);
     rpc SetFavoriteAd (GetByIdRequest) returns (IsSuccess);
+    rpc GetFavoriteAds (Empty) returns (RepeatedAdResponse);
     rpc AddAd (ChangeAdRequest) returns (IsSuccess);
+    rpc EditAd (ChangeAdRequest) returns (IsSuccess);
     rpc DeleteAd (GetByIdRequest) returns (IsSuccess);
     rpc MuteAd (GetByIdRequest) returns (IsSuccess);
-    rpc GetFavoriteAds (Empty) returns (RepeatedAdResponse);
     rpc GetMyAds (Empty) returns (RepeatedAdResponse);
     rpc GetByUserId (GetByIdRequest) returns (RepeatedAdResponse);
-    rpc LoadImage (GetByIdWithBoolRequest) returns (RepeatedImageResponse);
 }
 
 service CategoryAPI {
@@ -51,10 +50,6 @@ message GetByIdWithBoolRequest {
 
 message PaginatedAd {
     repeated Ad data = 1;
-    int64 count = 2 [jstype = JS_NUMBER];
-    int64 total = 3 [jstype = JS_NUMBER];
-    int32 page = 4;
-    int64 page_count = 5 [jstype = JS_NUMBER];
 }
 
 message Ad {
@@ -72,10 +67,6 @@ message Ad {
 }
 message RepeatedAdResponse {
     repeated Ad data = 1;
-}
-
-message RepeatedImageResponse {
-    repeated ImageProto data = 1;
 }
 
 message GetAllCategoriesResponse {

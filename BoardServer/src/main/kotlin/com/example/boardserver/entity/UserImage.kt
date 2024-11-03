@@ -1,5 +1,6 @@
 package com.example.boardserver.entity
 
+import board.UserOuterClass
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcType
 import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
@@ -19,3 +20,10 @@ class UserImage(
     @Column(columnDefinition = "bytea")
     val imageBytes: ByteArray
 )
+
+fun UserOuterClass.ImageProto.toUserAvatar(user: User): UserImage {
+    return UserImage(
+        user = user,
+        imageBytes = this.chunk.toByteArray(),
+    )
+}

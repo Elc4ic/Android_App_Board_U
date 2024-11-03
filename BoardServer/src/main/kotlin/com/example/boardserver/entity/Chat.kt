@@ -1,8 +1,10 @@
 package com.example.boardserver.entity
 
 import board.AdOuterClass
+import board.Chat.GetAllMessagesResponse
 import board.UserOuterClass
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -30,17 +32,35 @@ data class Chat(
     val lastMessage: Message? = null,
 
     @OneToMany(mappedBy = "chat", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    val messages: List<Message> = emptyList(),
+    var messages: List<Message> = emptyList(),
 
     @OneToMany(mappedBy = "chat", orphanRemoval = true, cascade = [CascadeType.REMOVE])
-    val memberUnreadCounters: Set<UnreadCounter> = setOf()
-)
+    var memberUnreadCounters: Set<UnreadCounter> = setOf()
+) {
+    fun addUnreadCounter(child: UnreadCounter) {
+        memberUnreadCounters = memberUnreadCounters.plus(child)
+        child.chat = this
+    }
+
+    fun addMessage(content: String, creator: User): Message {
+        val message = Message(
+            content = content,
+            data = LocalDateTime.now(),
+            chat = this,
+            user = creator,
+        )
+        messages = messages.plus(message)
+        message.chat = this
+        return message
+    }
+}
 
 fun Chat.toChatGrpc(userId: UUID): board.Chat.ChatPreview {
     return board.Chat.ChatPreview.newBuilder()
         .setId(this.id.toString())
         .setAd(this.ad.toAdPreview())
         .setTarget(this.members.first { it.id != userId }.toUserChatPreview())
+        .setLastMessage(this.lastMessage?.toMessageGrpc() ?: board.Chat.Message.getDefaultInstance())
         .build()
 }
 
@@ -55,6 +75,13 @@ fun List<Chat>.toRepeatedChat(userId: UUID): List<board.Chat.ChatPreview> {
     val chatsGrpc = mutableListOf<board.Chat.ChatPreview>()
     this.forEach { c -> chatsGrpc.add(c.toChatGrpc(userId)) }
     return chatsGrpc
+}
+
+fun Chat.toAllMessages(userId: UUID): GetAllMessagesResponse {
+    return GetAllMessagesResponse.newBuilder()
+        .addAllMessages(this.messages.toMessageList())
+        .setChat(this.toChatGrpc(userId))
+        .build()
 }
 
 fun Chat.toStartResponse(): board.Chat.StartResponse =

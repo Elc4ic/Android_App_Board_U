@@ -62,12 +62,12 @@ class ChatService(
         }
 
     @Transactional
-    override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.Empty =
+    override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(DeleteChat)
             runWithTracing(span) {
                 chatRepository.deleteById(request.chatId.uuid())
-                UserOuterClass.Empty.getDefaultInstance().also { it ->
+                successGrpc().also { it ->
                     log.info("delete chat: $it").also { span.tag("response", it.toString()) }
                 }
             }
@@ -95,12 +95,8 @@ class ChatService(
             val span = tracer.startScopedSpan(GetAllMessage)
             runWithTracing(span) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val chat = chatRepository.findById(request.chatId.uuid()).get()
-                val response = Chat.GetAllMessagesResponse.newBuilder()
-                    .addAllMessages(chat.messages.toMessageList())
-                    .setChat(chat.toChatGrpc(userId))
-                    .build()
-                response.also { it ->
+                val chat = chatRepository.findById(request.chatId.uuid()).orElseThrow()
+                chat.toAllMessages(userId).also { it ->
                     log.info("get messages: $it").also { span.tag("response", it.toString()) }
                 }
             }
@@ -108,13 +104,12 @@ class ChatService(
 
 
     @Transactional
-    override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.Empty =
+    override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(DeleteMessage)
             runWithTracing(span) {
                 messageRepository.deleteById(request.chatId.uuid())
-                val response = UserOuterClass.Empty.getDefaultInstance()
-                response.also { it ->
+                successGrpc().also { it ->
                     log.info("deleted message: $it").also { span.tag("response", it.toString()) }
                 }
             }
@@ -125,11 +120,9 @@ class ChatService(
         runWithTracing(tracer, SendMessage) {
             requests.collect { request ->
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val user = userRepository.findById(request.receiver.uuid()).get()
-                val message = createMessageGrpc(request.message, user, request.data)
-                val chat = chatRepository.findById(request.chatId.uuid()).get()
-                val messageEntity = message.fromMessageGrpc(chat)
-                messageRepository.save(messageEntity)
+                val user = userRepository.findById(request.receiver.uuid()).orElseThrow()
+                val chat = chatRepository.findById(request.chatId.uuid()).orElseThrow()
+                val message = chat.addMessage(request.message, user)
                 chatRepository.save(chat)
                 try {
                     val to = chat.members.first { userId != request.receiver.uuid() }
@@ -152,7 +145,7 @@ class ChatService(
                 } catch (ex: FirebaseMessagingException) {
                     log.error("error send notification ${message.id}")
                 } finally {
-                    emit(message)
+                    emit(message.toMessageGrpc())
                 }
             }
         }

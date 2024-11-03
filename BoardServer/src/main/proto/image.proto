@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package board;
-
-message ImageProto {
-    bytes chunk = 2;
-}

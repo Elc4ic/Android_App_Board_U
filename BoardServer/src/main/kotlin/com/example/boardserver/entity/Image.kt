@@ -1,5 +1,6 @@
 package com.example.boardserver.entity
 
+import board.UserOuterClass.ImageProto
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcType
 import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
@@ -20,14 +21,14 @@ class Image(
     val ad: Ad
 )
 
-fun board.Image.ImageProto.fromImageGrpc(ad: Ad): Image {
+fun ImageProto.fromImageGrpc(ad: Ad): Image {
     return Image(
         ad = ad,
         imageBytes = this.chunk.toByteArray(),
     )
 }
 
-fun List<board.Image.ImageProto>.fromImageGrpcList(ad: Ad): Set<Image> {
+fun List<ImageProto>.fromImageGrpcList(ad: Ad): Set<Image> {
     val images = mutableSetOf<Image>()
     this.forEach { images.add(it.fromImageGrpc(ad)) }
     return images

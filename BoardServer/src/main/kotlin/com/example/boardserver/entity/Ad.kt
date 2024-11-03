@@ -8,7 +8,7 @@ import java.util.*
 
 @Entity
 @Table(name = "ads")
-class Ad(
+data class Ad(
     @Id val id: UUID? = null,
     var title: String = "",
     var price: Long = 0,
@@ -107,10 +107,7 @@ fun List<Favorites>.toFavRepeatedAdPreviews(): AdOuterClass.RepeatedAdResponse {
 }
 
 fun Page<Ad>.toPagedAdPreview(
-    request: AdOuterClass.GetManyAdRequest,
     favs: List<Favorites>,
-    total: Long,
-    pageCount: Long
 ): AdOuterClass.PaginatedAd {
     val ads = mutableListOf<AdOuterClass.Ad>()
 
@@ -121,7 +118,6 @@ fun Page<Ad>.toPagedAdPreview(
             )
         )
     }
-    return AdOuterClass.PaginatedAd.newBuilder().addAllData(ads).setCount(ads.size.toLong())
-        .setTotal(total)
-        .setPage(request.page).setPageCount(pageCount).build()
+    return AdOuterClass.PaginatedAd.newBuilder()
+        .addAllData(ads).build()
 }

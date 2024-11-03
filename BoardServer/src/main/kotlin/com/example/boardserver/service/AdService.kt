@@ -43,15 +43,11 @@ class AdService(
                 val adPage = adRepository.findAll(
                     Specification.where(FilterUtils.adSpecification(request, favs)), pagingSort
                 )
-                val total = adRepository.count()
-                val pageCount = total / request.limit + 1
-
-                adPage.toPagedAdPreview(request, favs, total, pageCount).also { it ->
+                adPage.toPagedAdPreview(favs).also { it ->
                     log.info("got page of ads: $it").also { span.tag("response", it.toString()) }
                 }
             }
         }
-
 
     override suspend fun getOneAd(request: AdOuterClass.GetByIdRequest): AdOuterClass.Ad =
         withTimeout(timeOutMillis) {
@@ -59,7 +55,7 @@ class AdService(
             runWithTracing(span) {
                 var isFav = false
                 val isAuth = ContextKeys.AUTH_KEY.get(Context.current()).toBoolean()
-                val ad = adRepository.findById(request.id.uuid()).get()
+                val ad = adRepository.findById(request.id.uuid()).orElseThrow()
 
                 if (isAuth) {
                     val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
@@ -82,13 +78,13 @@ class AdService(
             runWithTracing(span) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 if (favRepository.existsByUserIdAndAdId(userId, request.id.uuid())) {
-                    val user = userRepository.findById(userId).get()
-                    val ad = adRepository.findById(request.id.uuid()).get()
+                    val user = userRepository.findById(userId).orElseThrow()
+                    val ad = adRepository.findById(request.id.uuid()).orElseThrow()
                     val fav = Favorites(user = user, ad = ad)
                     user.addFav(fav)
                     userRepository.save(user)
                 } else {
-                    val fav = favRepository.findByAdIdAndUserId(request.id.uuid(), userId).get()
+                    val fav = favRepository.findByAdIdAndUserId(request.id.uuid(), userId).orElseThrow()
                     favRepository.delete(fav)
                 }
                 successGrpc().also { it ->
@@ -103,9 +99,31 @@ class AdService(
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(AddAd)
             runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val user = userRepository.findById(userId).orElseThrow()
                 val ad = request.ad.fromAdGrpc()
                 ad.images = request.imagesList.fromImageGrpcList(ad)
-                adRepository.save(ad)
+                user.addAd(ad)
+                successGrpc().also { it ->
+                    log.info("created ad: $it").also { span.tag("response", it.toString()) }
+                }
+            }
+        }
+
+    @Transactional
+    override suspend fun editAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
+        withTimeout(timeOutMillis) {
+            val span = tracer.startScopedSpan(AddAd)
+            runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val ad = adRepository.findById(request.ad.id.uuid()).orElseThrow()
+                ad.copy(
+                    title = request.ad.title,
+                    description = request.ad.description,
+                    price = request.ad.price,
+                    category = request.ad.category.fromCategoryGrpc(),
+                    images = request.imagesList.fromImageGrpcList(ad)
+                ).also { adRepository.save(it) }
                 successGrpc().also { it ->
                     log.info("created ad: $it").also { span.tag("response", it.toString()) }
                 }
@@ -131,7 +149,7 @@ class AdService(
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(MuteAd)
             runWithTracing(span) {
-                val ad = adRepository.findById(request.id.uuid()).get()
+                val ad = adRepository.findById(request.id.uuid()).orElseThrow()
                 ad.isActive = !ad.isActive
                 adRepository.save(ad)
                 successGrpc().also { it ->

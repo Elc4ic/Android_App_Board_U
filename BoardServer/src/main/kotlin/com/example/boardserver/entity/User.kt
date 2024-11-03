@@ -23,7 +23,6 @@ data class User(
     var isOnline: Boolean = false,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role")
     val role: Role = Role.USER,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -58,6 +57,11 @@ data class User(
     fun addChat(child: Chat) {
         chats = chats.plus(child)
         child.members.plus(this)
+    }
+
+    fun addComment(child: Comment) {
+        comments = comments.plus(child)
+        child.convicted = this
     }
 
     fun addAd(child: Ad) {

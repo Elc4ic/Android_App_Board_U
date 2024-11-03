@@ -1,6 +1,7 @@
 package com.example.boardserver.entity
 
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.*
 
 @Entity
@@ -8,7 +9,7 @@ import java.util.*
 class Message(
     @Id val id: UUID? = null,
     var content: String,
-    val data: String,
+    val data: LocalDateTime? = null,
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -16,34 +17,16 @@ class Message(
 
     @ManyToOne
     @JoinColumn(name = "chat_id")
-    val chat: Chat
+    var chat: Chat
 )
 
 fun Message.toMessageGrpc(): board.Chat.Message {
     return board.Chat.Message.newBuilder()
         .setId(this.id.toString())
         .setMessage(this.content)
-        .setCreatedAt(this.data)
+        .setCreatedAt(this.data.toString())
         .setSender(this.user.toUserId())
         .build()
-}
-
-fun createMessageGrpc(context: String, receiver: User, data: String): board.Chat.Message {
-    return board.Chat.Message.newBuilder()
-        .setMessage(context)
-        .setCreatedAt(data)
-        .setSender(receiver.toUserId())
-        .build()
-}
-
-
-fun board.Chat.Message.fromMessageGrpc(chat: Chat): Message {
-    return Message(
-        content = this.message,
-        data = this.createdAt,
-        chat = chat,
-        user = this.sender.fromUserGrpc(),
-    )
 }
 
 fun List<Message>.toMessageList(): List<board.Chat.Message> {

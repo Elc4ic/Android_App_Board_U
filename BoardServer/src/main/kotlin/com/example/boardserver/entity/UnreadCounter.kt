@@ -1,24 +1,33 @@
 package com.example.boardserver.entity
 
+import com.example.boardserver.repository.UnreadCounterRepository
 import jakarta.persistence.*
 
 
 @Entity
 @Table(name = "unread_counter")
-class UnreadCounter {
+class UnreadCounter(
     @EmbeddedId
-    private val id: ChatUserKey = ChatUserKey()
+    val id: ChatUserKey = ChatUserKey(),
 
     @ManyToOne
     @MapsId("chatId")
     @JoinColumn(name = "chat_id")
-    private val chat: Chat? = null
+    var chat: Chat? = null,
 
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
-    private val user: User? = null
+    var user: User? = null,
 
-    @Column(name = "count")
-    private val count = 0
+    val count: Int = 0
+)
+
+fun UnreadCounterRepository.addUnreadCounter(chat: Chat, member: User?) {
+    val counter = UnreadCounter(
+        chat = chat,
+        user = member
+    )
+    val saved = this.save(counter)
+    chat.memberUnreadCounters.plus(saved)
 }

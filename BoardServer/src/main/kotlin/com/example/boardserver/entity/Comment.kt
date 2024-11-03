@@ -7,7 +7,7 @@ import java.util.*
 
 @Entity
 @Table(name = "comments")
-class Comment(
+data class Comment(
     @Id val id: UUID? = null,
     var rating: Int = 0,
     val text: String = "",
@@ -15,7 +15,7 @@ class Comment(
 
     @ManyToOne
     @JoinColumn(name = "convicted_id")
-    val convicted: User,
+    var convicted: User,
 
     @ManyToOne
     @JoinColumn(name = "creator_id")
@@ -33,13 +33,13 @@ fun Comment.toCommentGrpc(): UserOuterClass.Comment {
         .build()
 }
 
-fun UserOuterClass.Comment.fromCommentGrpc(): Comment {
+fun UserOuterClass.Comment.fromCommentGrpc(convicted: User, creator: User): Comment {
     return Comment(
         text = this.text,
         rating = this.rating,
         created = LocalDateTime.now(),
-        creator = this.owner.fromUserGrpc(),
-        convicted = this.convicted.fromUserGrpc()
+        creator = creator,
+        convicted = convicted
     )
 }
 

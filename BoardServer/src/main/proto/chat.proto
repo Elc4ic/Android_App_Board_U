@@ -7,13 +7,12 @@ import "user.proto";
 
 service ChatAPI {
     rpc StartChat (StartRequest) returns (StartResponse);
-    rpc DeleteChat (DeleteChatRequest) returns (Empty);
+    rpc DeleteChat (DeleteChatRequest) returns (IsSuccess);
     rpc GetChatsPreview (Empty) returns (RepeatedChatPreview);
     rpc SendMessage (stream SendMessageRequest) returns (stream Message) {};
     rpc GetAllMessage (GetAllMessagesRequest) returns (GetAllMessagesResponse) {};
-    rpc DeleteMessage (DeleteChatRequest) returns (Empty);
+    rpc DeleteMessage (DeleteChatRequest) returns (IsSuccess);
 }
-
 
 message GetAllMessagesRequest {
     string chat_id = 2;
