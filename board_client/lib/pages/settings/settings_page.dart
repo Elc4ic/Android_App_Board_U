@@ -2,16 +2,13 @@ import 'dart:io';
 
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/generated/user.pb.dart';
-import 'package:board_client/widgets/buttons/theme_button.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:board_client/widgets/service_panel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../values/values.dart';
-import '../../widgets/try_again.dart';
 import '../advertisement/widget/my_dialog.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -172,7 +169,7 @@ Future<void> avatarDialog(BuildContext context, UserCubit userBloc) async {
                     if (picked != null) {
                       var user = userBloc.getUser();
                       var image = await NavItems.imageFromFile(picked);
-                      user?.avatar = await NavItems.avatarToWebp(image);
+                      image = await NavItems.avatarToWebp(image);
                       await userBloc.changeUser(user);
                     }
                     context.pop();

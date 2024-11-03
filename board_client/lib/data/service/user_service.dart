@@ -1,4 +1,5 @@
 import 'package:fixnum/fixnum.dart';
+import 'package:flutter/services.dart';
 
 import 'package:grpc/grpc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,6 +54,11 @@ class UserService {
     }
   }
 
+  Future<bool> updateAvatar(Uint8List avatar) async {
+    final response = await _client.setAvatar(ImageProto(chunk: avatar));
+    return response.login;
+  }
+
   Future<bool> updateToken(String token) async {
     final sharedPreferences = await getSharedPreferences();
     _authToken = token;
@@ -93,24 +99,22 @@ class UserService {
   }
 
   Future<bool> changeUser(User? user) async {
-    final response =
-        await _client.changeUserData(UserToken(user: user, token: _authToken));
+    final response = await _client.changeUserData(user!);
     return response.login;
   }
 
   Future<User> getUserById(String id) async {
     final user = await _client.getUserById(UserId(id: id));
-    return user.user;
+    return user;
   }
 
   Future<bool> addComment(Comment comment) async {
-    final response = await _client.addComment(CommentProto(comment: comment));
+    final response = await _client.addComment(comment);
     return response.login;
   }
 
   Future<bool> editComment(Comment comment, int rating_prev) async {
-    final response = await _client.editComment(
-        EditCommentRequest(comment: comment, ratingPrev: rating_prev));
+    final response = await _client.editComment(comment);
     return response.login;
   }
 

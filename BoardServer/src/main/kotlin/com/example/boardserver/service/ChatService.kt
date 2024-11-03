@@ -8,10 +8,7 @@ import brave.Tracer
 import com.example.boardserver.entity.*
 import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.interceptor.LogGrpcInterceptor
-import com.example.boardserver.repository.ChatRepository
-import com.example.boardserver.repository.MessageRepository
-import com.example.boardserver.repository.TokenRepository
-import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.repository.*
 import com.example.boardserver.utils.FcmProvider
 import com.example.boardserver.utils.runWithTracing
 import com.google.firebase.messaging.FirebaseMessaging
@@ -26,7 +23,6 @@ import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
-import com.example.boardserver.entity.Chat as EntityChat
 
 
 @GrpcService(interceptors = [LogGrpcInterceptor::class])
@@ -48,13 +44,9 @@ class ChatService(
                 val ownerId = request.ad.user.id.uuid()
                 val adId = request.ad.id.uuid()
                 val user = userRepository.findById(userId).get()
-                val chat: EntityChat
-                if (chatRepository.existsByOwnerIdAndReceiverIdAndAdId(ownerId, userId, adId)) {
-                    chat = request.ad.createChat(request.ad.user, user)
-                    chatRepository.save(chat)
-                } else {
-                    chat = chatRepository.findByOwnerIdAndReceiverIdAndAdId(ownerId, userId, adId).get()
-                }
+                val chat = chatRepository.findChatBetweenUsersByIds(ownerId, userId, adId)
+                    .orElse(request.ad.createChat(request.ad.user, user))
+                    .also { chatRepository.save(it) }
                 chat.toStartResponse().also { it ->
                     log.info("start chat: $it").also { span.tag("response", it.toString()) }
                 }
@@ -89,7 +81,6 @@ class ChatService(
             }
         }
 
-
     override suspend fun getAllMessage(request: Chat.GetAllMessagesRequest): Chat.GetAllMessagesResponse =
         withTimeout(timeOutMillis) {
             val span = tracer.startScopedSpan(GetAllMessage)
@@ -101,7 +92,6 @@ class ChatService(
                 }
             }
         }
-
 
     @Transactional
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =

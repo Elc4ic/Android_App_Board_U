@@ -21,7 +21,6 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-
   late final _commentBloc = CommentCubit.get(context);
 
   @override
@@ -102,10 +101,10 @@ class _CommentPageState extends State<CommentPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(Markup.countRating(user.ratingAll, user.ratingNum),
+          Text(user.rating.toString(),
               style: Theme.of(context).textTheme.titleLarge),
           RatingBar.builder(
-            initialRating: user.ratingAll / user.ratingNum,
+            initialRating: user.rating,
             minRating: 1,
             direction: Axis.horizontal,
             allowHalfRating: true,

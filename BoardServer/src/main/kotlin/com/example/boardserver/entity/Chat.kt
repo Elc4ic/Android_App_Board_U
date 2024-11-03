@@ -71,7 +71,7 @@ fun AdOuterClass.Ad.createChat(target: UserOuterClass.User, user: User): Chat {
     )
 }
 
-fun List<Chat>.toRepeatedChat(userId: UUID): List<board.Chat.ChatPreview> {
+fun Set<Chat>.toRepeatedChat(userId: UUID): List<board.Chat.ChatPreview> {
     val chatsGrpc = mutableListOf<board.Chat.ChatPreview>()
     this.forEach { c -> chatsGrpc.add(c.toChatGrpc(userId)) }
     return chatsGrpc

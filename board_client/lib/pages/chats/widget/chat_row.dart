@@ -1,17 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:board_client/cubit/chat_bloc/chat_cubit.dart';
-import 'package:board_client/cubit/image_cubit/image_cubit.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../data/service/chat_service.dart';
 import '../../../values/values.dart';
-import '../../../widgets/shimerring_container.dart';
 import '../../advertisement/widget/my_dialog.dart';
 
 class ChatRow extends StatefulWidget {
@@ -75,10 +72,10 @@ class _ChatRowState extends State<ChatRow> {
                           child: SizedBox(
                             width: 30,
                             height: 30,
-                            child: Image.memory(
+                            child: Image.network(
                               gaplessPlayback: true,
                               fit: BoxFit.fitWidth,
-                              Uint8List.fromList(widget.chat.target.avatar),
+                              "${Const.image_avatar_api}${widget.chat.target.avatar}",
                             ),
                           ),
                         ),

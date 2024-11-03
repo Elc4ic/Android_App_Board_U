@@ -10,7 +10,7 @@ class DeviceToken(
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    val user: User,
+    var user: User,
 
     val deviceToken: String = "",
 )

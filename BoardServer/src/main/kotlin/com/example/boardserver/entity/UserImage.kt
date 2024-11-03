@@ -13,7 +13,7 @@ class UserImage(
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    val user: User,
+    var user: User,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)

@@ -3,7 +3,6 @@ import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:board_client/generated/ad.pbgrpc.dart';
 import 'package:grpc/grpc.dart';
 
-import '../../generated/image.pb.dart';
 import '../../values/values.dart';
 
 class AdService {
@@ -83,7 +82,7 @@ class AdService {
     return await _client.muteAd(GetByIdRequest(id: id));
   }
 
-  Future<List<List<int>>> loadImages(String id, bool preview) async {
+/*  Future<List<List<int>>> loadImages(String id, bool preview) async {
     final res =
         await _client.loadImage(GetByIdWithBoolRequest(id: id, value: preview));
     final resList = <List<int>>[];
@@ -92,5 +91,5 @@ class AdService {
       resList.add(image.chunk);
     }
     return resList;
-  }
+  }*/
 }

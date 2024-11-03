@@ -8,6 +8,7 @@ service UserAPI {
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
     rpc SetOffline (Empty) returns (IsSuccess);
+    rpc SetAvatar (ImageProto) returns (IsSuccess);
     rpc GetUserById (UserId) returns (User);
     rpc LogOut (UserId) returns (IsSuccess);
     rpc ChangeUserData (User) returns (IsSuccess);

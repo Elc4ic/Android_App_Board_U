@@ -85,10 +85,11 @@ class UserService(
             runWithTracing(span) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 var token = ContextKeys.TOKEN_KEY.get(Context.current())
-                val user = userRepository.findById(userId).orElseThrow()
+                var user = userRepository.findById(userId).orElseThrow()
                 if (jwtProvider.needToRefresh(token)) {
                     token = jwtProvider.createJwt(userId)
                 }
+                user = user.copy(isOnline = true)
                 val response = UserAvatarToken.newBuilder().setUser(user.toUserGrpc()).setToken(token).build()
                 response.also { it ->
                     log.info("sign up: $it").also { span.tag("response", it.toString()) }
@@ -147,7 +148,21 @@ class UserService(
                     address = request.address,
                     email = request.email,
                     notify = request.notify,
-                    ).also { userRepository.save(it) }
+                ).also { userRepository.save(it) }
+                successGrpc().also { it ->
+                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
+                }
+            }
+        }
+
+    override suspend fun setAvatar(request: ImageProto): IsSuccess =
+        withTimeout(timeOutMillis) {
+            val span = tracer.startScopedSpan(ChangeUserData)
+            runWithTracing(span) {
+                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+                val user = userRepository.findById(userId).orElseThrow()
+                user.addAvatar(request.toUserAvatar(user))
+                userRepository.save(user)
                 successGrpc().also { it ->
                     log.info("sign up: $it").also { span.tag("response", it.toString()) }
                 }

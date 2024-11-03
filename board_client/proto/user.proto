@@ -6,13 +6,16 @@ package board;
 service UserAPI {
     rpc GetSignUp (SignupRequest) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
-    rpc GetUserAndRefresh (Empty) returns (UserToken);
-    rpc GetUserById (UserId) returns (UserToken);
+    rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
+    rpc SetOffline (Empty) returns (IsSuccess);
+    rpc SetAvatar (ImageProto) returns (IsSuccess);
+    rpc GetUserById (UserId) returns (User);
     rpc LogOut (UserId) returns (IsSuccess);
-    rpc ChangeUserData (UserToken) returns (IsSuccess);
+    rpc ChangeUserData (User) returns (IsSuccess);
     rpc DeleteUser (Empty) returns (IsSuccess);
-    rpc AddComment (CommentProto) returns (IsSuccess);
-    rpc EditComment (EditCommentRequest) returns (IsSuccess);
+
+    rpc AddComment (Comment) returns (IsSuccess);
+    rpc EditComment (Comment) returns (IsSuccess);
     rpc DeleteComment (Id) returns (IsSuccess);
     rpc GetComments (UserId) returns (CommentsResponse);
     rpc GetUserComments (Empty) returns (CommentsResponse);
@@ -27,6 +30,10 @@ message IsSuccess {
 
 message UserId {
     string id = 1;
+}
+
+message ImageProto {
+    bytes chunk = 2;
 }
 
 message LoginRequest {
@@ -46,9 +53,10 @@ message SignupRequest {
     string phone = 3;
 }
 
-message UserToken {
+message UserAvatarToken {
     User user = 1;
     string token = 2;
+    ImageProto avatar = 3;
 }
 
 message User {
@@ -59,9 +67,9 @@ message User {
     string email = 5;
     string phone = 6;
     string address = 7;
-    bytes avatar = 8;
-    int32 ratingNum = 9;
-    int32 ratingAll = 10;
+    string avatar = 8;
+    bool notify = 9;
+    float rating = 10;
 }
 
 message Comment {
@@ -73,14 +81,6 @@ message Comment {
     string created = 6;
 }
 
-message EditCommentRequest {
-    Comment comment = 1;
-    int32 rating_prev = 2;
-}
-
-message CommentProto {
-    Comment comment = 1;
-}
 message CommentsResponse {
     repeated Comment comments = 1;
 }

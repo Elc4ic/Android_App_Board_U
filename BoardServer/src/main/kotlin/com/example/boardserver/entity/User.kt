@@ -27,15 +27,15 @@ data class User(
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "avatar_id")
-    val avatar: UserImage? = null,
+    var avatar: UserImage? = null,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val deviceToken: DeviceToken? = null,
+    var deviceToken: DeviceToken? = null,
 
     @OneToMany(mappedBy = "user")
     var chatUnreadCounters: Set<UnreadCounter> = setOf(),
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "convicted", cascade = [CascadeType.ALL], orphanRemoval = true)
     var comments: Set<Comment> = emptySet(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -68,6 +68,16 @@ data class User(
         myAds = myAds.plus(child)
         child.user = this
     }
+
+    fun addAvatar(child: UserImage) {
+        avatar = child
+        child.user = this
+    }
+
+    fun addDeviceToken(child: DeviceToken) {
+        deviceToken = child
+        child.user = this
+    }
 }
 
 
@@ -84,6 +94,7 @@ fun UserOuterClass.User.fromUserGrpc(): User {
 }
 
 fun User.toUserGrpc(): UserOuterClass.User {
+    val rating = this.comments.sumOf { it.rating }.toFloat() / this.comments.size
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
         .setName(this.name)
@@ -92,6 +103,7 @@ fun User.toUserGrpc(): UserOuterClass.User {
         .setPhone(this.phone)
         .setPassword(this.password)
         .setAddress(this.address)
+        .setRating(rating)
         .build()
 }
 

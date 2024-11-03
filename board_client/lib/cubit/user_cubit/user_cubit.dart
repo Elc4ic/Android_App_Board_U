@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
@@ -51,6 +53,10 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> changeUser(User? user) async {
     await userService.changeUser(user);
+  }
+
+  Future<void> changeAvatar(Uint8List avatar) async {
+    await userService.updateAvatar(avatar);
   }
 
   Future<void> logOut() async {

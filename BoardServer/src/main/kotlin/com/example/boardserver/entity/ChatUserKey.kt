@@ -6,12 +6,13 @@ import java.io.Serializable
 import java.util.*
 
 @Embeddable
-class ChatUserKey : Serializable {
+class ChatUserKey(
     @Column(name = "user_id")
-    private val userId: Long? = null
+    private val userId: UUID? = null,
 
     @Column(name = "chat_id")
-    private val chatId: Long? = null
+    private val chatId: UUID? = null
+) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

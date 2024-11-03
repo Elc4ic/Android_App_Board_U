@@ -9,7 +9,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:grpc/grpc_connection_interface.dart';
+import 'package:grpc/grpc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddAdForm extends StatefulWidget {

@@ -2,6 +2,7 @@ package com.example.boardserver.controller
 
 import com.example.boardserver.entity.uuid
 import com.example.boardserver.repository.ImageRepository
+import com.example.boardserver.repository.UserImageRepository
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,7 +14,8 @@ import java.io.IOException
 @RestController
 @RequestMapping("/images")
 class ImageController(
-    private var imageRepository: ImageRepository
+    private var imageRepository: ImageRepository,
+    private var userImageRepository: UserImageRepository
 ) {
 
     @GetMapping("/ad/{id}")
@@ -42,7 +44,7 @@ class ImageController(
     fun getAvatar(@PathVariable("userId") userId: String): ResponseEntity<ByteArray>? {
         var image = ByteArray(0)
         try {
-            image = imageRepository.findById(userId.uuid()).get().imageBytes
+            image = userImageRepository.findFirstByUserId(userId.uuid()).orElseThrow().imageBytes
         } catch (e: IOException) {
             e.printStackTrace()
         }

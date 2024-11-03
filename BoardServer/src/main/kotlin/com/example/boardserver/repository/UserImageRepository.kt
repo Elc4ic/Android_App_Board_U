@@ -1,6 +1,5 @@
 package com.example.boardserver.repository
 
-import com.example.boardserver.entity.Image
 import com.example.boardserver.entity.UserImage
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -16,8 +15,8 @@ interface UserImageRepository : JpaRepository<UserImage, UUID> {
     @Transactional
     fun deleteAllByUserId(id: UUID)
 
-    fun findFirstByUserId(id: UUID): Optional<Image>
+    fun findFirstByUserId(id: UUID): Optional<UserImage>
 
     @Query("SELECT e.id FROM UserImage e WHERE e.user.id = ?1")
-    fun findAllIdsByAdId(id: UUID): MutableList<UUID>
+    fun findIdsByAdId(id: UUID): UUID
 }
