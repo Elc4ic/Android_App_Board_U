@@ -9,20 +9,21 @@ enum class Role { USER, MODER, ADMIN }
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
     @Id val id: UUID? = null,
-    val name: String = "",
-    val username: String = "",
-    val password: String = "",
-    val email: String = "",
-    val phone: String = "",
-    val address: String = "",
-    val notify: Boolean = true,
+    var name: String = "",
+    var username: String = "",
+    var password: String = "",
+    var email: String = "",
+    var phone: String = "",
+    var address: String = "",
+    var notify: Boolean = true,
 
     @Column(name = "is_online")
     var isOnline: Boolean = false,
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     val role: Role = Role.USER,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
@@ -30,59 +31,59 @@ data class User(
     var avatar: UserImage? = null,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "token_id")
     var deviceToken: DeviceToken? = null,
 
     @OneToMany(mappedBy = "user")
     var chatUnreadCounters: Set<UnreadCounter> = setOf(),
 
-    @OneToMany(mappedBy = "convicted", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var comments: Set<Comment> = emptySet(),
+    @OneToMany(mappedBy = "convicted", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
+    var comments: MutableSet<Comment> = mutableSetOf(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @Column(name = "my_ads")
-    var myAds: Set<Ad> = emptySet(),
+    var ads: MutableSet<Ad> = mutableSetOf(),
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @Column(name = "fav_ads")
-    var favAds: Set<Favorites> = emptySet(),
+    var favs: MutableSet<Favorites> = mutableSetOf(),
 
     @ManyToMany(mappedBy = "members", cascade = [CascadeType.ALL])
-    var chats: Set<Chat> = emptySet()
+    var chats: MutableSet<Chat> = mutableSetOf()
 ) {
+
     fun addFav(child: Favorites) {
-        favAds = favAds.plus(child)
         child.user = this
+        favs.add(child)
     }
 
     fun addChat(child: Chat) {
-        chats = chats.plus(child)
-        child.members.plus(this)
+        chats.add(child)
     }
 
     fun addComment(child: Comment) {
-        comments = comments.plus(child)
         child.convicted = this
+        comments.add(child)
     }
 
     fun addAd(child: Ad) {
-        myAds = myAds.plus(child)
         child.user = this
+        ads.add(child)
     }
 
     fun addAvatar(child: UserImage) {
-        avatar = child
         child.user = this
+        avatar = child
     }
 
     fun addDeviceToken(child: DeviceToken) {
-        deviceToken = child
         child.user = this
+        deviceToken = child
     }
 }
 
 
 fun UserOuterClass.User.fromUserGrpc(): User {
     return User(
+        id = UUID.randomUUID(),
         name = this.name,
         username = this.username,
         password = this.password,

@@ -36,219 +36,180 @@ class UserService(
     @Transactional
     override suspend fun getSignUp(request: SignupRequest): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetSignUp)
-            runWithTracing(span) {
-                if (userRepository.countByPhone(request.phone) == 0) {
-                    if (userRepository.countByUsername(request.username) == 0) {
-                        val newUser = User.newBuilder().setName(request.username).setUsername(request.username)
-                            .setPassword(request.password.hashPassword()).setPhone(request.phone).build()
-                        val user = newUser.fromUserGrpc()
-                        userRepository.save(user)
-                        successGrpc().also { it ->
-                            log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                        }
-                    } else {
-                        throw Status.INVALID_ARGUMENT.withDescription("Пользователь с таким именем уже существует")
-                            .asException()
-                    }
-                } else {
-                    throw Status.INVALID_ARGUMENT.withDescription("Аккаунт с таким номером уже существует")
-                        .asException()
-                }
+            runWithTracing(tracer, GetSignUp) {
+                if (userRepository.countByPhone(request.phone) != 0) throw Status.INVALID_ARGUMENT
+                    .withDescription("Аккаунт с таким номером уже существует").asException()
+                if (userRepository.countByUsername(request.username) != 0) throw Status.INVALID_ARGUMENT
+                    .withDescription("Пользователь с таким именем уже существует").asException()
+                val newUser = User.newBuilder()
+                    .setName(request.username)
+                    .setUsername(request.username)
+                    .setPassword(request.password.hashPassword())
+                    .setPhone(request.phone).build()
+                val user = newUser.fromUserGrpc()
+                userRepository.save(user)
+                successGrpc()
             }
         }
 
-
+    @Transactional
     override suspend fun getLogin(request: LoginRequest): LoginResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetLogin)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetLogin) {
                 val user = userRepository.findByUsername(request.username).orElseThrow()
-                if (request.password.checkPassword(user.password)) {
-                    val response = LoginResponse.newBuilder().setUser(user.toUserGrpc())
-                        .setAccessToken(jwtProvider.createJwt(user.id!!)).build()
-                    tokenRepository.deleteByUserId(user.id)
-                    tokenRepository.save(fcmProvider.createTokenEntity(user, request.deviceToken))
-                    response.also { it ->
-                        log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                    }
-                } else {
-                    throw Status.INVALID_ARGUMENT.withDescription("Неправильный пароль").asException()
-                }
+                if (!request.password.checkPassword(user.password)) throw Status.INVALID_ARGUMENT.withDescription("Неправильный пароль")
+                    .asException()
+                val response = LoginResponse.newBuilder().setUser(user.toUserGrpc())
+                    .setAccessToken(jwtProvider.createUserJwt(user.id!!)).build()
+                tokenRepository.deleteByUserId(user.id)
+                val token = fcmProvider.createTokenEntity(user, request.deviceToken)
+                user.addDeviceToken(token)
+                userRepository.save(user)
+                response
             }
         }
 
 
+    @Transactional
     override suspend fun getUserAndRefresh(request: Empty): UserAvatarToken =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetUserAndRefresh)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetUserAndRefresh) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 var token = ContextKeys.TOKEN_KEY.get(Context.current())
-                var user = userRepository.findById(userId).orElseThrow()
+                val user = userRepository.findById(userId).orElseThrow()
                 if (jwtProvider.needToRefresh(token)) {
-                    token = jwtProvider.createJwt(userId)
+                    token = jwtProvider.createUserJwt(userId)
                 }
-                user = user.copy(isOnline = true)
+                user.isOnline = true
+                userRepository.save(user)
                 val response = UserAvatarToken.newBuilder().setUser(user.toUserGrpc()).setToken(token).build()
-                response.also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                response
             }
         }
 
+    @Transactional
     override suspend fun setOffline(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(ChangeUserData)
-            runWithTracing(span) {
+            runWithTracing(tracer, SetOffline) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val user = userRepository.findById(userId).orElseThrow()
-                user.copy(
-                    isOnline = false
-                ).also { userRepository.save(it) }
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                user.isOnline = false
+                userRepository.save(user)
+                successGrpc()
             }
         }
 
+    @Transactional
     override suspend fun getUserById(request: UserId): User =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetUserById)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetUserById) {
                 val user = userRepository.findById(request.id.uuid()).orElseThrow()
-                user.toAnotherUser().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                user.toAnotherUser()
             }
         }
 
     @Transactional
     override suspend fun logOut(request: UserId): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(LogOut)
-            runWithTracing(span) {
+            runWithTracing(tracer, LogOut) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 tokenRepository.deleteByUserId(userId)
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun changeUserData(request: User): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(ChangeUserData)
-            runWithTracing(span) {
+            runWithTracing(tracer, ChangeUserData) {
                 val user = userRepository.findById(request.id.uuid()).orElseThrow()
-                user.copy(
-                    name = request.name,
-                    phone = request.phone,
-                    address = request.address,
-                    email = request.email,
-                    notify = request.notify,
-                ).also { userRepository.save(it) }
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                user.name = request.name
+                user.phone = request.phone
+                user.address = request.address
+                user.email = request.email
+                user.notify = request.notify
+                userRepository.save(user)
+                successGrpc()
             }
         }
 
+    @Transactional
     override suspend fun setAvatar(request: ImageProto): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(ChangeUserData)
-            runWithTracing(span) {
+            runWithTracing(tracer, SetAvatar) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val user = userRepository.findById(userId).orElseThrow()
                 user.addAvatar(request.toUserAvatar(user))
                 userRepository.save(user)
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun deleteUser(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(DeleteUser)
-            runWithTracing(span) {
+            runWithTracing(tracer, DeleteUser) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 userRepository.deleteById(userId)
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun addComment(request: UserOuterClass.Comment): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(AddComment)
-            runWithTracing(span) {
+            runWithTracing(tracer, AddComment) {
                 val convicted = userRepository.findById(request.convicted.id.uuid()).orElseThrow()
                 val creator = userRepository.findById(request.owner.id.uuid()).orElseThrow()
                 val comment = request.fromCommentGrpc(convicted, creator)
                 convicted.addComment(comment)
                 userRepository.save(convicted)
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun editComment(request: UserOuterClass.Comment): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(EditComment)
-            runWithTracing(span) {
+            runWithTracing(tracer, EditComment) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 if (userId != request.owner.id.uuid()) throw YouNotOwnerException()
                 val comment = commentRepository.findById(request.id.uuid())
                     .orElseThrow { NotFoundException("Комментарий") }
-                comment.copy(rating = request.rating, text = request.text)
-                    .also { commentRepository.save(it) }
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                comment.rating = request.rating
+                comment.text = request.text
+                commentRepository.save(comment)
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun deleteComment(request: Id): IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(DeleteComment)
-            runWithTracing(span) {
+            runWithTracing(tracer, DeleteComment) {
                 commentRepository.deleteById(request.id.uuid())
-                successGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
 
+    @Transactional
     override suspend fun getComments(request: UserId): CommentsResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetComments)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetComments) {
                 val comments = commentRepository.findByConvictedId(request.id.uuid())
-                comments.toRepeatedCommentGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                comments.toRepeatedCommentGrpc()
             }
         }
 
 
+    @Transactional
     override suspend fun getUserComments(request: Empty): CommentsResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetUserComments)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetUserComments) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val comments = commentRepository.findByCreatorId(userId)
-                comments.toRepeatedCommentGrpc().also { it ->
-                    log.info("sign up: $it").also { span.tag("response", it.toString()) }
-                }
+                comments.toRepeatedCommentGrpc()
             }
         }
 
@@ -269,5 +230,7 @@ class UserService(
         private const val DeleteComment = "$userService.deleteComment"
         private const val GetComments = "$userService.getComment"
         private const val GetUserComments = "$userService.getUserComment"
+        private const val SetAvatar = "$userService.setAvatar"
+        private const val SetOffline = "$userService.setOffline"
     }
 }

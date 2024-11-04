@@ -8,16 +8,16 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   server:
     port: 8080
   grpc:
-    reflection-service-enabled: true
     server:
       port: 9000
+    reflection-service-enabled: true
   flyway:
     enabled: false
     baselineOnMigrate: true

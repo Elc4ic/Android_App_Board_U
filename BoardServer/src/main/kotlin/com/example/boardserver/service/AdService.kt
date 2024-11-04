@@ -14,11 +14,13 @@ import com.example.boardserver.utils.runWithTracing
 import io.grpc.Context
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
+import org.hibernate.Hibernate
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 
 @GrpcService(interceptors = [LogGrpcInterceptor::class])
@@ -29,10 +31,10 @@ class AdService(
     private val tracer: Tracer
 ) : board.AdAPIGrpcKt.AdAPICoroutineImplBase() {
 
+    @Transactional
     override suspend fun getManyAd(request: AdOuterClass.GetManyAdRequest): AdOuterClass.PaginatedAd =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetManyAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetManyAd) {
                 val isAuth = ContextKeys.AUTH_KEY.get(Context.current()).toBoolean()
                 var favs: List<Favorites> = emptyList()
                 val pagingSort: Pageable = PageRequest.of(request.page, request.limit)
@@ -43,30 +45,26 @@ class AdService(
                 val adPage = adRepository.findAll(
                     Specification.where(FilterUtils.adSpecification(request, favs)), pagingSort
                 )
-                adPage.toPagedAdPreview(favs).also { it ->
-                    log.info("got page of ads: $it").also { span.tag("response", it.toString()) }
-                }
+                adPage.toPagedAdPreview(favs)
             }
         }
 
+    @Transactional
     override suspend fun getOneAd(request: AdOuterClass.GetByIdRequest): AdOuterClass.Ad =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetAd) {
                 var isFav = false
                 val isAuth = ContextKeys.AUTH_KEY.get(Context.current()).toBoolean()
                 val ad = adRepository.findById(request.id.uuid()).orElseThrow()
 
                 if (isAuth) {
                     val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                    isFav = favRepository.existsByUserIdAndAdId(userId, ad.id!!)
+                    isFav = favRepository.existsByUserIdAndAdId(userId, ad.id)
                     ad.views++
                     adRepository.save(ad)
                 }
                 val response = ad.toAdGrpc(isFav)
-                response.also { it ->
-                    log.info("got one ad: $it").also { span.tag("response", it.toString()) }
-                }
+                response
             }
         }
 
@@ -74,22 +72,19 @@ class AdService(
     @Transactional
     override suspend fun setFavoriteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(SetFavoriteAds)
-            runWithTracing(span) {
+            runWithTracing(tracer, SetFavoriteAds) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 if (favRepository.existsByUserIdAndAdId(userId, request.id.uuid())) {
                     val user = userRepository.findById(userId).orElseThrow()
                     val ad = adRepository.findById(request.id.uuid()).orElseThrow()
-                    val fav = Favorites(user = user, ad = ad)
+                    val fav = Favorites(user = user, ad = ad, id = UUID.randomUUID())
                     user.addFav(fav)
                     userRepository.save(user)
                 } else {
                     val fav = favRepository.findByAdIdAndUserId(request.id.uuid(), userId).orElseThrow()
                     favRepository.delete(fav)
                 }
-                successGrpc().also { it ->
-                    log.info("ad set as favorite: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
@@ -97,49 +92,41 @@ class AdService(
     @Transactional
     override suspend fun addAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(AddAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, AddAd) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val user = userRepository.findById(userId).orElseThrow()
+                Hibernate.initialize(user.ads)
                 val ad = request.ad.fromAdGrpc()
-                ad.images = request.imagesList.fromImageGrpcList(ad)
+                request.imagesList.forEach { image -> ad.addImage(image.fromImageGrpc(ad)) }
                 user.addAd(ad)
-                successGrpc().also { it ->
-                    log.info("created ad: $it").also { span.tag("response", it.toString()) }
-                }
+                adRepository.save(ad)
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun editAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(AddAd)
-            runWithTracing(span) {
-                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val ad = adRepository.findById(request.ad.id.uuid()).orElseThrow()
-                ad.copy(
-                    title = request.ad.title,
-                    description = request.ad.description,
-                    price = request.ad.price,
-                    category = request.ad.category.fromCategoryGrpc(),
-                    images = request.imagesList.fromImageGrpcList(ad)
-                ).also { adRepository.save(it) }
-                successGrpc().also { it ->
-                    log.info("created ad: $it").also { span.tag("response", it.toString()) }
-                }
+            runWithTracing(tracer, AddAd) {
+                val ad = adRepository.findById(request.ad.id.uuid())
+                    .orElseThrow()
+                ad.title = request.ad.title
+                ad.description = request.ad.description
+                ad.price = request.ad.price
+                ad.category = request.ad.category.fromCategoryGrpc()
+                request.imagesList.forEach { image -> ad.addImage(image.fromImageGrpc(ad)) }
+                adRepository.save(ad)
+                successGrpc()
             }
         }
 
     @Transactional
     override suspend fun deleteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(DeleteAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, DeleteAd) {
                 favRepository.deleteAllByAdId(request.id.uuid())
                 adRepository.deleteById(request.id.uuid())
-                successGrpc().also { it ->
-                    log.info("ad deleted: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
@@ -147,52 +134,44 @@ class AdService(
     @Transactional
     override suspend fun muteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(MuteAd)
-            runWithTracing(span) {
+
+            runWithTracing(tracer, MuteAd) {
                 val ad = adRepository.findById(request.id.uuid()).orElseThrow()
                 ad.isActive = !ad.isActive
                 adRepository.save(ad)
-                successGrpc().also { it ->
-                    log.info("ad muted: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 
 
+    @Transactional
     override suspend fun getFavoriteAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetFavoriteAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetFavoriteAd) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val ads = favRepository.findByUserId(userId)
-                ads.toFavRepeatedAdPreviews().also { it ->
-                    log.info("got favorite ads: $it").also { span.tag("response", it.toString()) }
-                }
+                ads.toFavRepeatedAdPreviews()
             }
         }
 
 
+    @Transactional
     override suspend fun getMyAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetMyAd)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetMyAd) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val ads = adRepository.findByUserIdOrderByViewsDesc(userId)
-                ads.toRepeatedMyAd().also { it ->
-                    log.info("got my ads: $it").also { span.tag("response", it.toString()) }
-                }
+                ads.toRepeatedMyAd()
             }
         }
 
 
+    @Transactional
     override suspend fun getByUserId(request: AdOuterClass.GetByIdRequest): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetByUserId)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetByUserId) {
                 val ads = adRepository.findByUserId(request.id.uuid())
-                ads.toRepeatedAdGrpc().also { it ->
-                    log.info("got user ads: $it").also { span.tag("response", it.toString()) }
-                }
+                ads.toRepeatedAdGrpc()
             }
         }
 

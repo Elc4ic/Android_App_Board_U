@@ -23,7 +23,7 @@ class FcmProvider(
 
     fun createTokenEntity(user: User, token: String): DeviceToken {
         return DeviceToken(
-            id = user.id,
+            id = UUID.randomUUID(),
             user = user,
             deviceToken = encrypt(token)
         )

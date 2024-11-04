@@ -6,7 +6,7 @@ import java.util.*
 @Entity
 @Table(name = "tokens")
 class DeviceToken(
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
 
     @OneToOne
     @JoinColumn(name = "user_id")

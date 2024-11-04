@@ -7,7 +7,7 @@ import java.util.*
 @Entity
 @Table(name = "messages")
 class Message(
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
     var content: String,
     val data: LocalDateTime? = null,
 

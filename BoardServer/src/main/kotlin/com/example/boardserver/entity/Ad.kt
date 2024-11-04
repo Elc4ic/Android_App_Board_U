@@ -8,8 +8,8 @@ import java.util.*
 
 @Entity
 @Table(name = "ads")
-data class Ad(
-    @Id val id: UUID? = null,
+class Ad(
+    @Id val id: UUID,
     var title: String = "",
     var price: Long = 0,
     var description: String = "",
@@ -23,15 +23,23 @@ data class Ad(
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    val category: Category,
+    var category: Category,
 
     @OneToMany(mappedBy = "ad", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var images: Set<Image> = emptySet(),
-)
+    private var _images: MutableSet<Image> = mutableSetOf()
+){
+    val images get() = _images.toList()
+
+    fun addImage(image: Image) {
+        _images.add(image)
+        image.ad = this
+    }
+}
 
 
 fun AdOuterClass.Ad.fromAdGrpc(): Ad {
     return Ad(
+        id = UUID.randomUUID(),
         title = this.title,
         price = this.price,
         description = this.description,
@@ -40,7 +48,6 @@ fun AdOuterClass.Ad.fromAdGrpc(): Ad {
         created = LocalDateTime.now(),
         user = this.user.fromUserGrpc(),
         category = this.category.fromCategoryGrpc(),
-        images = emptySet()
     )
 }
 

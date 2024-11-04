@@ -6,7 +6,7 @@ import java.util.*
 @Entity
 @Table(name = "favorites")
 class Favorites (
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
 
     @ManyToOne
     @JoinColumn(name = "user_id")

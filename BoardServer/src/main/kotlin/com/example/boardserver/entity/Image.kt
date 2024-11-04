@@ -9,7 +9,7 @@ import java.util.*
 @Entity
 @Table(name = "images")
 class Image(
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
@@ -18,11 +18,12 @@ class Image(
 
     @ManyToOne
     @JoinColumn(name = "ad_id")
-    val ad: Ad
+    var ad: Ad
 )
 
 fun ImageProto.fromImageGrpc(ad: Ad): Image {
     return Image(
+        id = UUID.randomUUID(),
         ad = ad,
         imageBytes = this.chunk.toByteArray(),
     )

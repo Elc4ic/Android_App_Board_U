@@ -7,10 +7,10 @@ import java.util.*
 
 @Entity
 @Table(name = "comments")
-data class Comment(
-    @Id val id: UUID? = null,
+class Comment(
+    @Id val id: UUID,
     var rating: Int = 0,
-    val text: String = "",
+    var text: String = "",
     val created: LocalDateTime? = null,
 
     @ManyToOne
@@ -35,6 +35,7 @@ fun Comment.toCommentGrpc(): UserOuterClass.Comment {
 
 fun UserOuterClass.Comment.fromCommentGrpc(convicted: User, creator: User): Comment {
     return Comment(
+        id = UUID.randomUUID(),
         text = this.text,
         rating = this.rating,
         created = LocalDateTime.now(),

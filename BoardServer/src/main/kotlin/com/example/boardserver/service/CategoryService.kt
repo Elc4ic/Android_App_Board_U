@@ -19,12 +19,9 @@ class CategoryService(
 
     override suspend fun getAllCategories(request: UserOuterClass.Empty): AdOuterClass.GetAllCategoriesResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetAllCategories)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetAllCategories) {
                 val category = categoryRepository.findAll()
-                category.toCategoriesResponse().also { it ->
-                    log.info("get all categories: $it").also { span.tag("response", it.toString()) }
-                }
+                category.toCategoriesResponse()
             }
         }
 

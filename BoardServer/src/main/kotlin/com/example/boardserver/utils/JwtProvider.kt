@@ -1,5 +1,6 @@
 package com.example.boardserver.utils
 
+import com.example.boardserver.entity.Role
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -25,14 +26,14 @@ class JwtProvider(
         this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret))
     }
 
-    fun createJwt(userId: UUID): String {
+    fun createUserJwt(userId: UUID): String {
         return Jwts.builder()
             .header().add("typ", "JWT")
             .and()
             .subject(userId.toString())
-            .expiration(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(365)))
+            .expiration(Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(30)))
             .signWith(jwtAccessSecret)
-            /*.claim("role", "USER")*/
+            .claim("role", Role.USER)
             .compact()
     }
 
@@ -57,13 +58,13 @@ class JwtProvider(
         }
     }
 
-    fun validateJwt(token: String): Long? {
+    fun validateJwt(token: String): UUID? {
         return try {
             val userId = Jwts.parser()
                 .verifyWith(jwtAccessSecret)
                 .build()
                 .parseSignedClaims(token).payload["sub"] as String
-            userId.toLong()
+            UUID.fromString(userId)
         } catch (e: Exception) {
             println(e)
             null

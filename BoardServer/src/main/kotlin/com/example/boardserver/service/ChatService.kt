@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.Sort
 import org.springframework.transaction.annotation.Transactional
 
 
@@ -36,10 +35,10 @@ class ChatService(
     private val tracer: Tracer
 ) : board.ChatAPIGrpcKt.ChatAPICoroutineImplBase() {
 
+    @Transactional
     override suspend fun startChat(request: Chat.StartRequest): Chat.StartResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(StartChat)
-            runWithTracing(span) {
+            runWithTracing(tracer, StartChat) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val ownerId = request.ad.user.id.uuid()
                 val adId = request.ad.id.uuid()
@@ -47,61 +46,50 @@ class ChatService(
                 val chat = chatRepository.findChatBetweenUsersByIds(ownerId, userId, adId)
                     .orElse(request.ad.createChat(request.ad.user, user))
                     .also { chatRepository.save(it) }
-                chat.toStartResponse().also { it ->
-                    log.info("start chat: $it").also { span.tag("response", it.toString()) }
-                }
+                chat.toStartResponse()
             }
         }
 
     @Transactional
     override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(DeleteChat)
-            runWithTracing(span) {
+            runWithTracing(tracer, DeleteChat) {
                 chatRepository.deleteById(request.chatId.uuid())
                 successGrpc().also { it ->
-                    log.info("delete chat: $it").also { span.tag("response", it.toString()) }
+                    log.info("delete chat: $it")
                 }
             }
         }
 
-
+    @Transactional
     override suspend fun getChatsPreview(request: UserOuterClass.Empty): RepeatedChatPreview =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetChatPreview)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetChatPreview) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val chats = chatRepository.findByOwnerId(userId, Sort.by(Sort.Direction.DESC, "lastMessage.data"))
-                val response = RepeatedChatPreview.newBuilder()
+                val chats = (chatRepository.findByMembersId(userId)
+                    .orElse(emptySet())).sortedByDescending { chat -> chat.lastMessage?.data }
+                RepeatedChatPreview.newBuilder()
                     .addAllChats(chats.toRepeatedChat(userId))
                     .build()
-                response.also { it ->
-                    log.info("get chats: $it").also { span.tag("response", it.toString()) }
-                }
             }
         }
 
+    @Transactional
     override suspend fun getAllMessage(request: Chat.GetAllMessagesRequest): Chat.GetAllMessagesResponse =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(GetAllMessage)
-            runWithTracing(span) {
+            runWithTracing(tracer, GetAllMessage) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val chat = chatRepository.findById(request.chatId.uuid()).orElseThrow()
-                chat.toAllMessages(userId).also { it ->
-                    log.info("get messages: $it").also { span.tag("response", it.toString()) }
-                }
+                chat.toAllMessages(userId)
             }
         }
 
     @Transactional
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            val span = tracer.startScopedSpan(DeleteMessage)
-            runWithTracing(span) {
+            runWithTracing(tracer, DeleteMessage) {
                 messageRepository.deleteById(request.chatId.uuid())
-                successGrpc().also { it ->
-                    log.info("deleted message: $it").also { span.tag("response", it.toString()) }
-                }
+                successGrpc()
             }
         }
 

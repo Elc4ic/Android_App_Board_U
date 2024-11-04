@@ -9,7 +9,7 @@ import java.util.*
 @Entity
 @Table(name = "category")
 class Category(
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
     val name: String = "",
     val path: String = "",
 )
@@ -24,6 +24,7 @@ fun Category.toCategoryGrpc(): AdOuterClass.Category {
 
 fun AdOuterClass.Category.fromCategoryGrpc(): Category {
     return Category(
+        id = UUID.randomUUID(),
         name = this.name,
         path = this.path
     )

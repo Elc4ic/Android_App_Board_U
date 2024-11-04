@@ -9,7 +9,7 @@ import java.util.*
 @Entity
 @Table(name = "avatars")
 class UserImage(
-    @Id val id: UUID? = null,
+    @Id val id: UUID,
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -23,6 +23,7 @@ class UserImage(
 
 fun UserOuterClass.ImageProto.toUserAvatar(user: User): UserImage {
     return UserImage(
+        id = UUID.randomUUID(),
         user = user,
         imageBytes = this.chunk.toByteArray(),
     )

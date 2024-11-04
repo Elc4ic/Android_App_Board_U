@@ -9,8 +9,8 @@ import java.util.*
 
 @Entity
 @Table(name = "chats")
-data class Chat(
-    @Id val id: UUID? = null,
+class Chat(
+    @Id val id: UUID,
 
     @ManyToOne
     @JoinColumn(name = "ad_id")
@@ -22,8 +22,8 @@ data class Chat(
     )
     @JoinTable(
         name = "chat_members",
-        joinColumns = [JoinColumn(name = "route_id", referencedColumnName = "id")],
-        inverseJoinColumns = [JoinColumn(name = "route_id", referencedColumnName = "id")]
+        joinColumns = [JoinColumn(name = "chat_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")]
     )
     val members: Set<User> = linkedSetOf(),
 
@@ -32,24 +32,29 @@ data class Chat(
     val lastMessage: Message? = null,
 
     @OneToMany(mappedBy = "chat", cascade = [CascadeType.REMOVE], orphanRemoval = true)
-    var messages: List<Message> = emptyList(),
+    private var _messages: MutableList<Message> = mutableListOf(),
 
     @OneToMany(mappedBy = "chat", orphanRemoval = true, cascade = [CascadeType.REMOVE])
-    var memberUnreadCounters: Set<UnreadCounter> = setOf()
+    private var _memberUnreadCounters: MutableSet<UnreadCounter> = mutableSetOf()
 ) {
+
+    val messages get() = _messages.toList()
+    val memberUnreadCounters get() = _memberUnreadCounters.toList()
+
     fun addUnreadCounter(child: UnreadCounter) {
-        memberUnreadCounters = memberUnreadCounters.plus(child)
+        _memberUnreadCounters.add(child)
         child.chat = this
     }
 
     fun addMessage(content: String, creator: User): Message {
         val message = Message(
+            id = UUID.randomUUID(),
             content = content,
             data = LocalDateTime.now(),
             chat = this,
             user = creator,
         )
-        messages = messages.plus(message)
+        _messages.add(message)
         message.chat = this
         return message
     }
@@ -66,12 +71,13 @@ fun Chat.toChatGrpc(userId: UUID): board.Chat.ChatPreview {
 
 fun AdOuterClass.Ad.createChat(target: UserOuterClass.User, user: User): Chat {
     return Chat(
+        id = UUID.randomUUID(),
         ad = this.fromAdGrpc(),
         members = setOf(user, target.fromUserGrpc()),
     )
 }
 
-fun Set<Chat>.toRepeatedChat(userId: UUID): List<board.Chat.ChatPreview> {
+fun List<Chat>.toRepeatedChat(userId: UUID): List<board.Chat.ChatPreview> {
     val chatsGrpc = mutableListOf<board.Chat.ChatPreview>()
     this.forEach { c -> chatsGrpc.add(c.toChatGrpc(userId)) }
     return chatsGrpc
