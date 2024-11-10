@@ -61,15 +61,7 @@ class _RowCardState extends State<RowCard> {
                 ),
               ),
             ),
-            FavButton(
-              isFav: widget.ad.isFav,
-              onPressed: () async {
-                await adService.setFavoriteAd(widget.ad.id);
-                setState(() {
-                  widget.ad.isFav = !widget.ad.isFav;
-                });
-              },
-            )
+            FavButton(isFav: widget.ad.isFav, adId: widget.ad.id)
           ],
         ),
       ),

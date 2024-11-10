@@ -81,15 +81,4 @@ class AdService {
   Future<IsSuccess> muteAd(String id) async {
     return await _client.muteAd(GetByIdRequest(id: id));
   }
-
-/*  Future<List<List<int>>> loadImages(String id, bool preview) async {
-    final res =
-        await _client.loadImage(GetByIdWithBoolRequest(id: id, value: preview));
-    final resList = <List<int>>[];
-    for (final image in res.data) {
-      print(image.chunk.length);
-      resList.add(image.chunk);
-    }
-    return resList;
-  }*/
 }

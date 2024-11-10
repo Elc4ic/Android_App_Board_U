@@ -8,7 +8,8 @@ import java.util.*
 @Entity
 @Table(name = "unread_counter")
 class UnreadCounter(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
 
     @ManyToOne
     @JoinColumn(name = "chat_id")
@@ -23,7 +24,6 @@ class UnreadCounter(
 
 fun UnreadCounterRepository.addUnreadCounter(chat: Chat, member: User?) {
     val counter = UnreadCounter(
-        id = UUID.randomUUID(),
         chat = chat,
         user = member
     )

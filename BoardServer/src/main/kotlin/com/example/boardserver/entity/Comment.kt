@@ -8,7 +8,8 @@ import java.util.*
 @Entity
 @Table(name = "comments")
 class Comment(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
     var rating: Int = 0,
     var text: String = "",
     val created: LocalDateTime? = null,
@@ -35,7 +36,6 @@ fun Comment.toCommentGrpc(): UserOuterClass.Comment {
 
 fun UserOuterClass.Comment.fromCommentGrpc(convicted: User, creator: User): Comment {
     return Comment(
-        id = UUID.randomUUID(),
         text = this.text,
         rating = this.rating,
         created = LocalDateTime.now(),
@@ -45,7 +45,7 @@ fun UserOuterClass.Comment.fromCommentGrpc(convicted: User, creator: User): Comm
 }
 
 fun List<Comment>.toRepeatedCommentGrpc(): UserOuterClass.CommentsResponse {
-    val comments = mutableListOf<UserOuterClass.Comment>()
-    this.forEach { comment -> comments.add(comment.toCommentGrpc()) }
-    return UserOuterClass.CommentsResponse.newBuilder().addAllComments(comments).build()
+    return UserOuterClass.CommentsResponse.newBuilder()
+        .addAllComments(this.map { it.toCommentGrpc() })
+        .build()
 }

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../widgets/form/comment_form.dart';
-import 'package:fixnum/fixnum.dart';
-
 import '../../../widgets/try_again.dart';
 
 class AddCommentPage extends StatefulWidget {
@@ -21,8 +19,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
 
   @override
   void initState() {
-    _userBloc.initId(widget.convictedId);
-    _userBloc.loadUser();
+    _userBloc.loadUser(widget.convictedId);
     super.initState();
   }
 
@@ -40,7 +37,7 @@ class _AddCommentPageState extends State<AddCommentPage> {
               return TryAgainWidget(
                 exception: state.exception,
                 onPressed: () {
-                  _userBloc.loadUser();
+                  _userBloc.loadUser(widget.convictedId);
                 },
               );
             }

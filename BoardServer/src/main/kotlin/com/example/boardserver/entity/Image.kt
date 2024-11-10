@@ -9,7 +9,8 @@ import java.util.*
 @Entity
 @Table(name = "images")
 class Image(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
@@ -23,14 +24,11 @@ class Image(
 
 fun ImageProto.fromImageGrpc(ad: Ad): Image {
     return Image(
-        id = UUID.randomUUID(),
         ad = ad,
         imageBytes = this.chunk.toByteArray(),
     )
 }
 
 fun List<ImageProto>.fromImageGrpcList(ad: Ad): Set<Image> {
-    val images = mutableSetOf<Image>()
-    this.forEach { images.add(it.fromImageGrpc(ad)) }
-    return images
+    return this.map { it.fromImageGrpc(ad) }.toSet()
 }

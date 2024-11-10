@@ -66,22 +66,22 @@ class UserService {
     return sharedPreferences.setString('token', token);
   }
 
-  Future<bool> logout(String id) async {
-    await _client.logOut(UserId(id: id));
+  Future<bool> logout() async {
+    await _client.logOut(Empty());
     final sharedPreferences = await getSharedPreferences();
     _authToken = null;
     _appUser = User.getDefault();
     return sharedPreferences.remove('token');
   }
 
-  Future<bool> login(String username, String password) async {
+  Future<String> login(String username, String password) async {
     try {
       final request = LoginRequest(
           username: username, password: password, deviceToken: _fmcToken);
       final response = await _client.getLogin(request);
       await updateToken(response.accessToken);
       _appUser = response.user;
-      return true;
+      return response.accessToken;
     } catch (e) {
       rethrow;
     }
@@ -98,8 +98,13 @@ class UserService {
     }
   }
 
-  Future<bool> changeUser(User? user) async {
-    final response = await _client.changeUserData(user!);
+  Future<bool> changeUser(User user) async {
+    final response = await _client.changeUserData(user);
+    return response.login;
+  }
+
+  Future<bool> setAvatar(ImageProto image) async {
+    final response = await _client.setAvatar(image);
     return response.login;
   }
 

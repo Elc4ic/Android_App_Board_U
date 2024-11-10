@@ -37,16 +37,16 @@ class UserService(
     override suspend fun getSignUp(request: SignupRequest): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetSignUp) {
-                if (userRepository.countByPhone(request.phone) != 0) throw Status.INVALID_ARGUMENT
+                if (userRepository.existsByPhone(request.phone)) throw Status.INVALID_ARGUMENT
                     .withDescription("Аккаунт с таким номером уже существует").asException()
-                if (userRepository.countByUsername(request.username) != 0) throw Status.INVALID_ARGUMENT
+                if (userRepository.existsByUsername(request.username)) throw Status.INVALID_ARGUMENT
                     .withDescription("Пользователь с таким именем уже существует").asException()
                 val newUser = User.newBuilder()
                     .setName(request.username)
                     .setUsername(request.username)
                     .setPassword(request.password.hashPassword())
                     .setPhone(request.phone).build()
-                val user = newUser.fromUserGrpc()
+                val user = newUser.fromUserGrpc(true)
                 userRepository.save(user)
                 successGrpc()
             }
@@ -56,7 +56,7 @@ class UserService(
     override suspend fun getLogin(request: LoginRequest): LoginResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetLogin) {
-                val user = userRepository.findByUsername(request.username).orElseThrow()
+                val user = userRepository.findByUsernameWithComments(request.username).orElseThrow()
                 if (!request.password.checkPassword(user.password)) throw Status.INVALID_ARGUMENT.withDescription("Неправильный пароль")
                     .asException()
                 val response = LoginResponse.newBuilder().setUser(user.toUserGrpc())
@@ -69,21 +69,20 @@ class UserService(
             }
         }
 
-
     @Transactional
     override suspend fun getUserAndRefresh(request: Empty): UserAvatarToken =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserAndRefresh) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 var token = ContextKeys.TOKEN_KEY.get(Context.current())
-                val user = userRepository.findById(userId).orElseThrow()
+                val user = userRepository.findByIdWithComments(userId).orElseThrow()
                 if (jwtProvider.needToRefresh(token)) {
                     token = jwtProvider.createUserJwt(userId)
                 }
                 user.isOnline = true
                 userRepository.save(user)
                 val response = UserAvatarToken.newBuilder().setUser(user.toUserGrpc()).setToken(token).build()
-                response
+                response.also { log.info(it.toString()) }
             }
         }
 
@@ -99,7 +98,6 @@ class UserService(
             }
         }
 
-    @Transactional
     override suspend fun getUserById(request: UserId): User =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserById) {
@@ -109,7 +107,7 @@ class UserService(
         }
 
     @Transactional
-    override suspend fun logOut(request: UserId): IsSuccess =
+    override suspend fun logOut(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, LogOut) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
@@ -129,7 +127,7 @@ class UserService(
                 user.email = request.email
                 user.notify = request.notify
                 userRepository.save(user)
-                successGrpc()
+                successGrpc().also { log.info(user.toString()) }
             }
         }
 
@@ -138,8 +136,8 @@ class UserService(
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, SetAvatar) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val user = userRepository.findById(userId).orElseThrow()
-                user.addAvatar(request.toUserAvatar(user))
+                val user = userRepository.findUserWithAvatar(userId).orElseThrow()
+                user.addAvatar(request.fromAvatarGrpc(user))
                 userRepository.save(user)
                 successGrpc()
             }
@@ -159,6 +157,7 @@ class UserService(
     override suspend fun addComment(request: UserOuterClass.Comment): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, AddComment) {
+                log.info("add comment: ${request.convicted.id} ${request.owner.id}")
                 val convicted = userRepository.findById(request.convicted.id.uuid()).orElseThrow()
                 val creator = userRepository.findById(request.owner.id.uuid()).orElseThrow()
                 val comment = request.fromCommentGrpc(convicted, creator)
@@ -193,7 +192,6 @@ class UserService(
         }
 
 
-    @Transactional
     override suspend fun getComments(request: UserId): CommentsResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetComments) {
@@ -203,7 +201,6 @@ class UserService(
         }
 
 
-    @Transactional
     override suspend fun getUserComments(request: Empty): CommentsResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserComments) {

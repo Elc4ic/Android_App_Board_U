@@ -40,7 +40,6 @@ class LogGrpcInterceptor(
             "board.AdAPI/GetManyAd",
             "board.AdAPI/GetOneAd",
             "board.AdAPI/GetByUserId",
-            "board.AdAPI/LoadImage",
             "board.CategoryAPI/GetAllCategories",
             "board.UserAPI/GetLogin",
             "board.UserAPI/GetSignUp",

@@ -3,7 +3,6 @@ package com.example.boardserver.utils
 import board.AdOuterClass
 import com.example.boardserver.entity.Ad
 import com.example.boardserver.entity.Category
-import com.example.boardserver.entity.Favorites
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
 import jakarta.persistence.criteria.Predicate
@@ -13,7 +12,7 @@ import org.springframework.data.jpa.domain.Specification
 
 object FilterUtils {
 
-    fun adSpecification(request: AdOuterClass.GetManyAdRequest, favList: List<Favorites>): Specification<Ad> {
+    fun adSpecification(request: AdOuterClass.GetManyAdRequest, favList: List<Ad>): Specification<Ad> {
         return Specification<Ad> { root: Root<Ad?>, query: CriteriaQuery<*>, cb: CriteriaBuilder ->
             val andPredicates: MutableList<Predicate> = ArrayList()
             andPredicates.add(

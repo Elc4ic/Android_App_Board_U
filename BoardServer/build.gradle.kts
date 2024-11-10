@@ -86,10 +86,10 @@ dependencies {
     //bcrypt
     implementation("at.favre.lib:bcrypt:0.10.2")
     //test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation(platform("org.junit:junit-bom:5.9.1"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation(kotlin("test"))
+    implementation("org.springframework.boot:spring-boot-starter-test")
+    implementation(platform("org.junit:junit-bom:5.9.1"))
+    implementation("org.junit.jupiter:junit-jupiter")
+    implementation(kotlin("test"))
 }
 
 protobuf {

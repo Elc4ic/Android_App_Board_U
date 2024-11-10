@@ -30,6 +30,7 @@ class ChatService(
     private val messageRepository: MessageRepository,
     private val userRepository: UserRepository,
     private val tokenRepository: TokenRepository,
+    private val adRepository: AdRepository,
     private val fmcProvider: FcmProvider,
     private val firebaseMessaging: FirebaseMessaging,
     private val tracer: Tracer
@@ -41,11 +42,19 @@ class ChatService(
             runWithTracing(tracer, StartChat) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 val ownerId = request.ad.user.id.uuid()
+                if (userId == ownerId) throw IllegalArgumentException("Нельзя начать чат с самим собой")
                 val adId = request.ad.id.uuid()
-                val user = userRepository.findById(userId).get()
-                val chat = chatRepository.findChatBetweenUsersByIds(ownerId, userId, adId)
-                    .orElse(request.ad.createChat(request.ad.user, user))
-                    .also { chatRepository.save(it) }
+                val chat = chatRepository.findChatBetweenUsersByIds(ownerId, userId, adId).orElseGet {
+                    val user1 = userRepository.findUserWithChats(ownerId).orElseThrow()
+                    val user2 = userRepository.findUserWithChats(userId).orElseThrow()
+                    val ad = adRepository.findById(adId).orElseThrow()
+                    val chat = ad.createChat(user1, user2)
+                    user1.addChat(chat)
+                    user2.addChat(chat)
+                    userRepository.save(user1)
+                    userRepository.save(user2)
+                    chatRepository.save(chat)
+                }
                 chat.toStartResponse()
             }
         }
@@ -55,7 +64,7 @@ class ChatService(
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, DeleteChat) {
                 chatRepository.deleteById(request.chatId.uuid())
-                successGrpc().also { it ->
+                successGrpc().also {
                     log.info("delete chat: $it")
                 }
             }
@@ -79,7 +88,7 @@ class ChatService(
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetAllMessage) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val chat = chatRepository.findById(request.chatId.uuid()).orElseThrow()
+                val chat = chatRepository.findChatWithMessage(request.chatId.uuid()).orElseThrow()
                 chat.toAllMessages(userId)
             }
         }

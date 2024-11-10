@@ -9,11 +9,12 @@ import java.util.*
 @Entity
 @Table(name = "avatars")
 class UserImage(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
 
     @OneToOne
     @JoinColumn(name = "user_id")
-    var user: User,
+    var user: User? = null,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
@@ -21,9 +22,8 @@ class UserImage(
     val imageBytes: ByteArray
 )
 
-fun UserOuterClass.ImageProto.toUserAvatar(user: User): UserImage {
+fun UserOuterClass.ImageProto.fromAvatarGrpc(user: User): UserImage {
     return UserImage(
-        id = UUID.randomUUID(),
         user = user,
         imageBytes = this.chunk.toByteArray(),
     )

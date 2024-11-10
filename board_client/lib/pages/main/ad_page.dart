@@ -1,11 +1,11 @@
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
+import 'package:board_client/routing/not_found_page.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/headers/ad_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:fixnum/fixnum.dart';
 
 import '../../data/service/chat_service.dart';
 import '../../widgets/mini_profile.dart';
@@ -40,19 +40,12 @@ class _AdPageState extends State<AdPage> {
       child: SafeArea(
         child: BlocBuilder<AdCubit, AdState>(
           bloc: _adBloc,
-          builder: (context, state) {
+          builder: (contextB, state) {
             if (state is AdLoaded) {
               return Scaffold(
                   appBar: adHeader(
                     state.ad.isFav,
-                    () async {
-                      await _adBloc.setFavorite(state.ad.id);
-                      setState(
-                        () {
-                          isFav = !isFav;
-                        },
-                      );
-                    },
+                    widget.idAd,
                   ),
                   body: ListView(
                     children: [
@@ -106,11 +99,11 @@ class _AdPageState extends State<AdPage> {
                                         Theme.of(context).textTheme.labelLarge),
                               ),
                               ElevatedButton(
-                                onPressed: () async {
+                                onPressed: errorSnail(context, () async {
                                   final chatId =
                                       await chatService.startChat(state.ad);
                                   context.push("/chat/$chatId");
-                                },
+                                }),
                                 child: const Text("Написать"),
                               ),
                             ],

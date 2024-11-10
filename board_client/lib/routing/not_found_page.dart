@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:grpc/grpc.dart';
 
 class NotFoundScreen extends StatelessWidget {
   const NotFoundScreen({super.key});
@@ -15,4 +15,18 @@ class NotFoundScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Function() errorSnail(BuildContext context, Function() tryDo) {
+  return () {
+    try {
+      tryDo();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text((e as GrpcError).message ?? "$e"),
+        ),
+      );
+    }
+  };
 }

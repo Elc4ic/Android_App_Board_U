@@ -10,7 +10,7 @@ enum class Role { USER, MODER, ADMIN }
 @Entity
 @Table(name = "users")
 class User(
-    @Id val id: UUID? = null,
+    @GeneratedValue(strategy = GenerationType.UUID) @Id val id: UUID? = null,
     var name: String = "",
     var username: String = "",
     var password: String = "",
@@ -19,40 +19,48 @@ class User(
     var address: String = "",
     var notify: Boolean = true,
 
-    @Column(name = "is_online")
-    var isOnline: Boolean = false,
+    @Column(name = "is_online") var isOnline: Boolean = false,
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "role")
-    val role: Role = Role.USER,
+    @Enumerated(EnumType.STRING) @Column(name = "role") val role: Role = Role.USER,
 
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "avatar_id")
-    var avatar: UserImage? = null,
+    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true) var avatar: UserImage? = null,
 
-    @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JoinColumn(name = "token_id")
-    var deviceToken: DeviceToken? = null,
+    @OneToOne(
+        mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true
+    ) var deviceToken: DeviceToken? = null,
 
-    @OneToMany(mappedBy = "user")
-    var chatUnreadCounters: Set<UnreadCounter> = setOf(),
+    @OneToMany(mappedBy = "user") var counters: Set<UnreadCounter> = setOf(),
 
-    @OneToMany(mappedBy = "convicted", cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    var comments: MutableSet<Comment> = mutableSetOf(),
+    @OneToMany(
+        mappedBy = "convicted", cascade = [CascadeType.ALL], orphanRemoval = true
+    ) var comments: MutableSet<Comment> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var ads: MutableSet<Ad> = mutableSetOf(),
+    @OneToMany(
+        mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true
+    ) var ads: MutableSet<Ad> = mutableSetOf(),
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var favs: MutableSet<Favorites> = mutableSetOf(),
+    @ManyToMany(
+        cascade = [CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH],
+    ) @JoinTable(
+        name = "fav_ads",
+        joinColumns = [JoinColumn(name = "user_id", referencedColumnName = "id")],
+        inverseJoinColumns = [JoinColumn(name = "ad_id", referencedColumnName = "id")]
+    ) val favs: MutableSet<Ad> = mutableSetOf(),
 
-    @ManyToMany(mappedBy = "members", cascade = [CascadeType.ALL])
-    var chats: MutableSet<Chat> = mutableSetOf()
+    @ManyToMany(
+        mappedBy = "members",
+        cascade = [CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH],
+    ) var chats: MutableSet<Chat> = mutableSetOf()
 ) {
 
-    fun addFav(child: Favorites) {
-        child.user = this
-        favs.add(child)
+    fun addOrRemoveFav(child: Ad) {
+        if (favs.any { it.id == child.id }) {
+            favs.removeIf { it.id == child.id }
+            child.favorites.removeIf { it.id == child.id }
+        } else {
+            favs.add(child)
+            child.favorites.add(this)
+        }
     }
 
     fun addChat(child: Chat) {
@@ -80,10 +88,9 @@ class User(
     }
 }
 
-
-fun UserOuterClass.User.fromUserGrpc(): User {
+fun UserOuterClass.User.fromUserGrpc(new: Boolean = false): User {
     return User(
-        id = UUID.randomUUID(),
+        id = if (new) null else UUID.fromString(this.id),
         name = this.name,
         username = this.username,
         password = this.password,
@@ -104,15 +111,13 @@ fun User.toUserGrpc(): UserOuterClass.User {
         .setPhone(this.phone)
         .setPassword(this.password)
         .setAddress(this.address)
-        .setRating(rating)
-        .build()
+        .setRating(rating).build()
 }
 
 fun User.toUserMini(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setName(this.name)
-        .build()
+        .setName(this.name).build()
 }
 
 fun User.toAnotherUser(): UserOuterClass.User {
@@ -121,29 +126,25 @@ fun User.toAnotherUser(): UserOuterClass.User {
         .setName(this.name)
         .setEmail(this.email)
         .setPhone(this.phone)
-        .setAddress(this.address)
-        .build()
+        .setAddress(this.address).build()
 }
 
 fun User.toUserPreview(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setAddress(this.address)
-        .build()
+        .setAddress(this.address).build()
 }
 
 fun User.toUserId(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setAddress(this.address)
-        .build()
+        .setAddress(this.address).build()
 }
 
 fun User.toUserChatPreview(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setName(this.name)
-        .build()
+        .setName(this.name).build()
 }
 
 fun String.hashPassword(): String {
@@ -151,11 +152,9 @@ fun String.hashPassword(): String {
 }
 
 fun String.checkPassword(user: String): Boolean {
-    return BCrypt.verifyer()
-        .verify(
-            this.toCharArray(),
-            user.toCharArray()
-        ).verified
+    return BCrypt.verifyer().verify(
+        this.toCharArray(), user.toCharArray()
+    ).verified
 }
 
 fun successGrpc(): UserOuterClass.IsSuccess {

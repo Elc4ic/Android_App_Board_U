@@ -2,7 +2,6 @@ package com.example.boardserver.utils
 
 import com.example.boardserver.entity.Ad
 import com.example.boardserver.entity.Category
-import com.example.boardserver.entity.Favorites
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.Predicate
 import jakarta.persistence.criteria.Root
@@ -10,14 +9,14 @@ import jakarta.persistence.criteria.Root
 
 object RecommendationUtils {
 
-    fun calculateSimilarity(cb: CriteriaBuilder, ad: Root<Ad?>, ads: List<Favorites>): Double {
+    fun calculateSimilarity(cb: CriteriaBuilder, ad: Root<Ad?>, ads: List<Ad>): Double {
         var similarityScore = 0.0
 
         for (fav in ads) {
-            similarityScore += calculateTitleSimilarity(cb, ad, fav.ad.title) * 3
-            similarityScore += calculateDescSimilarity(cb, ad, fav.ad.description) * 2
-            similarityScore += calculatePriceSimilarity(cb, ad, fav.ad.price)
-            similarityScore += calculateCategorySimilarity(cb, ad, fav.ad.category)
+            similarityScore += calculateTitleSimilarity(cb, ad, fav.title) * 3
+            similarityScore += calculateDescSimilarity(cb, ad, fav.description) * 2
+            similarityScore += calculatePriceSimilarity(cb, ad, fav.price)
+            similarityScore += calculateCategorySimilarity(cb, ad, fav.category!!)
         }
         return similarityScore
     }

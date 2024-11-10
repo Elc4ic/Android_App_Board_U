@@ -4,12 +4,14 @@ import board.AdOuterClass
 import jakarta.persistence.*
 import org.springframework.data.domain.Page
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 @Entity
 @Table(name = "ads")
 class Ad(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
     var title: String = "",
     var price: Long = 0,
     var description: String = "",
@@ -17,35 +19,45 @@ class Ad(
     var views: Int = 0,
     var created: LocalDateTime? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "users_id")
-    var user: User,
+    var user: User? = null,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
-    var category: Category,
+    var category: Category? = null,
 
-    @OneToMany(mappedBy = "ad", cascade = [CascadeType.ALL], orphanRemoval = true)
-    private var _images: MutableSet<Image> = mutableSetOf()
-){
-    val images get() = _images.toList()
+    @OneToMany(mappedBy = "ad", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var images: MutableSet<Image> = mutableSetOf(),
 
-    fun addImage(image: Image) {
-        _images.add(image)
+    @ManyToMany(
+        mappedBy = "favs",
+        cascade = [
+            CascadeType.DETACH,
+            CascadeType.MERGE,
+            CascadeType.PERSIST,
+            CascadeType.REFRESH
+        ],
+    )
+    var favorites: MutableSet<User> = mutableSetOf()
+) {
+    fun updateImage(image: Image) {
+        images += image
         image.ad = this
     }
 }
 
 
-fun AdOuterClass.Ad.fromAdGrpc(): Ad {
+fun AdOuterClass.Ad.fromAdGrpc(new: Boolean = false): Ad {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     return Ad(
-        id = UUID.randomUUID(),
+        id = if (new) null else UUID.fromString(this.id),
         title = this.title,
         price = this.price,
         description = this.description,
         isActive = this.isActive,
         views = this.views,
-        created = LocalDateTime.now(),
+        created = if (new) LocalDateTime.now() else LocalDateTime.parse(this.created),
         user = this.user.fromUserGrpc(),
         category = this.category.fromCategoryGrpc(),
     )
@@ -61,8 +73,8 @@ fun Ad.toAdGrpc(isFav: Boolean = false): AdOuterClass.Ad {
         .setIsActive(this.isActive)
         .setViews(this.views)
         .setCreated(this.created.toString())
-        .setUser(this.user.toUserMini())
-        .setCategory(this.category.toCategoryGrpc())
+        .setUser(this.user?.toUserMini())
+        .setCategory(this.category?.toCategoryGrpc())
         .addAllImages(this.images.map { it.id.toString() })
         .build()
 }
@@ -84,47 +96,28 @@ fun Ad.toAdPreview(isFav: Boolean = false): AdOuterClass.Ad {
         .setTitle(this.title)
         .setPrice(this.price)
         .setIsFav(isFav)
-        .setUser(this.user.toUserPreview())
+        .setUser(this.user?.toUserPreview())
         .setCreated(this.created.toString())
         .build()
 }
 
-fun List<Ad>.toRepeatedAdGrpc(): AdOuterClass.RepeatedAdResponse {
-    val ads = mutableListOf<AdOuterClass.Ad>()
-    this.forEach { ad -> ads.add(ad.toAdPreview()) }
+fun List<Ad>.toRepeatedAdGrpc(fav: Boolean = false): AdOuterClass.RepeatedAdResponse {
     return AdOuterClass.RepeatedAdResponse.newBuilder()
-        .addAllData(ads)
+        .addAllData(this.map { it.toAdPreview(fav) })
         .build()
 }
 
 fun List<Ad>.toRepeatedMyAd(): AdOuterClass.RepeatedAdResponse {
-    val ads = mutableListOf<AdOuterClass.Ad>()
-    this.forEach { ad -> ads.add(ad.toMyAd()) }
     return AdOuterClass.RepeatedAdResponse.newBuilder()
-        .addAllData(ads)
+        .addAllData(this.map { it.toMyAd() })
         .build()
 }
 
-fun List<Favorites>.toFavRepeatedAdPreviews(): AdOuterClass.RepeatedAdResponse {
-    val ads = mutableListOf<AdOuterClass.Ad>()
-    this.forEach { fav -> ads.add(fav.ad.toAdPreview(true)) }
-    return AdOuterClass.RepeatedAdResponse.newBuilder()
-        .addAllData(ads)
-        .build()
-}
+fun Page<Ad>.toPagedAdPreview(favs: List<Ad>): AdOuterClass.PaginatedAd {
+    val ads = this.map {
+        it.toAdPreview(favs.find { fav -> fav.id == it.id } != null)
+    }.toList()
 
-fun Page<Ad>.toPagedAdPreview(
-    favs: List<Favorites>,
-): AdOuterClass.PaginatedAd {
-    val ads = mutableListOf<AdOuterClass.Ad>()
-
-    this.forEach { ad ->
-        ads.add(
-            ad.toAdPreview(
-                favs.find { it.ad.id == ad.id } != null
-            )
-        )
-    }
     return AdOuterClass.PaginatedAd.newBuilder()
         .addAllData(ads).build()
 }

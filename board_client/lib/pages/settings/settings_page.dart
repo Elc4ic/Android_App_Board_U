@@ -27,7 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () async {
-          _userBloc.loadUser();
+          _userBloc.loadUser(user.id);
         },
         child: CustomScrollView(
           slivers: [
@@ -125,7 +125,7 @@ Future<void> changeDialog(BuildContext context, UserCubit userBloc) async {
                 ElevatedButton(
                   onPressed: () async {
                     var user = userBloc.getUser();
-                    user?.name = nameController.text;
+                    user.name = nameController.text;
                     await userBloc.changeUser(user);
                     context.pop();
                   },
@@ -167,10 +167,9 @@ Future<void> avatarDialog(BuildContext context, UserCubit userBloc) async {
                     final picked = await ImagePicker()
                         .pickImage(source: ImageSource.gallery);
                     if (picked != null) {
-                      var user = userBloc.getUser();
                       var image = await NavItems.imageFromFile(picked);
                       image = await NavItems.avatarToWebp(image);
-                      await userBloc.changeUser(user);
+                      await userBloc.changeAvatar(image);
                     }
                     context.pop();
                   },

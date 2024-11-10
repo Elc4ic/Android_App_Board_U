@@ -1,7 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
+import 'package:board_client/data/service/ad_service.dart';
+import 'package:board_client/data/service/category_service.dart';
+import 'package:board_client/data/service/chat_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
 
 import '../../data/service/user_service.dart';
@@ -10,22 +14,16 @@ import '../../generated/user.pb.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit(this.userService) : super(UserInitial()) {
-    userId = userService.getUser().id;
-  }
-
   final UserService userService;
-  late String userId;
+
+  UserCubit(this.userService) : super(UserInitial());
+
   int newChat = 0;
   bool auth = false;
 
   static UserCubit get(context) => BlocProvider.of<UserCubit>(context);
 
   int getChat(context) => newChat;
-
-  void initId([String? id]) {
-    userId = (id != null) ? id : userService.getUser().id;
-  }
 
   void newMessage() {
     newChat += 1;
@@ -35,12 +33,10 @@ class UserCubit extends Cubit<UserState> {
     newChat = 0;
   }
 
-  Future<void> loadUser() async {
+  Future<void> loadUser(String userId) async {
     try {
-      if (state is! UserLoaded) {
-        emit(UserLoading());
-      }
-      final user = await userService.getUserById(userId!);
+      emit(UserLoading());
+      final user = await userService.getUserById(userId);
       emit(UserLoaded(user: user));
     } catch (e) {
       emit(UserLoadingFailure(exception: e));
@@ -51,7 +47,7 @@ class UserCubit extends Cubit<UserState> {
 
   String? getToken() => UserService().getToken();
 
-  Future<void> changeUser(User? user) async {
+  Future<void> changeUser(User user) async {
     await userService.changeUser(user);
   }
 
@@ -63,7 +59,10 @@ class UserCubit extends Cubit<UserState> {
     if (state is! UserInitial) {
       emit(UserLoading());
     }
-    await userService.logout(userId);
+    await userService.logout();
+    GetIt.I<AdService>().initClient("");
+    GetIt.I<CategoryService>().initClient("");
+    GetIt.I<ChatService>().initClient("");
     auth = false;
     emit(UserInitial());
   }

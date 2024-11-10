@@ -7,7 +7,8 @@ import java.util.*
 @Entity
 @Table(name = "messages")
 class Message(
-    @Id val id: UUID,
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Id val id: UUID? = null,
     var content: String,
     val data: LocalDateTime? = null,
 
@@ -30,7 +31,5 @@ fun Message.toMessageGrpc(): board.Chat.Message {
 }
 
 fun List<Message>.toMessageList(): List<board.Chat.Message> {
-    val messageGrpc = mutableListOf<board.Chat.Message>()
-    this.forEach { c -> messageGrpc.add(c.toMessageGrpc()) }
-    return messageGrpc
+    return this.map { it.toMessageGrpc() }
 }

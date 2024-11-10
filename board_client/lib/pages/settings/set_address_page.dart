@@ -188,7 +188,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                             ? ": общ."
                             : "";
                     var room = (_blockController.text != "") ? "ком." : "";
-                    user?.address = (type == 3)
+                    user.address = (type == 3)
                         ? _addressController.text
                         : "${locf ?? ""}$korpus${campusf ?? ""}${gorodf ?? ""} $room${_blockController.text}";
                     await userCubit.changeUser(user);

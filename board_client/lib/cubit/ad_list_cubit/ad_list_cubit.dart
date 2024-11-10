@@ -3,7 +3,6 @@ import 'package:board_client/data/service/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:fixnum/fixnum.dart';
 
 import '../../data/service/ad_service.dart';
 import '../../generated/ad.pb.dart';

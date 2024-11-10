@@ -1,11 +1,112 @@
 package com.example.boardserver
 
+import board.UserOuterClass
+import board.UserOuterClass.Empty
+import com.example.boardserver.entity.*
+import com.example.boardserver.interceptor.ContextKeys
+import com.example.boardserver.repository.AdRepository
+import com.example.boardserver.repository.ChatRepository
+import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.service.UserService
+import io.grpc.Context
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.boot.test.context.SpringBootTest
+import java.util.*
 
 @SpringBootApplication
 class ServerApplication
 
 fun main(args: Array<String>) {
     runApplication<ServerApplication>(*args)
+}
+
+@SpringBootTest
+class ServerApplicationTests {
+
+    @Autowired
+    lateinit var userService: UserService
+
+    @Test
+    fun testUserService() {
+        val user = User(username = "eee")
+        userRepository.save(user)
+        val savedUser = userRepository.findByUsernameWithComments("eee").orElseThrow()
+        val context = Context.current().withValue(ContextKeys.USER_ID_KEY, savedUser.id.toString())
+        context.wrap {
+            runBlocking {
+                userService.deleteUser(Empty.getDefaultInstance())
+            }
+        }
+
+        assert(true)
+    }
+
+
+    @Autowired
+    lateinit var userRepository: UserRepository
+
+    @Autowired
+    lateinit var adRepository: AdRepository
+
+    @Autowired
+    lateinit var chatRepository: ChatRepository
+
+    @Test
+    fun testNewUserFromGrpc() {
+        val newUser = UserOuterClass.User.newBuilder()
+            .setName("cdcdcdc")
+            .setUsername("sxsxssxs")
+            .setPassword("qwertyyyy".hashPassword())
+            .setPhone("79833061072").build()
+        val user = newUser.fromUserGrpc(true)
+        userRepository.save(user)
+        val savedUser = userRepository.findByUsernameWithComments(user.username).orElseThrow()
+        userRepository.delete(savedUser)
+        assert(savedUser.id != null)
+    }
+
+
+    @Test
+    fun testAddAd() {
+        val ad = Ad(title = "dddddd")
+        adRepository.save(ad)
+
+        val savedAd = adRepository.findByTitle(ad.title).orElseThrow()
+        println(savedAd.id.toString())
+        adRepository.delete(savedAd)
+        assert(savedAd.id != null)
+    }
+
+    @Test
+    fun testCreateChat() {
+        val user01 = User(id = UUID.randomUUID())
+        val user02 = User(id = UUID.randomUUID())
+        val ad = Ad(id = UUID.randomUUID())
+        adRepository.save(ad)
+        userRepository.save(user01)
+        userRepository.save(user02)
+
+        val user1 = userRepository.findUserWithChats(user01.id).orElseThrow()
+        val user2 = userRepository.findUserWithChats(user02.id).orElseThrow()
+
+        val chat = ad.createChat(user1, user2)
+
+        user1.addChat(chat)
+        user2.addChat(chat)
+
+        userRepository.save(user1)
+        userRepository.save(user2)
+
+        chatRepository.save(chat)
+
+        val savedChat = chatRepository.findChatBetweenUsersByIds(user1.id, user2.id, ad.id).orElseThrow()
+        savedChat.members.forEach { print("${it.id}  ") }
+        assert(chat.id == savedChat.id)
+    }
+
+
 }

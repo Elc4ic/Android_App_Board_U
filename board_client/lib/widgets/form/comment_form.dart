@@ -29,13 +29,13 @@ class _CommentFormState extends State<CommentForm> {
       try {
         Future.delayed(const Duration(seconds: 1), () async {
           await userRepository.addComment(Comment(
-            text: _textController.text,
-            rating: rating.toInt(),
-            convicted: widget.user,
-            owner: userRepository.getUser(),
-            created: Markup.dateNow(),
-          ));
-        });
+              text: _textController.text,
+              rating: rating.toInt(),
+              convicted: widget.user,
+              owner: userRepository.getUser(),
+              created: Markup.dateNow(),
+            ),);
+        },);
         context.pop();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -62,7 +62,8 @@ class _CommentFormState extends State<CommentForm> {
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) => const Icon(
+              itemBuilder: (context, _) =>
+              const Icon(
                 Icons.star,
                 color: Colors.amber,
               ),

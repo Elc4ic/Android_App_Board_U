@@ -32,8 +32,7 @@ class _UserPageState extends State<UserPage> {
 
   @override
   void initState() {
-    _userBloc.initId(widget.id);
-    _userBloc.loadUser();
+    _userBloc.loadUser(widget.id);
     _adListBloc.getUserList(widget.id);
     super.initState();
   }
@@ -52,7 +51,7 @@ class _UserPageState extends State<UserPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _userBloc.loadUser();
+            _userBloc.loadUser(widget.id);
             _adListBloc.getUserList(widget.id);
           },
           child: CustomScrollView(
@@ -83,7 +82,7 @@ class _UserPageState extends State<UserPage> {
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _userBloc.loadUser();
+                          _userBloc.loadUser(widget.id);
                         },
                       ),
                     );

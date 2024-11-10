@@ -12,7 +12,7 @@ class ExceptionAdvice {
     @GrpcExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(ex: RuntimeException): StatusException {
         val status = Status.INTERNAL.withDescription(ex.message).withCause(ex)
-        return status.asException().also { log.error("status: $status") }
+        return status.asException()
     }
 
     companion object {

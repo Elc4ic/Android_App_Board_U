@@ -1,5 +1,4 @@
 import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/mini_profile.dart';
 import 'package:flutter/material.dart';
