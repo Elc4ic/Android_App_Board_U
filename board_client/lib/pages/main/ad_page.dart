@@ -43,18 +43,17 @@ class _AdPageState extends State<AdPage> {
           builder: (contextB, state) {
             if (state is AdLoaded) {
               return Scaffold(
-                  appBar: adHeader(
-                    state.ad.isFav,
-                    widget.idAd,
-                  ),
-                  body: ListView(
-                    children: [
-                      SizedBox(
-                        height: 421,
-                        child: Column(children: [
-                          Container(
-                            height: 400,
-                            color: Colors.black12,
+                appBar: adHeader(
+                  state.ad.isFav,
+                  widget.idAd,
+                ),
+                body: ListView(
+                  children: [
+                    SizedBox(
+                      height: 400,
+                      child: Stack(
+                        children: [
+                          Expanded(
                             child: PageView.builder(
                               itemCount: state.ad.images.length,
                               pageSnapping: true,
@@ -67,7 +66,6 @@ class _AdPageState extends State<AdPage> {
                                         context);
                                   },
                                   child: Image.network(
-                                    height: 400,
                                     "${Const.image_api}${state.ad.images[pagePosition]}",
                                   ),
                                 );
@@ -79,65 +77,92 @@ class _AdPageState extends State<AdPage> {
                               },
                             ),
                           ),
-                          Text("$imageCount из ${state.ad.images.length}",
-                              style: Theme.of(context).textTheme.labelSmall)
-                        ]),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: Markup.padding_h_16_v_4,
-                            child: Text(state.ad.title,
-                                style: Theme.of(context).textTheme.titleLarge),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text("${state.ad.price} ${SC.RUBLES}",
-                                    style:
-                                        Theme.of(context).textTheme.labelLarge),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.black.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(10)),
+                              padding: Markup.padding_all_16,
+                              child: Text(
+                                "$imageCount из ${state.ad.images.length}",
+                                style: Theme.of(context).textTheme.labelSmall,
                               ),
-                              ElevatedButton(
-                                onPressed: errorSnail(context, () async {
-                                  final chatId =
-                                      await chatService.startChat(state.ad);
-                                  context.push("/chat/$chatId");
-                                }),
-                                child: const Text("Написать"),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            padding: Markup.padding_h_16_t_4_b_16,
-                            child: Text(state.ad.created,
-                                style: Theme.of(context).textTheme.bodyMedium),
-                          ),
-                          MiniProfile(user: state.ad.user),
-                          Container(
-                            padding: Markup.padding_h_16_t_4_b_16,
-                            child: Text("${state.ad.views} просмотров",
-                                style: Theme.of(context).textTheme.labelMedium),
-                          ),
-                          Container(
-                            padding: Markup.padding_l_16_t_24_b_2,
-                            child: Text(state.ad.category.name,
-                                style: Theme.of(context).textTheme.labelLarge),
-                          ),
-                          Container(
-                            padding: Markup.padding_l_16_t_24_b_2,
-                            child: Text("Описание:",
-                                style: Theme.of(context).textTheme.labelLarge),
-                          ),
-                          Container(
-                              padding: Markup.padding_all_8,
-                              child: Text(state.ad.description,
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium)),
+                            ),
+                          )
                         ],
                       ),
-                    ],
-                  ));
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: Markup.padding_all_16,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(state.ad.title,
+                                  style:
+                                      Theme.of(context).textTheme.titleLarge),
+                              Text("${state.ad.price} ${SC.RUBLES}",
+                                  style:
+                                      Theme.of(context).textTheme.labelLarge),
+                              Row(
+                                children: [
+                                  Icon(Icons.location_on),
+                                  Text(state.ad.user.address,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium)
+                                ],
+                              ),
+                              Row(children: [
+                                Text("Категория: ",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.grey)),
+                                Text(state.ad.category.name,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium)
+                              ])
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: Markup.padding_all_16,
+                          child: Text(state.ad.description,
+                              style: Theme.of(context).textTheme.bodyMedium),
+                        ),
+                        Divider(),
+                        MiniProfile(user: state.ad.user),
+                        Divider(),
+                        ElevatedButton(
+                          onPressed: errorSnail(context, () async {
+                            final chatId =
+                                await chatService.startChat(state.ad);
+                            context.push("/chat/$chatId");
+                          }),
+                          child: Container(
+                            alignment: Alignment.center,
+                              width: double.infinity,
+                              child: Text("Написать")),
+                        ),
+                        Markup.dividerH10,
+                        Container(
+                          width: double.infinity,
+                          padding: Markup.padding_all_16,
+                          color: Theme.of(context).colorScheme.secondary,
+                          child: Text(
+                              "Идендификатор: ${state.ad.id}\nДата публикации: ${state.ad.created}\nПросмотров: ${state.ad.views}",
+                              style: Theme.of(context).textTheme.bodySmall),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              );
             }
             if (state is AdLoadingFailure) {
               return Center(

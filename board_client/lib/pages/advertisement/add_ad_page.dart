@@ -42,7 +42,7 @@ class _AddAdPageState extends State<AddAdPage> {
               ),
               const Align(
                   alignment: Alignment.topRight,
-                  child: Icon(Icons.close, size: 20, color: Colors.black87)),
+                  child: Icon(Icons.close, size: 20)),
             ],
           ),
         ),

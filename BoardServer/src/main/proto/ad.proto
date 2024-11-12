@@ -6,7 +6,7 @@ import "user.proto";
 
 service AdAPI {
     rpc GetManyAd (GetManyAdRequest) returns (PaginatedAd);
-    rpc GetOneAd (GetByIdRequest) returns (Ad);
+    rpc GetOneAd (GetByIdWithBoolRequest) returns (Ad);
     rpc SetFavoriteAd (GetByIdRequest) returns (IsSuccess);
     rpc GetFavoriteAds (Empty) returns (RepeatedAdResponse);
     rpc AddAd (ChangeAdRequest) returns (IsSuccess);

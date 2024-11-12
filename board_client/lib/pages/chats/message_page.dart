@@ -64,8 +64,7 @@ class _MessagePageState extends State<MessagePage> {
     final user = _userBloc.getUser();
     final req = SendMessageRequest(
         message: message,
-        receiver: user?.id,
-        data: Markup.dateNow(),
+        receiver: user.id,
         chatId: widget.chatId);
     streamController.sink.add(req);
   }

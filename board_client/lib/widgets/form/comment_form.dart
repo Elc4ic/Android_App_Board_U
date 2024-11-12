@@ -27,15 +27,19 @@ class _CommentFormState extends State<CommentForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false || rating != 0) {
       try {
-        Future.delayed(const Duration(seconds: 1), () async {
-          await userRepository.addComment(Comment(
-              text: _textController.text,
-              rating: rating.toInt(),
-              convicted: widget.user,
-              owner: userRepository.getUser(),
-              created: Markup.dateNow(),
-            ),);
-        },);
+        Future.delayed(
+          const Duration(seconds: 1),
+          () async {
+            await userRepository.addComment(
+              Comment(
+                text: _textController.text,
+                rating: rating.toInt(),
+                convicted: widget.user,
+                owner: userRepository.getUser(),
+              ),
+            );
+          },
+        );
         context.pop();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -62,8 +66,7 @@ class _CommentFormState extends State<CommentForm> {
               direction: Axis.horizontal,
               itemCount: 5,
               itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-              itemBuilder: (context, _) =>
-              const Icon(
+              itemBuilder: (context, _) => const Icon(
                 Icons.star,
                 color: Colors.amber,
               ),

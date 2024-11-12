@@ -117,8 +117,9 @@ fun User.toUserGrpc(): UserOuterClass.User {
 fun User.toUserMini(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
+        .setAddress(this.address)
         .setName(this.name).build()
-}
+}   
 
 fun User.toAnotherUser(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()

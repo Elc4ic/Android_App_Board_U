@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:board_client/data/service/cache_service.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
 import 'package:board_client/generated/ad.pbgrpc.dart';
@@ -53,7 +56,9 @@ class AdService {
   }
 
   Future<Ad> getOneAd(String id) async {
-    final ad = await _client.getOneAd(GetByIdRequest(id: id));
+    bool viewed = CacheService.getData(key: id) ?? false;
+    final ad =
+        await _client.getOneAd(GetByIdWithBoolRequest(id: id, value: viewed));
     return ad;
   }
 

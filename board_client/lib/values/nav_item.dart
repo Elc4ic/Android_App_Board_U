@@ -27,7 +27,7 @@ class NavItems {
       list,
       minHeight: 480,
       minWidth: 640,
-      quality: 40,
+      quality: 50,
       format: CompressFormat.webp,
     );
     return result;
@@ -38,7 +38,7 @@ class NavItems {
       list,
       minHeight: 120,
       minWidth: 120,
-      quality: 30,
+      quality: 70,
       format: CompressFormat.webp,
     );
     return result;

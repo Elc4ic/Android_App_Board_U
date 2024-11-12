@@ -1,4 +1,5 @@
 import 'package:board_client/data/service/ad_service.dart';
+import 'package:board_client/data/service/cache_service.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/buttons/fav_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,7 @@ class _AdCardState extends State<AdCard> {
 
   @override
   Widget build(BuildContext context) {
+    bool viewed = CacheService.getData(key: widget.ad.id) ?? false;
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: InkWell(
@@ -44,6 +46,25 @@ class _AdCardState extends State<AdCard> {
                           width: Const.cellWidth,
                           fit: BoxFit.fitWidth,
                           "${Const.image_ad_api}${widget.ad.id}"),
+                    ),
+                    Visibility(
+                      visible: viewed,
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5),
+                            child: Container(
+                                color: Colors.black12,
+                                padding: Markup.padding_all_2,
+                                child: Text(
+                                  "Просмотренно",
+                                  style: Theme.of(context).textTheme.labelSmall,
+                                )),
+                          ),
+                        ),
+                      ),
                     ),
                     Align(
                       alignment: Alignment.bottomRight,

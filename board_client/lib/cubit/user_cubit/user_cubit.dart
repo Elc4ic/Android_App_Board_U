@@ -35,7 +35,9 @@ class UserCubit extends Cubit<UserState> {
 
   Future<void> loadUser(String userId) async {
     try {
-      emit(UserLoading());
+      if (state is! UserLoaded) {
+        emit(UserLoading());
+      }
       final user = await userService.getUserById(userId);
       emit(UserLoaded(user: user));
     } catch (e) {

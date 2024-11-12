@@ -52,8 +52,6 @@ class _ChatRowState extends State<ChatRow> {
                   child: Image.network(
                       gaplessPlayback: true,
                       width: Const.cellWidth,
-                      cacheWidth: Const.cardImageWidth,
-                      cacheHeight: Const.cardImageHeight,
                       fit: BoxFit.fitWidth,
                       "${Const.image_ad_api}${widget.chat.ad.id}"),
                 ),

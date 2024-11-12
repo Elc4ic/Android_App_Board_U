@@ -15,7 +15,7 @@ class Ad(
     var title: String = "",
     var price: Long = 0,
     var description: String = "",
-    var isActive: Boolean = false,
+    var isActive: Boolean = true,
     var views: Int = 0,
     var created: LocalDateTime? = null,
 

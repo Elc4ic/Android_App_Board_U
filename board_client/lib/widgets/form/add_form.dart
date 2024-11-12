@@ -48,8 +48,6 @@ class _AddAdFormState extends State<AddAdForm> {
               description: Markup.capitalize(_descController.text),
               user: userRepository.getUser(),
               category: category,
-              created:
-                  widget.ad == null ? Markup.dateNow() : widget.ad?.created,
             ),
             images,
           );

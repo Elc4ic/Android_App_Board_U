@@ -25,11 +25,11 @@ ThemeData mainTheme(BuildContext context) {
         ),
         labelMedium: GoogleFonts.exo2(
           fontWeight: FontWeight.w700,
-          fontSize: Markup.size_16,
+          fontSize: Markup.size_14,
         ),
         labelSmall: GoogleFonts.exo2(
           fontWeight: FontWeight.w700,
-          fontSize: Markup.size_14,
+          fontSize: Markup.size_12,
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -58,7 +58,7 @@ ThemeData mainTheme(BuildContext context) {
             Radius.circular(12),
           ),
         ),
-        margin: Markup.padding_h_8_v_4,
+        margin: Markup.padding_h_4_v_4,
         color: scheme.secondary,
       ),
       inputDecorationTheme: InputDecorationTheme(

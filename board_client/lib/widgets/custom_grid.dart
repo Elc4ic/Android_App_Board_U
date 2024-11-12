@@ -1,4 +1,5 @@
 
+import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 
 class CustomGrid extends StatelessWidget {
@@ -23,7 +24,7 @@ class CustomGrid extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding: Markup.padding_h_2,
             child: items[index],
           );
       },

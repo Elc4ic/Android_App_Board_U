@@ -44,7 +44,7 @@ class ImageController(
         val image = try {
             val uuid = userId.uuidOrNull()
             if (uuid != null) {
-                val imageBytes = imageRepository.findById(uuid).orElse(null)?.imageBytes
+                val imageBytes = userImageRepository.findFirstByUserId(uuid).orElse(null)?.imageBytes
                 imageBytes ?: loadDefaultImage()
             } else {
                 loadDefaultImage()

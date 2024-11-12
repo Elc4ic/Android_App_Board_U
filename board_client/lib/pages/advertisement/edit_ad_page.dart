@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fixnum/fixnum.dart';
-
 
 class EditAdPage extends StatefulWidget {
   const EditAdPage({super.key, required this.adId});
@@ -51,7 +49,7 @@ class _EditAdPageState extends State<EditAdPage> {
                   style: Theme.of(context).textTheme.bodyMedium),
               const Align(
                   alignment: Alignment.topRight,
-                  child: Icon(Icons.close, size: 20, color: Colors.black87)),
+                  child: Icon(Icons.close, size: 20)),
             ],
           ),
         ),
@@ -78,7 +76,9 @@ class _EditAdPageState extends State<EditAdPage> {
                   height: 150,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(width: 2)),
+                      border: Border.all(
+                          width: 2,
+                          color: Theme.of(context).colorScheme.onSurface)),
                   child: InkWell(
                     onTap: _imagePick,
                     child: const Center(

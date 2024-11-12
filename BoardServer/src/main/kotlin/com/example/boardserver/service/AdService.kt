@@ -46,7 +46,7 @@ class AdService(
         }
 
     @Transactional
-    override suspend fun getOneAd(request: AdOuterClass.GetByIdRequest): AdOuterClass.Ad =
+    override suspend fun getOneAd(request: AdOuterClass.GetByIdWithBoolRequest): AdOuterClass.Ad =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetAd) {
                 var isFav = false
@@ -55,7 +55,7 @@ class AdService(
                 if (isAuth) {
                     val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                     isFav = adRepository.existsFavByUserIdAndAdId(ad.id, userId)
-                    ad.views++
+                    if(!request.value) ad.views++
                     adRepository.save(ad)
                 }
                 val response = ad.toAdGrpc(isFav)
