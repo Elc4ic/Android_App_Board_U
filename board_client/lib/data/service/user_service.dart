@@ -1,4 +1,3 @@
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 
 import 'package:grpc/grpc.dart';
@@ -87,11 +86,20 @@ class UserService {
     }
   }
 
-  Future<bool> signUp(String username, String password, String phone) async {
+  Future<User> signUp(String username, String password, String phone) async {
     try {
       final request =
           SignupRequest(username: username, password: password, phone: phone);
-      await _client.getSignUp(request);
+      User user = await _client.startSignUp(request);
+      return user;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> endIfPhoneValid(User newUser) async {
+    try {
+      await _client.endSignUp(newUser);
       return true;
     } catch (e) {
       rethrow;

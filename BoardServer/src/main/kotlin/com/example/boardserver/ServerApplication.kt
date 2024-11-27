@@ -1,21 +1,19 @@
 package com.example.boardserver
 
 import board.UserOuterClass
-import board.UserOuterClass.Empty
 import com.example.boardserver.entity.*
-import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.repository.AdRepository
 import com.example.boardserver.repository.ChatRepository
 import com.example.boardserver.repository.UserRepository
+import com.example.boardserver.service.CacheService
 import com.example.boardserver.service.UserService
-import io.grpc.Context
-import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.boot.test.context.SpringBootTest
 import java.util.*
+
 
 @SpringBootApplication
 class ServerApplication
@@ -28,9 +26,29 @@ fun main(args: Array<String>) {
 class ServerApplicationTests {
 
     @Autowired
-    lateinit var userService: UserService
+    lateinit var cacheService: CacheService
 
     @Test
+    fun testCacheService() {
+        val newUser = UserOuterClass.User.newBuilder()
+            .setName("cdcdcdc")
+            .setUsername("sxsxssxs")
+            .setPassword("qwertyyyy".hashPassword())
+            .setPhone("79833061072").build()
+        val user = newUser.fromUserGrpc(true)
+        println(user.id)
+        user.id?.let { cacheService.saveUser(it,user) }
+        val codeString = user.id.toString()
+        val code = cacheService.getUser(UUID.fromString(codeString))
+        println(code.name)
+
+        assert(true)
+    }
+
+    @Autowired
+    lateinit var userService: UserService
+
+/*    @Test
     fun testUserService() {
         val user = User(username = "eee")
         userRepository.save(user)
@@ -43,7 +61,7 @@ class ServerApplicationTests {
         }
 
         assert(true)
-    }
+    }*/
 
 
     @Autowired
@@ -76,7 +94,6 @@ class ServerApplicationTests {
         adRepository.save(ad)
 
         val savedAd = adRepository.findByTitle(ad.title).orElseThrow()
-        println(savedAd.id.toString())
         adRepository.delete(savedAd)
         assert(savedAd.id != null)
     }
@@ -104,7 +121,6 @@ class ServerApplicationTests {
         chatRepository.save(chat)
 
         val savedChat = chatRepository.findChatBetweenUsersByIds(user1.id, user2.id, ad.id).orElseThrow()
-        savedChat.members.forEach { print("${it.id}  ") }
         assert(chat.id == savedChat.id)
     }
 

@@ -1,5 +1,4 @@
 import 'package:board_client/cubit/comment_cubit/comment_cubit.dart';
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +109,7 @@ class _EditCommentFormState extends State<EditCommentForm> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: _submitForm,
-                    child: Text(SC.EDIT,),
+                    child: Text(SC.EDIT),
                   ),
                 ),
               ],

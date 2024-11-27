@@ -56,7 +56,7 @@ class _AdCardState extends State<AdCard> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5),
                             child: Container(
-                                color: Colors.black12,
+                                color: Colors.grey.withAlpha(150),
                                 padding: Markup.padding_all_2,
                                 child: Text(
                                   "Просмотренно",
@@ -68,20 +68,18 @@ class _AdCardState extends State<AdCard> {
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            color: Theme.of(context).colorScheme.surface,
-                            child: Center(
-                              child: FavButton(
-                                adId: widget.ad.id,
-                                isFav: widget.ad.isFav,
-                              ),
-                            ),
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10)),
+                        ),
+                        child: Center(
+                          child: FavButton(
+                            adId: widget.ad.id,
+                            isFav: widget.ad.isFav,
                           ),
                         ),
                       ),

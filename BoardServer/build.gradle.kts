@@ -48,13 +48,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("io.netty:netty-all:4.1.82.Final")
 
     //tracing/logging
-    implementation("io.micrometer:micrometer-tracing-bridge-brave")
-    implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.zipkin.brave:brave")
     implementation("io.zipkin.reporter2:zipkin-reporter-brave")
-//    implementation("com.github.loki4j:loki-logback-appender")
 
     //kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -76,7 +75,7 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     //flyway
     implementation("org.flywaydb:flyway-core")
-    //firebase
+    //firebase messaging
     implementation("com.google.firebase:firebase-admin:9.0.0")
     implementation("com.google.cloud:google-cloud-pubsub:1.132.1")
     //jwt

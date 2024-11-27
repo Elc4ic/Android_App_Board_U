@@ -90,7 +90,7 @@ class User(
 
 fun UserOuterClass.User.fromUserGrpc(new: Boolean = false): User {
     return User(
-        id = if (new) null else UUID.fromString(this.id),
+        id = if (new) UUID.randomUUID() else UUID.fromString(this.id),
         name = this.name,
         username = this.username,
         password = this.password,

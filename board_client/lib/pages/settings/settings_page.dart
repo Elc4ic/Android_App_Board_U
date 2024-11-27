@@ -68,14 +68,12 @@ class _SettingsPageState extends State<SettingsPage> {
                         ServicePanel(
                             onTap: () => myDialog(context, () async {
                                   await _userBloc.logOut();
-                                  exit(0);
                                 }, "Выход из аккаунта закроет приложение!"),
                             title: "Выйти из аккаунта",
                             icon: Icons.exit_to_app),
                         ServicePanel(
                             onTap: () => myDialog(context, () async {
                                   _userBloc.deleteUser();
-                                  exit(0);
                                 }, "Удаление аккаунта закроет приложение!"),
                             title: "Удалить аккаунт",
                             icon: Icons.delete),

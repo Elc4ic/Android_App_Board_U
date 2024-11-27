@@ -39,11 +39,14 @@ class _FavButtonState extends State<FavButton> {
             setState(() {
               isFav = !isFav;
             });
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Добавоенно в избранное"),
-              ),
-            );
+            if (isFav) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Добавленно в избранное"),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
           }
         } catch (e) {
           ScaffoldMessenger.of(context).showSnackBar(

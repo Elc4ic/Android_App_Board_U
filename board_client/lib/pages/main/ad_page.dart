@@ -1,5 +1,4 @@
 import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
-import 'package:board_client/routing/not_found_page.dart';
 import 'package:board_client/values/values.dart';
 import 'package:board_client/widgets/headers/ad_header.dart';
 import 'package:flutter/material.dart';
@@ -81,9 +80,10 @@ class _AdPageState extends State<AdPage> {
                             alignment: Alignment.bottomCenter,
                             child: Container(
                               decoration: BoxDecoration(
-                                  color: Colors.black.withAlpha(30),
+                                  color: Colors.grey.withAlpha(150),
                                   borderRadius: BorderRadius.circular(10)),
-                              padding: Markup.padding_all_16,
+                              margin: Markup.padding_all_16,
+                              padding: Markup.padding_all_8,
                               child: Text(
                                 "$imageCount из ${state.ad.images.length}",
                                 style: Theme.of(context).textTheme.labelSmall,
@@ -139,13 +139,13 @@ class _AdPageState extends State<AdPage> {
                         MiniProfile(user: state.ad.user),
                         Divider(),
                         ElevatedButton(
-                          onPressed: errorSnail(context, () async {
+                          onPressed: () async {
                             final chatId =
                                 await chatService.startChat(state.ad);
                             context.push("/chat/$chatId");
-                          }),
+                          },
                           child: Container(
-                            alignment: Alignment.center,
+                              alignment: Alignment.center,
                               width: double.infinity,
                               child: Text("Написать")),
                         ),

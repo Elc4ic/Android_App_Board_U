@@ -25,6 +25,9 @@ interface UserRepository : JpaRepository<User, UUID> {
     fun findByUsernameWithComments(username: String): Optional<User>
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = ?1")
+    fun findUserWithComments(id: UUID?): Optional<User>
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.comments WHERE u.id = ?1")
     fun findByIdWithComments(id: UUID?): Optional<User>
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.favs WHERE u.id = ?1")

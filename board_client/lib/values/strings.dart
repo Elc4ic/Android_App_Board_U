@@ -61,7 +61,6 @@ class SC {
   static const String PASSWORD_PATTERN = r'(?=.*?[#!@$%^&*-])';
   static const String NUM_PATTERN = r"(?<![-.])\b[0-9]+\b(?!\.[0-9])";
 
-
   //ads
   static const String ACTIVE = "Активно";
   static const String UNACTIVE = "Не активно";
@@ -90,6 +89,7 @@ class SC {
   static const String CHANGE_PAGE = "/my/change";
   static const String LOGIN_PAGE = "/login";
   static const String SIGNUP_PAGE = "/signup";
+  static const String VERIFY_PAGE = "/verify";
   static const String COMMENT_PAGE = "/comments";
   static const String ADD_COMMENT_PAGE = "/addcomment";
 }

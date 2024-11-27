@@ -4,7 +4,8 @@ package board;
 
 
 service UserAPI {
-    rpc GetSignUp (SignupRequest) returns (IsSuccess);
+    rpc StartSignUp (SignupRequest) returns (User);
+    rpc EndSignUp (User) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
     rpc SetOffline (Empty) returns (IsSuccess);

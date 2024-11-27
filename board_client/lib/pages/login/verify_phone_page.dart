@@ -1,20 +1,35 @@
-import 'package:board_client/data/service/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:form_field_validator/form_field_validator.dart';
-import 'package:grpc/grpc_connection_interface.dart';
 
+import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 
-class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+class VerifyPhonePage extends StatelessWidget {
+  const VerifyPhonePage({super.key});
 
   @override
-  State<SignUpForm> createState() => _AddAdFormState();
+  Widget build(BuildContext context) {
+    return const SafeArea(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+
+        ],
+      ),
+    );
+  }
 }
 
-class _AddAdFormState extends State<SignUpForm> {
+class CodeForm extends StatefulWidget {
+  const CodeForm({super.key});
+
+  @override
+  State<CodeForm> createState() => _CodeFormState();
+}
+
+class _CodeFormState extends State<CodeForm> {
   final userRepository = GetIt.I<UserService>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _usernameController = TextEditingController();

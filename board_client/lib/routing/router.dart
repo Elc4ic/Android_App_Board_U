@@ -19,7 +19,7 @@ import '../pages/advertisement/my_ads_page.dart';
 import '../pages/settings/comments/add_comment_page.dart';
 import '../pages/settings/comments/comment_page.dart';
 import '../pages/settings/user_page.dart';
-import 'not_found_page.dart';
+import 'error_page.dart';
 
 GoRouter router = GoRouter(
   initialLocation: '/home',
@@ -81,6 +81,15 @@ GoRouter router = GoRouter(
         return AddCommentPage(convictedId: id);
       },
     ),
+    GoRoute(
+        path: "/error",
+        pageBuilder: (context, state) {
+          return const MaterialPage(
+              child: ErrorPage(
+            errorMessage: "Just error",
+            errorTitle: "Error",
+          ));
+        }),
     GoRoute(
       path: '/setaddress',
       builder: (context, state) {
@@ -165,6 +174,6 @@ GoRouter router = GoRouter(
     ),
   ],
   errorBuilder: (context, state) => const AppScaffold(
-    body: NotFoundScreen(),
+    body: ErrorPage(errorMessage: "Not found tis page", errorTitle: "404"),
   ),
 );

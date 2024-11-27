@@ -4,7 +4,8 @@ package board;
 
 
 service UserAPI {
-    rpc GetSignUp (SignupRequest) returns (IsSuccess);
+    rpc StartSignUp (SignupRequest) returns (User);
+    rpc EndSignUp (UserId) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
     rpc SetOffline (Empty) returns (IsSuccess);
@@ -82,6 +83,11 @@ message Comment {
 
 message CommentsResponse {
     repeated Comment comments = 1;
+}
+
+message Code {
+    User new_user = 1;
+    string code = 2;
 }
 
 message Id {

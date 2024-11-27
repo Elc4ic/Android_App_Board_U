@@ -72,8 +72,8 @@ class _ChatRowState extends State<ChatRow> {
                             height: 30,
                             child: Image.network(
                               gaplessPlayback: true,
-                              fit: BoxFit.fitWidth,
-                              "${Const.image_avatar_api}${widget.chat.target.avatar}",
+                              fit: BoxFit.contain,
+                              "${Const.image_avatar_api}${widget.chat.target.id}",
                             ),
                           ),
                         ),

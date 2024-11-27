@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../values/values.dart';
 
@@ -17,6 +18,9 @@ class LoginChecker extends StatefulWidget {
 
 class _LoginCheckerState extends State<LoginChecker> {
   late final userBloc = UserCubit.get(context);
+
+  bool pressed = false;
+  String clientID = "2d9bfe59161142bba4b0bb47b1c855f0";
 
   @override
   Widget build(BuildContext context) {
