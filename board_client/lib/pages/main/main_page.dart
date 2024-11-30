@@ -78,7 +78,7 @@ class _MainPageState extends State<MainPage> {
           },
           child: CustomScrollView(
             cacheExtent: Const.cardCacheExtent,
-            physics: const ClampingScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             controller: _scrollController,
             slivers: [
               SliverPadding(

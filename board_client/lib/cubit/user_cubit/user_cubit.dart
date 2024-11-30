@@ -33,6 +33,18 @@ class UserCubit extends Cubit<UserState> {
     newChat = 0;
   }
 
+  Future<void> updateUser() async {
+    try {
+      if (state is! UserLoaded) {
+        emit(UserLoading());
+      }
+      final user = await userService.updateUser();
+      emit(UserUpdated());
+    } catch (e) {
+      emit(UserLoadingFailure(exception: e));
+    }
+  }
+
   Future<void> loadUser(String userId) async {
     try {
       if (state is! UserLoaded) {

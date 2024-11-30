@@ -1,21 +1,22 @@
 package com.example.boardserver.service
 
-import board.AdOuterClass
+import board.AdOuterClass.*
 import board.UserOuterClass
 import org.springframework.stereotype.Service
+import java.util.*
 
 
 @Service
 interface AdService {
-    suspend fun getManyAd(request: AdOuterClass.GetManyAdRequest): AdOuterClass.PaginatedAd
-    suspend fun getOneAd(request: AdOuterClass.GetByIdWithBoolRequest): AdOuterClass.Ad
-    suspend fun setFavoriteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess
-    suspend fun addAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess
-    suspend fun editAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess
-    suspend fun deleteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess
-    suspend fun muteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess
-    suspend fun getFavoriteAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse
-    suspend fun getMyAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse
-    suspend fun getByUserId(request: AdOuterClass.GetByIdRequest): AdOuterClass.RepeatedAdResponse
+    suspend fun getManyAd(request: GetManyAdRequest): PaginatedAd
+    suspend fun getOneAd(id: UUID, viewed: Boolean): Ad
+    suspend fun setFavoriteAd(id: UUID): Boolean
+    suspend fun addAd(adGrpc: Ad, images: List<UserOuterClass.ImageProto>): Boolean
+    suspend fun editAd(adGrpc: Ad, images: List<UserOuterClass.ImageProto>): Boolean
+    suspend fun deleteAd(id: UUID): Boolean
+    suspend fun muteAd(id: UUID): Boolean
+    suspend fun getFavoriteAds(): RepeatedAdResponse
+    suspend fun getMyAds(): RepeatedAdResponse
+    suspend fun getByUserId(id: UUID): RepeatedAdResponse
 
 }

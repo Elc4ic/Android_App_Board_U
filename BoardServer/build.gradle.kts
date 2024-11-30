@@ -4,29 +4,21 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "3.2.2"
-    id("war")
     id("io.spring.dependency-management") version "1.1.4"
     id("com.google.protobuf") version "0.9.4"
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.spring") version "2.0.21"
     kotlin("plugin.jpa") version "2.0.21"
     kotlin("plugin.allopen") version "2.0.21"
+    kotlin("plugin.serialization") version "2.0.21"
     application
 }
-
 
 group = "org.example.boardserver"
 version = "0.0.1"
 
 repositories {
     mavenCentral()
-}
-
-tasks.war {
-    manifest {
-        attributes["Main-Class"] = application.mainClass
-    }
-    enabled = true
 }
 
 tasks.jar {
@@ -62,6 +54,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     //grpc
     implementation("io.grpc:grpc-kotlin-stub:${grpcKotlinPlugin}")
@@ -71,11 +64,12 @@ dependencies {
     implementation("com.google.protobuf:protoc:${protobuf}")
     implementation("com.google.protobuf:protobuf-kotlin:${protobuf}")
     implementation("net.devh:grpc-server-spring-boot-starter:${grpcServerVersion}")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
     //annotation
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     //flyway
     implementation("org.flywaydb:flyway-core")
-    //firebase messaging
+    //firebase/messaging
     implementation("com.google.firebase:firebase-admin:9.0.0")
     implementation("com.google.cloud:google-cloud-pubsub:1.132.1")
     //jwt

@@ -4,13 +4,13 @@ package board;
 
 
 service UserAPI {
-    rpc StartSignUp (SignupRequest) returns (User);
-    rpc EndSignUp (User) returns (IsSuccess);
+    rpc StartSignUp (User) returns (Id);
+    rpc EndSignUp (Code) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
     rpc SetOffline (Empty) returns (IsSuccess);
     rpc SetAvatar (ImageProto) returns (IsSuccess);
-    rpc GetUserById (UserId) returns (User);
+    rpc GetUserById (Id) returns (User);
     rpc LogOut (Empty) returns (IsSuccess);
     rpc ChangeUserData (User) returns (IsSuccess);
     rpc DeleteUser (Empty) returns (IsSuccess);
@@ -18,7 +18,7 @@ service UserAPI {
     rpc AddComment (Comment) returns (IsSuccess);
     rpc EditComment (Comment) returns (IsSuccess);
     rpc DeleteComment (Id) returns (IsSuccess);
-    rpc GetComments (UserId) returns (CommentsResponse);
+    rpc GetComments (Id) returns (CommentsResponse);
     rpc GetUserComments (Empty) returns (CommentsResponse);
 }
 
@@ -29,10 +29,6 @@ message IsSuccess {
     bool login = 1;
 }
 
-message UserId {
-    string id = 1;
-}
-
 message ImageProto {
     bytes chunk = 2;
 }
@@ -40,7 +36,7 @@ message ImageProto {
 message LoginRequest {
     string username = 1;
     string password = 2;
-    string deviceToken = 4;
+    string device_token = 4;
 }
 
 message LoginResponse {
@@ -88,3 +84,9 @@ message CommentsResponse {
 message Id {
     string id = 1;
 }
+
+message Code {
+    string id = 1;
+    string code = 2;
+}
+

@@ -158,10 +158,6 @@ fun String.checkPassword(user: String): Boolean {
     ).verified
 }
 
-fun successGrpc(): UserOuterClass.IsSuccess {
-    return UserOuterClass.IsSuccess.newBuilder().setLogin(true).build()
-}
-
-fun failGrpc(): UserOuterClass.IsSuccess {
-    return UserOuterClass.IsSuccess.newBuilder().setLogin(false).build()
+fun successGrpc(success:Boolean): UserOuterClass.IsSuccess {
+    return UserOuterClass.IsSuccess.newBuilder().setLogin(success).build()
 }

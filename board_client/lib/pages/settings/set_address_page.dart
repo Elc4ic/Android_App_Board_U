@@ -3,8 +3,6 @@ import 'package:board_client/values/values.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../data/service/user_service.dart';
@@ -73,12 +71,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     value: loc,
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9.0),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -105,12 +97,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     value: campus,
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9.0),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -136,12 +122,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     value: gorod,
                     decoration: const InputDecoration(
                       contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9.0),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -153,12 +133,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       labelText: "Комната",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9.0),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -169,12 +143,6 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     keyboardType: TextInputType.text,
                     decoration: const InputDecoration(
                       labelText: "Адрес",
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(9.0),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -194,8 +162,7 @@ class _SetAddressPageState extends State<SetAddressPage> {
                     await userCubit.changeUser(user);
                     context.go(SC.SETTINGS_PAGE);
                   },
-                  child: Text("Сохранить",
-                      style: Theme.of(context).textTheme.bodyMedium),
+                  child: Text("Сохранить"),
                 ),
               ],
             ),

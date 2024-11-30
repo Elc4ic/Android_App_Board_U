@@ -81,14 +81,9 @@ ThemeData mainTheme(BuildContext context) {
         ),
         filled: true,
         fillColor: scheme.onSurface.withAlpha(25),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(8)),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: scheme.primary),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
         ),
       ),
       pageTransitionsTheme: PageTransitionsTheme(

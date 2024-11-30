@@ -14,6 +14,7 @@ import 'package:go_router/go_router.dart';
 
 import '../pages/advertisement/edit_ad_page.dart';
 import '../pages/chats/message_page.dart';
+import '../pages/login/verify_phone_page.dart';
 import '../pages/main/ad_page.dart';
 import '../pages/advertisement/my_ads_page.dart';
 import '../pages/settings/comments/add_comment_page.dart';
@@ -89,7 +90,7 @@ GoRouter router = GoRouter(
             errorMessage: "Just error",
             errorTitle: "Error",
           ));
-        }),
+        },),
     GoRoute(
       path: '/setaddress',
       builder: (context, state) {
@@ -100,6 +101,13 @@ GoRouter router = GoRouter(
       path: '/login',
       pageBuilder: (context, state) {
         return const MaterialPage(child: LoginPage());
+      },
+    ),
+    GoRoute(
+      path: '/verify/:id',
+      pageBuilder: (context, state) {
+        final id = state.pathParameters['id']!;
+        return MaterialPage(child: VerifyPhonePage(userID: id));
       },
     ),
     GoRoute(
@@ -174,6 +182,6 @@ GoRouter router = GoRouter(
     ),
   ],
   errorBuilder: (context, state) => const AppScaffold(
-    body: ErrorPage(errorMessage: "Not found tis page", errorTitle: "404"),
+    body: ErrorPage(errorMessage: "Такой страницы не существует", errorTitle: "404"),
   ),
 );

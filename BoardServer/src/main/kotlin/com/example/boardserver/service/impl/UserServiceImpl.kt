@@ -5,13 +5,14 @@ import board.UserOuterClass.*
 import board.UserOuterClass.User
 import brave.Tracer
 import com.example.boardserver.entity.*
-import com.example.boardserver.exceptions.GrpcErrors
+import com.example.boardserver.exceptions.Errors
 import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.repository.CommentRepository
 import com.example.boardserver.repository.TokenRepository
 import com.example.boardserver.repository.UserRepository
 import com.example.boardserver.service.CacheService
 import com.example.boardserver.service.UserService
+import com.example.boardserver.service.VerifyService
 import com.example.boardserver.utils.FcmProvider
 import com.example.boardserver.utils.JwtProvider
 import com.example.boardserver.utils.runWithTracing
@@ -30,28 +31,30 @@ class UserServiceImpl(
     private val jwtProvider: JwtProvider,
     private val fcmProvider: FcmProvider,
     private val cacheService: CacheService,
+    private val verifyService: VerifyService,
     private val tracer: Tracer
 ) : UserService {
 
-    override suspend fun startSignUp(request: SignupRequest): User =
+    override suspend fun startSignUp(userDto: User): UUID =
         runWithTracing(tracer, GetSignUp) {
-            if (userRepository.existsByPhone(request.phone)) throw GrpcErrors.RepeatedPhoneNumber()
-            if (userRepository.existsByUsername(request.username)) throw GrpcErrors.RepeatedUsername()
-            val newUser = User.newBuilder()
-                .setName(request.username)
-                .setUsername(request.username)
-                .setPassword(request.password.hashPassword())
-                .setPhone(request.phone).build()
-            val user = newUser.fromUserGrpc(true)
-            cacheService.saveUser(user.id!!, user)
-            newUser
+            if (userRepository.existsByPhone(userDto.phone)) throw Errors.RepeatedPhoneNumber()
+            if (userRepository.existsByUsername(userDto.username)) throw Errors.RepeatedUsername()
+            val user = userDto.fromUserGrpc(true)
+            user.password = user.password.hashPassword()
+            val response = verifyService.makeCall(user.phone)
+            if (response != null && user.id != null) {
+                cacheService.saveUser(user.id, user)
+                cacheService.saveCode(user.id, response.data.pincode)
+            }
+            user.id!!
         }
 
-
-    override suspend fun endSignUp(request: UserId): IsSuccess {
-        val user = cacheService.getUser(UUID.fromString(request.id))
-        userRepository.save(user)
-        return successGrpc()
+    override suspend fun endSignUp(id: UUID, code: String): Boolean {
+        val cachedCode = cacheService.getCode(id)
+        if (cachedCode != code || cachedCode == "expired") throw Errors.VerifyFailed()
+        val cachedUser = cacheService.getUser(id)
+        userRepository.save(cachedUser)
+        return true
     }
 
     override suspend fun getLogin(request: LoginRequest): LoginResponse =
@@ -68,8 +71,7 @@ class UserServiceImpl(
             response.also { log.info("login: $it") }
         }
 
-
-    override suspend fun getUserAndRefresh(request: Empty): UserAvatarToken =
+    override suspend fun getUserAndRefresh(): UserAvatarToken =
         runWithTracing(tracer, GetUserAndRefresh) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             var token = ContextKeys.TOKEN_KEY.get(Context.current())
@@ -83,113 +85,100 @@ class UserServiceImpl(
             response.also { log.info(it.toString()) }
         }
 
-
-    override suspend fun setOffline(request: Empty): IsSuccess =
+    override suspend fun setOffline(): Boolean =
         runWithTracing(tracer, SetOffline) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val user = userRepository.findById(userId).orElseThrow()
             user.isOnline = false
             userRepository.save(user)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun getUserById(request: UserId): User =
+    override suspend fun getUserById(id: UUID): User =
         runWithTracing(tracer, GetUserById) {
-            val user = userRepository.findById(request.id.uuid()).orElseThrow()
-            user.toAnotherUser().also { log.info("get user: $it") }
+            val user = userRepository.findById(id).orElseThrow()
+            user.toAnotherUser()
         }
 
 
-    override suspend fun logOut(request: Empty): IsSuccess =
+    override suspend fun logOut(): Boolean =
         runWithTracing(tracer, LogOut) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             tokenRepository.deleteByUserId(userId)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun changeUserData(request: User): IsSuccess =
+    override suspend fun changeUserData(userDto: User): Boolean =
         runWithTracing(tracer, ChangeUserData) {
-            val user = userRepository.findById(request.id.uuid()).orElseThrow()
-            user.name = request.name
-            user.phone = request.phone
-            user.address = request.address
-            user.email = request.email
-            user.notify = request.notify
+            val user = userRepository.findById(userDto.id.uuid()).orElseThrow()
+            user.name = userDto.name
+            user.phone = userDto.phone
+            user.address = userDto.address
+            user.email = userDto.email
+            user.notify = userDto.notify
             userRepository.save(user)
-            successGrpc().also { log.info(user.toString()) }
+            true
         }
 
-
-    override suspend fun setAvatar(request: ImageProto): IsSuccess =
+    override suspend fun setAvatar(image: ImageProto): Boolean =
         runWithTracing(tracer, SetAvatar) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val user = userRepository.findUserWithAvatar(userId).orElseThrow()
-            user.addAvatar(request.fromAvatarGrpc(user))
+            user.addAvatar(image.fromAvatarGrpc(user))
             userRepository.save(user)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun deleteUser(request: Empty): IsSuccess =
+    override suspend fun deleteUser(): Boolean =
         runWithTracing(tracer, DeleteUser) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             userRepository.deleteById(userId)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun addComment(request: UserOuterClass.Comment): IsSuccess =
+    override suspend fun addComment(commentDto: UserOuterClass.Comment): Boolean =
         runWithTracing(tracer, AddComment) {
-            log.info("add comment: ${request.convicted.id} ${request.owner.id}")
-            val convicted = userRepository.findUserWithComments(request.convicted.id.uuid()).orElseThrow()
-            val creator = userRepository.findById(request.owner.id.uuid()).orElseThrow()
-            val comment = request.fromCommentGrpc(convicted, creator)
+            val convicted = userRepository.findUserWithComments(commentDto.convicted.id.uuid()).orElseThrow()
+            val creator = userRepository.findById(commentDto.owner.id.uuid()).orElseThrow()
+            val comment = commentDto.fromCommentGrpc(convicted, creator)
             convicted.addComment(comment)
             userRepository.save(convicted)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun editComment(request: UserOuterClass.Comment): IsSuccess =
+    override suspend fun editComment(commentDto: UserOuterClass.Comment): Boolean =
         runWithTracing(tracer, EditComment) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-            if (userId != request.owner.id.uuid()) throw GrpcErrors.YouNotOwner()
-            val comment = commentRepository.findById(request.id.uuid())
-                .orElseThrow { GrpcErrors.NotFoundComment() }
-            comment.rating = request.rating
-            comment.text = request.text
+            if (userId != commentDto.owner.id.uuid()) throw Errors.YouNotOwner()
+            val comment = commentRepository.findById(commentDto.id.uuid())
+                .orElseThrow { Errors.NotFoundComment() }
+            comment.rating = commentDto.rating
+            comment.text = commentDto.text
             commentRepository.save(comment)
-            successGrpc()
+            true
         }
 
-
-    override suspend fun deleteComment(request: Id): IsSuccess =
+    override suspend fun deleteComment(id: UUID): Boolean =
         runWithTracing(tracer, DeleteComment) {
-            commentRepository.deleteById(request.id.uuid())
-            successGrpc()
+            commentRepository.deleteById(id)
+            true
         }
 
-
-    override suspend fun getComments(request: UserId): CommentsResponse =
+    override suspend fun getComments(id: UUID): CommentsResponse =
         runWithTracing(tracer, GetComments) {
-            val comments = commentRepository.findByConvictedId(request.id.uuid())
+            val comments = commentRepository.findByConvictedId(id)
             comments.toRepeatedCommentGrpc().also { log.info("get comments: $it") }
         }
 
-
-    override suspend fun getUserComments(request: Empty): CommentsResponse =
+    override suspend fun getUserComments(): CommentsResponse =
         runWithTracing(tracer, GetUserComments) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val comments = commentRepository.findByCreatorId(userId)
             comments.toRepeatedCommentGrpc().also { log.info("get user comments: $it") }
         }
 
-
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
-        private const val timeOutMillis = 5000L
 
         private const val userService = "UserAPI"
         private const val GetSignUp = "$userService.getSignUp"

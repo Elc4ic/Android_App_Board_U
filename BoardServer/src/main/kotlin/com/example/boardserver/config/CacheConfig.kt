@@ -22,7 +22,7 @@ class CacheConfig {
                 return ConcurrentMapCache(
                     name,
                     CacheBuilder.newBuilder()
-                        .expireAfterWrite(8, TimeUnit.MINUTES)
+                        .expireAfterWrite(5, TimeUnit.MINUTES)
                         .build<Any, Any>().asMap(),
                     false
                 )

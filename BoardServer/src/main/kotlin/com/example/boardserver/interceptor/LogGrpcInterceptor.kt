@@ -42,7 +42,8 @@ class LogGrpcInterceptor(
             "board.AdAPI/GetByUserId",
             "board.CategoryAPI/GetAllCategories",
             "board.UserAPI/GetLogin",
-            "board.UserAPI/GetSignUp",
+            "board.UserAPI/StartSignUp",
+            "board.UserAPI/EndSignUp",
             "board.UserAPI/GetUserById",
             "board.UserAPI/GetComment",
         )

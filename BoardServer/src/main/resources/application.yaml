@@ -22,6 +22,9 @@ spring:
     enabled: true
     baselineOnMigrate: true
 
+  config:
+    import: classpath:/secret.yaml
+
 management:
   tracing:
     sampling:
@@ -31,10 +34,4 @@ management:
       exposure:
         include: prometheus
 
-jwt:
-  secret:
-    access: qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==
-    refresh: zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==
 
-firebase:
-  secretKey: 8ClknOAu9iNb/DE0CWYjo2u54qbEg6i6NSgJdTgYf80=

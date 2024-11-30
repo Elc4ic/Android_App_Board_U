@@ -11,11 +11,14 @@ import java.util.*
 @Service
 class CacheService {
 
-    //TTL config for 8 minutes
+    //TTL in config for 8 minutes
     @CachePut(value = ["users"], key = "#id")
     fun saveUser(id: UUID, user: User): User {
-        log.info("Save value to cache: $id")
         return user
+    }
+    @CachePut(value = ["codes"], key = "#id")
+    fun saveCode(id:UUID, code: String): String {
+        return code
     }
 
     @Cacheable(value = ["users"], key = "#id")
@@ -23,8 +26,18 @@ class CacheService {
         return User()
     }
 
+    @Cacheable(value = ["codes"], key = "#id")
+    fun getCode(id:UUID): String {
+        return "expired"
+    }
+
     @CacheEvict(value = ["users"], key = "#id")
     fun evictUser(id: UUID) {
+        log.info("Evicting value from cache: $id")
+    }
+
+    @CacheEvict(value = ["codes"], key = "#id")
+    fun evictCode(id: UUID) {
         log.info("Evicting value from cache: $id")
     }
 

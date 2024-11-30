@@ -13,6 +13,8 @@ class TracingConfig {
     @Bean
     fun tracing(zipkinSpanHandler: AsyncZipkinSpanHandler?): Tracing {
         return Tracing.newBuilder()
+            .localIp("127.0.0.1")
+            .localPort(9411)
             .localServiceName("Board Service")
             .build()
     }

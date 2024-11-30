@@ -4,7 +4,7 @@ import board.AdOuterClass
 import board.UserOuterClass
 import brave.Tracer
 import com.example.boardserver.entity.*
-import com.example.boardserver.exceptions.GrpcErrors
+import com.example.boardserver.exceptions.Errors
 import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.repository.AdRepository
 import com.example.boardserver.repository.UserRepository
@@ -17,7 +17,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 
 @Service
@@ -39,107 +39,100 @@ class AdServiceImpl(
             val adPage = adRepository.findAll(
                 Specification.where(FilterUtils.adSpecification(request, favs)), pagingSort
             )
-            adPage.toPagedAdPreview(favs).also { log.info("getManyAd: $it") }
+            adPage.toPagedAdPreview(favs)
         }
 
 
-    @Transactional
-    override suspend fun getOneAd(request: AdOuterClass.GetByIdWithBoolRequest): AdOuterClass.Ad =
+    override suspend fun getOneAd(id: UUID, viewed: Boolean): AdOuterClass.Ad =
         runWithTracing(tracer, GetAd) {
             var isFav = false
             val isAuth = ContextKeys.AUTH_KEY.get(Context.current()).toBoolean()
-            val ad = adRepository.findAdWithImages(request.id.uuid()).orElseThrow()
+            val ad = adRepository.findAdWithImages(id).orElseThrow()
             if (isAuth) {
                 val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
                 isFav = adRepository.existsFavByUserIdAndAdId(ad.id, userId)
-                if (!request.value) ad.views++
+                if (!viewed) ad.views++
                 adRepository.save(ad)
             }
             val response = ad.toAdGrpc(isFav)
-            response.also { log.info("getOneAd: $it") }
+            response
         }
 
 
-    @Transactional
-    override suspend fun setFavoriteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
+    override suspend fun setFavoriteAd(id:UUID): Boolean =
         runWithTracing(tracer, SetFavoriteAds) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-            val adId = request.id.uuid()
-            val user = userRepository.findUserWithFavs(userId).orElseThrow { GrpcErrors.NotFoundUser() }
-            val ad = adRepository.findAdWithFavs(adId).orElseThrow { GrpcErrors.NotFoundAd() }
+            val adId = id
+            val user = userRepository.findUserWithFavs(userId).orElseThrow { Errors.NotFoundUser() }
+            val ad = adRepository.findAdWithFavs(adId).orElseThrow { Errors.NotFoundAd() }
             user.addOrRemoveFav(ad)
             userRepository.save(user)
-            successGrpc()
+            true
         }
 
 
-    @Transactional
-    override suspend fun addAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
+    override suspend fun addAd(adGrpc:AdOuterClass.Ad, images: List<UserOuterClass.ImageProto>): Boolean =
         runWithTracing(tracer, AddAd) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val user = userRepository.findUserWithAds(userId).orElseThrow()
-            val ad = request.ad.fromAdGrpc(true)
-            request.imagesList.forEach { image -> ad.updateImage(image.fromImageGrpc(ad)) }
+            val ad = adGrpc.fromAdGrpc(true)
+            images.forEach { image -> ad.updateImage(image.fromImageGrpc(ad)) }
             user.addAd(ad)
             userRepository.save(user)
-            successGrpc()
+            true
         }
 
 
-    @Transactional
-    override suspend fun editAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
+    override suspend fun editAd(adGrpc: AdOuterClass.Ad, images: List<UserOuterClass.ImageProto>): Boolean =
         runWithTracing(tracer, AddAd) {
-            val ad = adRepository.findAdWithImages(request.ad.id.uuid())
-                .orElseThrow()
-            ad.title = request.ad.title
-            ad.description = request.ad.description
-            ad.price = request.ad.price
-            ad.category = request.ad.category.fromCategoryGrpc()
+            val ad = adRepository.findAdWithImages(adGrpc.id.uuid()).orElseThrow()
+            ad.title = adGrpc.title
+            ad.description = adGrpc.description
+            ad.price = adGrpc.price
+            ad.category = adGrpc.category.fromCategoryGrpc()
             ad.images.clear()
-            request.imagesList.forEach { image -> ad.updateImage(image.fromImageGrpc(ad)) }
+            images.forEach { image -> ad.updateImage(image.fromImageGrpc(ad)) }
             adRepository.save(ad)
-            successGrpc()
+            true
         }
 
 
-    @Transactional
-    override suspend fun deleteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
+    override suspend fun deleteAd(id:UUID): Boolean =
         runWithTracing(tracer, DeleteAd) {
-            adRepository.deleteById(request.id.uuid())
-            successGrpc()
+            adRepository.deleteById(id)
+            true
         }
 
 
-    @Transactional
-    override suspend fun muteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
+    override suspend fun muteAd(id: UUID): Boolean =
         runWithTracing(tracer, MuteAd) {
-            val ad = adRepository.findById(request.id.uuid()).orElseThrow()
+            val ad = adRepository.findById(id).orElseThrow()
             ad.isActive = !ad.isActive
             adRepository.save(ad)
-            successGrpc()
+            true
         }
 
 
-    override suspend fun getFavoriteAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
+    override suspend fun getFavoriteAds(): AdOuterClass.RepeatedAdResponse =
         runWithTracing(tracer, GetFavoriteAd) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val ads = userRepository.findFavsByUserId(userId)
-            ads.toRepeatedAdGrpc(true).also { log.info("getFavoriteAds: $it") }
+            ads.toRepeatedAdGrpc(true)
         }
 
 
-    override suspend fun getMyAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
+    override suspend fun getMyAds(): AdOuterClass.RepeatedAdResponse =
         runWithTracing(tracer, GetMyAd) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val ads = adRepository.findByUserIdOrderByViewsDesc(userId)
-            ads.toRepeatedMyAd().also { log.info("getMyAds: $it") }
+            ads.toRepeatedMyAd()
         }
 
 
-    override suspend fun getByUserId(request: AdOuterClass.GetByIdRequest): AdOuterClass.RepeatedAdResponse =
+    override suspend fun getByUserId(id:UUID): AdOuterClass.RepeatedAdResponse =
         runWithTracing(tracer, GetByUserId) {
-            val ads = adRepository.findByUserId(request.id.uuid())
-            ads.toRepeatedAdGrpc().also { log.info("getByUserId: $it") }
+            val ads = adRepository.findByUserId(id)
+            ads.toRepeatedAdGrpc()
         }
 
 

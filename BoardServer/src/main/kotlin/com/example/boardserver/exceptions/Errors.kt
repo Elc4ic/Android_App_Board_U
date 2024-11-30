@@ -2,11 +2,12 @@ package com.example.boardserver.exceptions
 
 import io.grpc.Status
 import io.grpc.StatusException
+import java.io.IOException
 
-sealed class GrpcErrors {
-    class UserNotAuthorized : StatusException(Status.PERMISSION_DENIED)
+sealed class Errors {
+    class UserNotAuthorized : IOException("Unexpected code")
     class NotFoundUser : StatusException(Status.NOT_FOUND.withDescription("User not found"))
-    class NotVerified : StatusException(Status.NOT_FOUND.withDescription("User not verified"))
+    class VerifyFailed : StatusException(Status.NOT_FOUND.withDescription("User not verified"))
     class NotFoundAd : StatusException(Status.NOT_FOUND.withDescription("Ad not found"))
     class NotFoundComment : StatusException(Status.NOT_FOUND.withDescription("Comment not found"))
     class YouNotOwner : StatusException(Status.PERMISSION_DENIED.withDescription("You not owner"))

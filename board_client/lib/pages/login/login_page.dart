@@ -22,7 +22,12 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: Center(child: LoginForm()),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            LoginForm(),
+          ],
+        ),
       ),
     );
   }

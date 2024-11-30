@@ -27,7 +27,10 @@ class _SettingsPageState extends State<SettingsPage> {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () async {
-          _userBloc.loadUser(user.id);
+          _userBloc.updateUser();
+          setState(() {
+            user = _userBloc.getUser();
+          });
         },
         child: CustomScrollView(
           slivers: [

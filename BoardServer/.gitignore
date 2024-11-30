@@ -41,5 +41,5 @@ bin/
 ### Mac OS ###
 .DS_Store
 /src/main/resources/google-services.json
-/src/main/resources/google-services.json
 /src/main/resources/dvfu-board-firebase-adminsdk-chm4o-a336ff57a6.json
+/src/main/resources/secret.yaml

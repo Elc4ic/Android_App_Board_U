@@ -33,6 +33,7 @@ class ChatServiceImpl(
     private val firebaseMessaging: FirebaseMessaging,
     private val tracer: Tracer
 ):ChatService {
+
     override suspend fun startChat(request: Chat.StartRequest): Chat.StartResponse =
         runWithTracing(tracer, StartChat) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
@@ -56,7 +57,7 @@ class ChatServiceImpl(
     override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         runWithTracing(tracer, DeleteChat) {
             chatRepository.deleteById(request.chatId.uuid())
-            successGrpc()
+            successGrpc(true)
         }
 
     override suspend fun getChatsPreview(request: UserOuterClass.Empty): RepeatedChatPreview =
@@ -79,7 +80,7 @@ class ChatServiceImpl(
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         runWithTracing(tracer, DeleteMessage) {
             messageRepository.deleteById(request.chatId.uuid())
-            successGrpc()
+            successGrpc(true)
         }
 
 

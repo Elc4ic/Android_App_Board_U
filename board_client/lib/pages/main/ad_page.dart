@@ -138,16 +138,19 @@ class _AdPageState extends State<AdPage> {
                         Divider(),
                         MiniProfile(user: state.ad.user),
                         Divider(),
-                        ElevatedButton(
-                          onPressed: () async {
-                            final chatId =
-                                await chatService.startChat(state.ad);
-                            context.push("/chat/$chatId");
-                          },
-                          child: Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              child: Text("Написать")),
+                        Padding(
+                          padding: Markup.padding_all_8,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final chatId =
+                                  await chatService.startChat(state.ad);
+                              context.push("/chat/$chatId");
+                            },
+                            child: Container(
+                                alignment: Alignment.center,
+                                width: double.infinity,
+                                child: Text("Написать")),
+                          ),
                         ),
                         Markup.dividerH10,
                         Container(

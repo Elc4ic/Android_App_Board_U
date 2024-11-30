@@ -7,23 +7,29 @@ import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 
 class VerifyPhonePage extends StatelessWidget {
-  const VerifyPhonePage({super.key});
+  const VerifyPhonePage({super.key, required this.userID});
+
+  final String userID;
 
   @override
   Widget build(BuildContext context) {
-    return const SafeArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-
-        ],
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CodeForm(userID: userID),
+          ],
+        ),
       ),
     );
   }
 }
 
 class CodeForm extends StatefulWidget {
-  const CodeForm({super.key});
+  const CodeForm({super.key, required this.userID});
+
+  final String userID;
 
   @override
   State<CodeForm> createState() => _CodeFormState();
@@ -32,19 +38,19 @@ class CodeForm extends StatefulWidget {
 class _CodeFormState extends State<CodeForm> {
   final userRepository = GetIt.I<UserService>();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        await userRepository.signUp(
-          _usernameController.text,
-          _passwordController.text,
-          _phoneController.text,
-        );
+        await userRepository.endIfPhoneValid(widget.userID, _codeController.text);
         context.go(SC.LOGIN_PAGE);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.green,
+            content: Text("Аккаунт успешно создан"),
+          ),
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -65,72 +71,23 @@ class _CodeFormState extends State<CodeForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextFormField(
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
+              controller: _codeController,
+              keyboardType: TextInputType.number,
               decoration: const InputDecoration(
-                labelText: SC.PHONE_NUM,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
-              ),
-              validator: MultiValidator(
-                [
-                  PatternValidator(SC.PHONE_PATTERN, errorText: SC.PHONE_ERROR),
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
-                  MinLengthValidator(11, errorText: SC.PHONE_ERROR),
-                  MaxLengthValidator(11, errorText: SC.PHONE_ERROR),
-                ],
-              ).call,
-            ),
-            Markup.dividerH10,
-            TextFormField(
-              controller: _usernameController,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(
-                labelText: SC.USERNAME,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
+                labelText: "Код подтверждения",
               ),
               validator: MultiValidator(
                 [
                   RequiredValidator(errorText: SC.REQUIRED_ERROR),
-                  MinLengthValidator(8, errorText: SC.MIN_LENGHT_8_ERROR),
-                ],
-              ).call,
-            ),
-            Markup.dividerH10,
-            TextFormField(
-              obscureText: true,
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: SC.PASSWORD,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
-              ),
-              validator: MultiValidator(
-                [
-                  RequiredValidator(errorText: SC.REQUIRED_ERROR),
-                  MinLengthValidator(8, errorText: SC.MIN_LENGHT_8_ERROR),
-                  PatternValidator(SC.PASSWORD_PATTERN,
-                      errorText: SC.NO_SPEC_SIMBOLS_ERROR)
+                  MinLengthValidator(4, errorText: SC.PHONE_ERROR),
+                  MaxLengthValidator(4, errorText: SC.PHONE_ERROR),
                 ],
               ).call,
             ),
             Markup.dividerH10,
             ElevatedButton(
               onPressed: _submitForm,
-              child: Text(SC.SIGNING_UP),
+              child: const Text("Подтвердить"),
             ),
           ],
         ),

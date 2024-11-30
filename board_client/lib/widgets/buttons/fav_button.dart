@@ -42,6 +42,7 @@ class _FavButtonState extends State<FavButton> {
             if (isFav) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
+                  duration: Duration(seconds: 1),
                   content: Text("Добавленно в избранное"),
                   backgroundColor: Colors.green,
                 ),

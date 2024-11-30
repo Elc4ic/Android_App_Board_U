@@ -58,6 +58,11 @@ class UserService {
     return response.login;
   }
 
+  Future<bool> updateUser() async {
+    _appUser = await _client.getUserById(Id(id: _appUser.id));
+    return true;
+  }
+
   Future<bool> updateToken(String token) async {
     final sharedPreferences = await getSharedPreferences();
     _authToken = token;
@@ -86,20 +91,20 @@ class UserService {
     }
   }
 
-  Future<User> signUp(String username, String password, String phone) async {
+  Future<String> signUp(String username, String password, String phone) async {
     try {
-      final request =
-          SignupRequest(username: username, password: password, phone: phone);
-      User user = await _client.startSignUp(request);
-      return user;
+      Id response = await _client.startSignUp(
+        User(username: username, password: password, phone: phone),
+      );
+      return response.id;
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<bool> endIfPhoneValid(User newUser) async {
+  Future<bool> endIfPhoneValid(String id, String code) async {
     try {
-      await _client.endSignUp(newUser);
+      await _client.endSignUp(Code(id: id, code: code));
       return true;
     } catch (e) {
       rethrow;
@@ -117,7 +122,7 @@ class UserService {
   }
 
   Future<User> getUserById(String id) async {
-    final user = await _client.getUserById(UserId(id: id));
+    final user = await _client.getUserById(Id(id: id));
     return user;
   }
 
@@ -137,7 +142,7 @@ class UserService {
   }
 
   Future<List<Comment>> getComments(String id) async {
-    final comments = await _client.getComments(UserId(id: id));
+    final comments = await _client.getComments(Id(id: id));
     return comments.comments;
   }
 

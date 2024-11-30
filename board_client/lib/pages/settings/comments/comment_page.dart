@@ -88,8 +88,7 @@ class _CommentPageState extends State<CommentPage> {
               onPressed: () {
                 context.push("${SC.ADD_COMMENT_PAGE}/${widget.userId}");
               },
-              child: Text(SC.PUBLISH_AD,
-                  style: Theme.of(context).textTheme.bodyMedium),
+              child: const Text(SC.PUBLISH_AD),
             )
           : null,
     );

@@ -15,6 +15,8 @@ class UserLoaded extends UserState {
   final User user;
 }
 
+class UserUpdated extends UserState {}
+
 class UserLoadingFailure extends UserState {
   UserLoadingFailure({
     this.exception,

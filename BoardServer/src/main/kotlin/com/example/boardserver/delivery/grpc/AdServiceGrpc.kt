@@ -3,6 +3,8 @@ package com.example.boardserver.delivery.grpc
 import board.AdOuterClass
 import board.UserOuterClass
 import brave.Tracer
+import com.example.boardserver.entity.successGrpc
+import com.example.boardserver.entity.uuid
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.service.AdService
 import com.example.boardserver.utils.runWithTracing
@@ -29,7 +31,7 @@ class AdServiceGrpc(
     override suspend fun getOneAd(request: AdOuterClass.GetByIdWithBoolRequest): AdOuterClass.Ad =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetAd) {
-               adService.getOneAd(request)
+               adService.getOneAd(request.id.uuid(), request.value)
             }
         }
 
@@ -38,7 +40,7 @@ class AdServiceGrpc(
     override suspend fun setFavoriteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, SetFavoriteAds) {
-                adService.setFavoriteAd(request)
+                adService.setFavoriteAd(request.id.uuid()).let { successGrpc(it) }
             }
         }
 
@@ -46,7 +48,7 @@ class AdServiceGrpc(
     override suspend fun addAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, AddAd) {
-               adService.addAd(request)
+               adService.addAd(request.ad, request.imagesList).let { successGrpc(it) }
             }
         }
 
@@ -54,7 +56,7 @@ class AdServiceGrpc(
     override suspend fun editAd(request: AdOuterClass.ChangeAdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, AddAd) {
-                adService.editAd(request)
+                adService.editAd(request.ad,request.imagesList).let { successGrpc(it) }
             }
         }
 
@@ -62,7 +64,7 @@ class AdServiceGrpc(
     override suspend fun deleteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, DeleteAd) {
-                adService.deleteAd(request)
+                adService.deleteAd(request.id.uuid()).let { successGrpc(it) }
             }
         }
 
@@ -71,7 +73,7 @@ class AdServiceGrpc(
     override suspend fun muteAd(request: AdOuterClass.GetByIdRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, MuteAd) {
-                adService.muteAd(request)
+                adService.muteAd(request.id.uuid()).let { successGrpc(it) }
             }
         }
 
@@ -79,7 +81,7 @@ class AdServiceGrpc(
     override suspend fun getFavoriteAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetFavoriteAd) {
-              adService.getFavoriteAds(request)
+              adService.getFavoriteAds()
             }
         }
 
@@ -87,7 +89,7 @@ class AdServiceGrpc(
     override suspend fun getMyAds(request: UserOuterClass.Empty): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetMyAd) {
-                adService.getMyAds(request)
+                adService.getMyAds()
             }
         }
 
@@ -95,7 +97,7 @@ class AdServiceGrpc(
     override suspend fun getByUserId(request: AdOuterClass.GetByIdRequest): AdOuterClass.RepeatedAdResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetByUserId) {
-                adService.getByUserId(request)
+                adService.getByUserId(request.id.uuid())
             }
         }
 

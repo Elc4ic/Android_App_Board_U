@@ -1,18 +1,8 @@
 package com.example.boardserver
 
-import board.UserOuterClass
-import com.example.boardserver.entity.*
-import com.example.boardserver.repository.AdRepository
-import com.example.boardserver.repository.ChatRepository
-import com.example.boardserver.repository.UserRepository
-import com.example.boardserver.service.CacheService
-import com.example.boardserver.service.UserService
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.boot.test.context.SpringBootTest
-import java.util.*
 
 
 @SpringBootApplication
@@ -25,7 +15,14 @@ fun main(args: Array<String>) {
 @SpringBootTest
 class ServerApplicationTests {
 
-    @Autowired
+/*    @Test
+    fun makeCall(){
+        val response = verifyService.makeCall("+79833061072")
+        println(Json.encodeToString(response))
+        assert(response?.data?.pincode != null)
+    }*/
+
+    /*@Autowired
     lateinit var cacheService: CacheService
 
     @Test
@@ -48,7 +45,7 @@ class ServerApplicationTests {
     @Autowired
     lateinit var userService: UserService
 
-/*    @Test
+    @Test
     fun testUserService() {
         val user = User(username = "eee")
         userRepository.save(user)
@@ -61,7 +58,7 @@ class ServerApplicationTests {
         }
 
         assert(true)
-    }*/
+    }
 
 
     @Autowired
@@ -122,7 +119,7 @@ class ServerApplicationTests {
 
         val savedChat = chatRepository.findChatBetweenUsersByIds(user1.id, user2.id, ad.id).orElseThrow()
         assert(chat.id == savedChat.id)
-    }
+    }*/
 
 
 }

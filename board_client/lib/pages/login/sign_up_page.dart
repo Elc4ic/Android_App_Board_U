@@ -4,9 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
-import '../../data/service/auth_service.dart';
-import '../../data/service/cache_service.dart';
-import '../../generated/user.pb.dart';
 import '../../values/values.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -21,7 +18,12 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: SafeArea(
-        child: Center(child: SignUpForm()),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SignUpForm(),
+          ],
+        ),
       ),
     );
   }
@@ -44,13 +46,20 @@ class _AddAdFormState extends State<SignUpForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        User user = await userRepository.signUp(
+        String userID = await userRepository.signUp(
           _usernameController.text,
           _passwordController.text,
-          _phoneController.text,
+          "+${_phoneController.text}",
         );
-        await AuthService(context).verifyPhone(user);
-        context.go(SC.LOGIN_PAGE);
+        context.push("${SC.VERIFY_PAGE}/$userID");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Duration(seconds: 5),
+            backgroundColor: Colors.green,
+            content: Text("Введите 4 последние цифры входящего звонка"),
+          ),
+        );
+
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -75,12 +84,6 @@ class _AddAdFormState extends State<SignUpForm> {
               keyboardType: TextInputType.phone,
               decoration: const InputDecoration(
                 labelText: SC.PHONE_NUM,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
               validator: MultiValidator(
                 [
@@ -97,12 +100,6 @@ class _AddAdFormState extends State<SignUpForm> {
               keyboardType: TextInputType.text,
               decoration: const InputDecoration(
                 labelText: SC.USERNAME,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
               validator: MultiValidator(
                 [
@@ -117,12 +114,6 @@ class _AddAdFormState extends State<SignUpForm> {
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: SC.PASSWORD,
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(9.0),
-                  ),
-                ),
               ),
               validator: MultiValidator(
                 [

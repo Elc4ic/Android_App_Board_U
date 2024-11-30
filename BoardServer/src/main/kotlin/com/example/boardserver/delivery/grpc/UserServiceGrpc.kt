@@ -2,6 +2,8 @@ package com.example.boardserver.delivery.grpc
 
 import board.UserOuterClass.*
 import brave.Tracer
+import com.example.boardserver.entity.successGrpc
+import com.example.boardserver.entity.uuid
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.service.UserService
 import com.example.boardserver.utils.runWithTracing
@@ -18,17 +20,18 @@ class UserServiceGrpc(
 ) : board.UserAPIGrpcKt.UserAPICoroutineImplBase() {
 
     @Transactional
-    override suspend fun startSignUp(request: SignupRequest): User =
+    override suspend fun startSignUp(request: User): Id =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetSignUp) {
                 userService.startSignUp(request)
+                    .let { Id.newBuilder().setId(it.toString()).build() }
             }
         }
 
     @Transactional
-    override suspend fun endSignUp(request: UserId): IsSuccess =
+    override suspend fun endSignUp(request: Code): IsSuccess =
         runWithTracing(tracer, GetSignUp) {
-            userService.endSignUp(request)
+            successGrpc(userService.endSignUp(request.id.uuid(), request.code))
         }
 
 
@@ -44,7 +47,7 @@ class UserServiceGrpc(
     override suspend fun getUserAndRefresh(request: Empty): UserAvatarToken =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserAndRefresh) {
-                userService.getUserAndRefresh(request)
+                userService.getUserAndRefresh()
             }
         }
 
@@ -52,14 +55,14 @@ class UserServiceGrpc(
     override suspend fun setOffline(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, SetOffline) {
-                userService.setOffline(request)
+                successGrpc(userService.setOffline())
             }
         }
 
-    override suspend fun getUserById(request: UserId): User =
+    override suspend fun getUserById(request: Id): User =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserById) {
-                userService.getUserById(request)
+                userService.getUserById(request.id.uuid())
             }
         }
 
@@ -67,7 +70,7 @@ class UserServiceGrpc(
     override suspend fun logOut(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, LogOut) {
-                userService.logOut(request)
+                successGrpc(userService.logOut())
             }
         }
 
@@ -75,7 +78,7 @@ class UserServiceGrpc(
     override suspend fun changeUserData(request: User): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, ChangeUserData) {
-                userService.changeUserData(request)
+                successGrpc(userService.changeUserData(request))
             }
         }
 
@@ -83,7 +86,7 @@ class UserServiceGrpc(
     override suspend fun setAvatar(request: ImageProto): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, SetAvatar) {
-                userService.setAvatar(request)
+                successGrpc(userService.setAvatar(request))
             }
         }
 
@@ -91,7 +94,7 @@ class UserServiceGrpc(
     override suspend fun deleteUser(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, DeleteUser) {
-                userService.deleteUser(request)
+                successGrpc(userService.deleteUser())
             }
         }
 
@@ -99,7 +102,7 @@ class UserServiceGrpc(
     override suspend fun addComment(request: Comment): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, AddComment) {
-                userService.addComment(request)
+                successGrpc(userService.addComment(request))
             }
         }
 
@@ -107,7 +110,7 @@ class UserServiceGrpc(
     override suspend fun editComment(request: Comment): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, EditComment) {
-                userService.editComment(request)
+                successGrpc(userService.editComment(request))
             }
         }
 
@@ -115,15 +118,15 @@ class UserServiceGrpc(
     override suspend fun deleteComment(request: Id): IsSuccess =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, DeleteComment) {
-                userService.deleteComment(request)
+                successGrpc(userService.deleteComment(request.id.uuid()))
             }
         }
 
 
-    override suspend fun getComments(request: UserId): CommentsResponse =
+    override suspend fun getComments(request: Id): CommentsResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetComments) {
-                userService.getComments(request)
+                userService.getComments(request.id.uuid())
             }
         }
 
@@ -131,7 +134,7 @@ class UserServiceGrpc(
     override suspend fun getUserComments(request: Empty): CommentsResponse =
         withTimeout(timeOutMillis) {
             runWithTracing(tracer, GetUserComments) {
-                userService.getUserComments(request)
+                userService.getUserComments()
             }
         }
 
