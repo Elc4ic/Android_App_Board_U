@@ -12,12 +12,10 @@ import java.util.*
 interface AdRepository : JpaSpecificationExecutor<Ad>, JpaRepository<Ad, UUID> {
 
     @Query("SELECT u FROM Ad u LEFT JOIN FETCH u.images WHERE u.id = ?1")
-    fun findAdWithImages(userId: UUID): Optional<Ad>
+    fun findAdWithImages(id: UUID): Optional<Ad>
 
     @Query("SELECT u FROM Ad u LEFT JOIN FETCH u.favorites WHERE u.id = ?1")
-    fun findAdWithFavs(userId: UUID): Optional<Ad>
-
-    fun findByTitle(title: String): Optional<Ad>
+    fun findAdWithFavs(id: UUID): Optional<Ad>
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN TRUE ELSE FALSE END FROM Ad u LEFT JOIN u.favorites f WHERE u.id = ?1 AND f.id = ?2")
     fun existsFavByUserIdAndAdId(adId: UUID?, userId: UUID?): Boolean

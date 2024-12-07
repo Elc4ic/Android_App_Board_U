@@ -31,6 +31,7 @@ class _AddAdFormState extends State<AddAdForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _descController = TextEditingController();
+  late Ad ad = widget.ad ?? Ad();
 
   Category? category;
   List<Category>? categories;
@@ -40,18 +41,18 @@ class _AddAdFormState extends State<AddAdForm> {
       try {
         final images = NavItems.imagesFromFiles(widget.result);
         Future.delayed(const Duration(seconds: 1), () async {
+
+          ad.title = Markup.capitalize(_titleController.text);
+          ad.price = Int64(int.parse(_priceController.text));
+          ad.description = Markup.capitalize(_descController.text);
+          ad.user = userRepository.getUser()!;
+          ad.category = category!;
           await adRepository.addAd(
-            Ad(
-              id: widget.ad?.id,
-              title: Markup.capitalize(_titleController.text),
-              price: Int64(int.parse(_priceController.text)),
-              description: Markup.capitalize(_descController.text),
-              user: userRepository.getUser(),
-              category: category,
-            ),
+            ad,
             images,
           );
         });
+
         context.go(SC.AD_PAGE);
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -65,10 +66,13 @@ class _AddAdFormState extends State<AddAdForm> {
 
   @override
   void initState() {
-    _titleController.text = widget.ad?.title ?? "";
-    _priceController.text = widget.ad?.price.toString() ?? "";
-    _descController.text = widget.ad?.description ?? "";
-    category = widget.ad?.category;
+    if (widget.ad != null) {
+      _titleController.text = widget.ad?.title ?? "";
+      _priceController.text = widget.ad?.price.toString() ?? "";
+      _descController.text = widget.ad?.description ?? "";
+      category = widget.ad?.category;
+      ad = widget.ad!;
+    }
     categories = categoryRepository.getCategories();
     super.initState();
   }
@@ -107,6 +111,7 @@ class _AddAdFormState extends State<AddAdForm> {
               ),
               validator: MultiValidator(
                 [
+                  MaxLengthValidator(15, errorText: SC.REQUIRED_ERROR),
                   RequiredValidator(errorText: SC.REQUIRED_ERROR),
                   PatternValidator(SC.NUM_PATTERN, errorText: SC.NOT_NUM_ERROR),
                 ],
@@ -138,9 +143,12 @@ class _AddAdFormState extends State<AddAdForm> {
               ),
             ),
             Markup.dividerH10,
-            ElevatedButton(
-              onPressed: _submitForm,
-              child: Text(SC.PUBLISH_AD),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: _submitForm,
+                child: Text(SC.PUBLISH_AD),
+              ),
             ),
           ],
         ),

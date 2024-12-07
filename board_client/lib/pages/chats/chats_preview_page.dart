@@ -16,7 +16,6 @@ class ChatsPreviewPage extends StatefulWidget {
 
 class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
   late final _chatListBloc = ChatCubit.get(context);
-  late final _userBloc = UserCubit.get(context);
 
   @override
   void initState() {
@@ -60,7 +59,6 @@ class _ChatsPreviewPageState extends State<ChatsPreviewPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return ChatRow(
                       chat: state.chat[index],
-                      token: _userBloc.getToken(),
                       chatBloc: _chatListBloc,
                     );
                   },

@@ -47,7 +47,6 @@ class Ad(
     }
 }
 
-
 fun AdOuterClass.Ad.fromAdGrpc(new: Boolean = false): Ad {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
     return Ad(

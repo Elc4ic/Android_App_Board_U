@@ -12,7 +12,6 @@ interface AdService {
     suspend fun getOneAd(id: UUID, viewed: Boolean): Ad
     suspend fun setFavoriteAd(id: UUID): Boolean
     suspend fun addAd(adGrpc: Ad, images: List<UserOuterClass.ImageProto>): Boolean
-    suspend fun editAd(adGrpc: Ad, images: List<UserOuterClass.ImageProto>): Boolean
     suspend fun deleteAd(id: UUID): Boolean
     suspend fun muteAd(id: UUID): Boolean
     suspend fun getFavoriteAds(): RepeatedAdResponse

@@ -59,7 +59,7 @@ class _RowCardState extends State<RowCard> {
                 ),
               ),
             ),
-            FavButton(isFav: widget.ad.isFav, adId: widget.ad.id)
+            FavButton(ad: widget.ad)
           ],
         ),
       ),

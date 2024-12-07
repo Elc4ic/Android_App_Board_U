@@ -5,6 +5,8 @@ import 'package:board_client/widgets/form/add_form.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../generated/ad.pb.dart';
+
 class AddAdPage extends StatefulWidget {
   const AddAdPage({super.key});
 

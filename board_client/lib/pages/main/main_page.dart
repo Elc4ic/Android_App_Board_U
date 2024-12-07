@@ -26,7 +26,7 @@ class _MainPageState extends State<MainPage> {
   var userService = GetIt.I<UserService>();
   final _scrollController = ScrollController();
 
-  late final _adListBloc = AdListCubit(GetIt.I<AdService>(),GetIt.I<UserService>());
+  late final _adListBloc = AdListCubit.get(context);
   late final _catListBloc = CategoryCubit.get(context);
 
 
@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
     _scrollController.addListener(() async {
       double maxScroll = _scrollController.position.maxScrollExtent;
       double currentScroll = _scrollController.position.pixels;
-      double delta = 100.0;
+      double delta = 200.0;
       if (maxScroll - currentScroll <= delta && _adListBloc.isLoading) {
         _adListBloc.isLoading = true;
         _adListBloc.page++;

@@ -1,8 +1,9 @@
-import 'package:board_client/cubit/ad_cubit/ad_cubit.dart';
-import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../cubit/my_cubit/my_cubit.dart';
+import '../../../data/service/ad_service.dart';
 import '../../../generated/ad.pb.dart';
 import '../../../values/values.dart';
 import 'my_dialog.dart';
@@ -11,19 +12,16 @@ class AdRow extends StatefulWidget {
   const AdRow(
       {super.key,
       required this.ad,
-      required this.token,
-      required this.adListBloc});
+      required this.myBloc});
 
   final Ad ad;
-  final String? token;
-  final AdListCubit adListBloc;
+  final MyCubit myBloc;
 
   @override
   State<AdRow> createState() => _AdRowState();
 }
 
 class _AdRowState extends State<AdRow> {
-  late final _adBloc = AdCubit.get(context);
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +81,7 @@ class _AdRowState extends State<AdRow> {
                             icon: const Icon(
                                 Icons.closed_caption_disabled_outlined),
                             onPressed: () => myDialog(context, () async {
-                              await _adBloc.muteAd(widget.ad.id);
-                              widget.adListBloc.getMyList();
+                              widget.myBloc.mute(widget.ad);
                               context.pop();
                             }, "Вы уверенны, что хотите ${widget.ad.isActive ? "скрыть" : "показать"} объявление?"),
                           ),
@@ -92,8 +89,7 @@ class _AdRowState extends State<AdRow> {
                             tooltip: SC.CLOSE,
                             icon: const Icon(Icons.close),
                             onPressed: () => myDialog(context, () async {
-                              await _adBloc.deleteAd(widget.ad.id);
-                              widget.adListBloc.getMyList();
+                              widget.myBloc.remove(widget.ad);
                               context.pop();
                             }, SC.DELETE_AD),
                           ),

@@ -31,14 +31,14 @@ class Chat(
     )
     val members: MutableSet<User> = mutableSetOf(),
 
-    @OneToOne(orphanRemoval = true)
+    @OneToOne(orphanRemoval = true, cascade = [CascadeType.ALL])
     @JoinColumn(name = "last_message_id")
-    val lastMessage: Message? = null,
+    var lastMessage: Message? = null,
 
-    @OneToMany(mappedBy = "chat", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    @OneToMany(mappedBy = "chat", cascade = [CascadeType.ALL], orphanRemoval = true)
     var messages: MutableList<Message> = mutableListOf(),
 
-    @OneToMany(mappedBy = "chat", orphanRemoval = true, cascade = [CascadeType.REMOVE])
+    @OneToMany(mappedBy = "chat", fetch = FetchType.EAGER, cascade = [CascadeType.ALL], orphanRemoval = true)
     var memberUnreadCounters: MutableSet<UnreadCounter> = mutableSetOf()
 ) {
 
@@ -56,6 +56,7 @@ class Chat(
         )
         message.chat = this
         messages += message
+        lastMessage = message
         return message
     }
 }
@@ -63,6 +64,7 @@ class Chat(
 fun Chat.toChatGrpc(userId: UUID): board.Chat.ChatPreview {
     return board.Chat.ChatPreview.newBuilder()
         .setId(this.id.toString())
+        .setUnread(this.memberUnreadCounters.first { it.user?.id == userId }.count)
         .setAd(this.ad.toAdPreview())
         .setTarget(this.members.first { it.id != userId }.toUserChatPreview())
         .setLastMessage(this.lastMessage?.toMessageGrpc() ?: board.Chat.Message.getDefaultInstance())

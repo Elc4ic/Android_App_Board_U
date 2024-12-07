@@ -26,13 +26,12 @@ class _EditCommentFormState extends State<EditCommentForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _textController = TextEditingController();
   double rating = 0;
-  double ratingPrev = 0;
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false || rating != 0) {
       try {
         Future.delayed(const Duration(seconds: 1), () async {
-          await userRepository.editComment(
+          await userRepository.addComment(
             Comment(
               text: _textController.text,
               rating: rating.toInt(),
@@ -40,7 +39,6 @@ class _EditCommentFormState extends State<EditCommentForm> {
               owner: widget.comment.owner,
               created: widget.comment.created,
             ),
-            ratingPrev.toInt(),
           );
         });
         widget.commentBloc.loadUserComments();
@@ -59,7 +57,6 @@ class _EditCommentFormState extends State<EditCommentForm> {
   Widget build(BuildContext context) {
     _textController.text = widget.comment.text ?? '';
     rating = double.parse(widget.comment.rating.toString());
-    ratingPrev = rating;
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(

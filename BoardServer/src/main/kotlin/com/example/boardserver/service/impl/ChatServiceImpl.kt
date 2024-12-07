@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 
 @Service
@@ -32,8 +33,9 @@ class ChatServiceImpl(
     private val fmcProvider: FcmProvider,
     private val firebaseMessaging: FirebaseMessaging,
     private val tracer: Tracer
-):ChatService {
+) : ChatService {
 
+    @Transactional
     override suspend fun startChat(request: Chat.StartRequest): Chat.StartResponse =
         runWithTracing(tracer, StartChat) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
@@ -47,13 +49,16 @@ class ChatServiceImpl(
                 val chat = ad.createChat(user1, user2)
                 user1.addChat(chat)
                 user2.addChat(chat)
+                chat.addUnreadCounter(user1)
+                chat.addUnreadCounter(user2)
                 userRepository.save(user1)
                 userRepository.save(user2)
                 chatRepository.save(chat)
             }
-            chat.toStartResponse().also { log.info("startChat: $it") }
+            chat.toStartResponse()
         }
 
+    @Transactional
     override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         runWithTracing(tracer, DeleteChat) {
             chatRepository.deleteById(request.chatId.uuid())
@@ -63,61 +68,66 @@ class ChatServiceImpl(
     override suspend fun getChatsPreview(request: UserOuterClass.Empty): RepeatedChatPreview =
         runWithTracing(tracer, GetChatPreview) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-            val chats = (chatRepository.findByMembersId(userId)
-                .orElse(emptySet())).sortedByDescending { chat -> chat.lastMessage?.data }
+            val chats = (chatRepository.findByMembersId(userId).orElse(emptySet()))
+                .sortedByDescending { chat -> chat.lastMessage?.data }
             RepeatedChatPreview.newBuilder()
                 .addAllChats(chats.toRepeatedChat(userId))
-                .build().also { log.info("getChatsPreview: $it") }
+                .build()
         }
 
+    @Transactional
     override suspend fun getAllMessage(request: Chat.GetAllMessagesRequest): Chat.GetAllMessagesResponse =
         runWithTracing(tracer, GetAllMessage) {
             val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
             val chat = chatRepository.findChatWithMessage(request.chatId.uuid()).orElseThrow()
-            chat.toAllMessages(userId).also { log.info("getAllMessage: $it") }
+            chat.memberUnreadCounters.forEach { if (it.user?.id != userId) it.count = 0 }
+            chatRepository.save(chat)
+            chat.toAllMessages(userId)
         }
 
+    @Transactional
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         runWithTracing(tracer, DeleteMessage) {
             messageRepository.deleteById(request.chatId.uuid())
             successGrpc(true)
         }
 
-
+    @Transactional
     override fun sendMessage(requests: Flow<SendMessageRequest>): Flow<Chat.Message> = flow {
-        runWithTracing(tracer, SendMessage) {
-            requests.collect { request ->
-                val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
-                val user = userRepository.findById(request.receiver.uuid()).orElseThrow()
-                val chat = chatRepository.findChatWithMessage(request.chatId.uuid()).orElseThrow()
-                val message = chat.addMessage(request.message, user)
-                chatRepository.save(chat)
-                try {
-                    val to = chat.members.first { userId != request.receiver.uuid() }
-                    if (to.notify) {
-                        val token = tokenRepository.findByUserId(to.id).get()
-
-                        val fireMessage: Message = Message.builder()
-                            .setToken(fmcProvider.decrypt(token.deviceToken))
-                            .putData("id", chat.id.toString())
-                            .setNotification(
-                                Notification.builder()
-                                    .setTitle("Новое сообщение от ${user.name}")
-                                    .setBody(request.message)
-                                    .build()
-                            )
-                            .build()
-                        firebaseMessaging.send(fireMessage)
-                        log.info("send notification ${message.id}")
-                    }
-                } catch (ex: FirebaseMessagingException) {
-                    log.error("error send notification ${message.id}")
-                } finally {
-                    emit(message.toMessageGrpc())
+        requests.collect { request ->
+            val userId = ContextKeys.USER_ID_KEY.get(Context.current()).uuid()
+            val user = userRepository.findById(request.receiver.uuid()).orElseThrow()
+            val chat = chatRepository.findChatWithMessage(request.chatId.uuid()).orElseThrow()
+            val message = chat.addMessage(request.message, user)
+            chat.memberUnreadCounters.forEach { if (it.user?.id != userId) it.incrementCount() }
+            chatRepository.save(chat)
+            try {
+                val to = chat.members.first { userId != it.id }
+                if (to.notify) {
+                    val token = tokenRepository.findByUserId(to.id).get()
+                    val fireMessage: Message = Message.builder()
+                        .setToken(fmcProvider.decrypt(token.deviceToken))
+                        .putData("id", chat.id.toString())
+                        .setNotification(
+                            Notification.builder()
+                                .setTitle("Новое сообщение от ${user.name}")
+                                .setBody(request.message)
+                                .build()
+                        )
+                        .build()
+                    firebaseMessaging.send(fireMessage)
+                    log.info("send notification ${message.id}")
                 }
+            } catch (ex: FirebaseMessagingException) {
+                log.error("error send notification ${message.id}")
+            } catch (e: Exception) {
+                log.error(e.toString())
+            } finally {
+                emit(message.toMessageGrpc().also { log.info(it.toString()) })
             }
         }
     }
+
 
     companion object {
         private val log = LoggerFactory.getLogger(ChatServiceImpl::class.java)

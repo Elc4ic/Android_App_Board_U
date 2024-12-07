@@ -1,6 +1,8 @@
 import 'package:board_client/cubit/observer.dart';
 import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/data/service/cache_service.dart';
+import 'package:board_client/data/service/session_service.dart';
+import 'package:board_client/generated/session.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -21,11 +23,16 @@ void main() async {
   GetIt.I.registerLazySingleton(() => AdService());
   GetIt.I.registerLazySingleton(() => CategoryService());
   GetIt.I.registerLazySingleton(() => ChatService());
+  GetIt.I.registerLazySingleton(() => SessionService());
 
   var token = await GetIt.I<UserService>().loadUserAndCheckRefresh();
   GetIt.I<AdService>().initClient(token);
+  GetIt.I<SessionService>().initClient(token);
   GetIt.I<CategoryService>().initClient(token);
   GetIt.I<ChatService>().initClient(token);
+
+  GetIt.I<SessionService>().registerSession();
+  GetIt.I<SessionService>().getSessionAlive();
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(

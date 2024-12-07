@@ -20,7 +20,7 @@ class CommentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: Markup.padding_v_4,
+      margin: Markup.padding_all_8,
       child: SizedBox(
         width: double.infinity,
         child: Card(
@@ -71,7 +71,7 @@ class CommentRow extends StatelessWidget {
                       ),
                       Expanded(
                         child: Container(
-                          padding: Markup.padding_all_4,
+                          padding: Markup.padding_all_8,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -82,7 +82,7 @@ class CommentRow extends StatelessWidget {
                               ),
                               Align(
                                 alignment: Alignment.bottomRight,
-                                child: Text(comment.created,
+                                child: Text(NavItems.formatDate(comment.created),
                                     style: Theme.of(context).textTheme.bodySmall),
                               )
                             ],
@@ -106,7 +106,6 @@ Future<void> editCommentDialog(
   return showDialog<void>(
     context: context,
     builder: (context) => Dialog.fullscreen(
-      backgroundColor: Colors.white,
       child: EditCommentForm(comment: comment, commentBloc: commentBloc),
     ),
   );

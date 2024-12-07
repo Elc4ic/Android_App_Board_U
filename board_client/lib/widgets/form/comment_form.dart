@@ -86,9 +86,12 @@ class _CommentFormState extends State<CommentForm> {
               validator: RequiredValidator(errorText: SC.REQUIRED_ERROR).call,
             ),
             Markup.dividerH10,
-            ElevatedButton(
-              onPressed: _submitForm,
-              child: Text(SC.ADD_COMMENT),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: _submitForm,
+                child: Text(SC.ADD_COMMENT),
+              ),
             ),
           ],
         ),

@@ -4,19 +4,19 @@ package board;
 
 
 service UserAPI {
+    //API
     rpc StartSignUp (User) returns (Id);
     rpc EndSignUp (Code) returns (IsSuccess);
     rpc GetLogin (LoginRequest) returns (LoginResponse);
     rpc GetUserAndRefresh (Empty) returns (UserAvatarToken);
-    rpc SetOffline (Empty) returns (IsSuccess);
+    rpc SetOffline (IsSuccess) returns (IsSuccess);
     rpc SetAvatar (ImageProto) returns (IsSuccess);
     rpc GetUserById (Id) returns (User);
     rpc LogOut (Empty) returns (IsSuccess);
     rpc ChangeUserData (User) returns (IsSuccess);
     rpc DeleteUser (Empty) returns (IsSuccess);
-
+    //Comments
     rpc AddComment (Comment) returns (IsSuccess);
-    rpc EditComment (Comment) returns (IsSuccess);
     rpc DeleteComment (Id) returns (IsSuccess);
     rpc GetComments (Id) returns (CommentsResponse);
     rpc GetUserComments (Empty) returns (CommentsResponse);

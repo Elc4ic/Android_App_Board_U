@@ -43,8 +43,7 @@ class _AdPageState extends State<AdPage> {
             if (state is AdLoaded) {
               return Scaffold(
                 appBar: adHeader(
-                  state.ad.isFav,
-                  widget.idAd,
+                  state.ad,
                 ),
                 body: ListView(
                   children: [
@@ -107,15 +106,6 @@ class _AdPageState extends State<AdPage> {
                               Text("${state.ad.price} ${SC.RUBLES}",
                                   style:
                                       Theme.of(context).textTheme.labelLarge),
-                              Row(
-                                children: [
-                                  Icon(Icons.location_on),
-                                  Text(state.ad.user.address,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium)
-                                ],
-                              ),
                               Row(children: [
                                 Text("Категория: ",
                                     style: Theme.of(context)
@@ -125,7 +115,19 @@ class _AdPageState extends State<AdPage> {
                                 Text(state.ad.category.name,
                                     style:
                                         Theme.of(context).textTheme.bodyMedium)
-                              ])
+                              ]),
+                              Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.location_on),
+                                    Text(state.ad.user.address,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium)
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -158,7 +160,7 @@ class _AdPageState extends State<AdPage> {
                           padding: Markup.padding_all_16,
                           color: Theme.of(context).colorScheme.secondary,
                           child: Text(
-                              "Идендификатор: ${state.ad.id}\nДата публикации: ${state.ad.created}\nПросмотров: ${state.ad.views}",
+                              "Идендификатор: ${state.ad.id}\nДата публикации: ${NavItems.formatDate(state.ad.created)}\nПросмотров: ${state.ad.views}",
                               style: Theme.of(context).textTheme.bodySmall),
                         )
                       ],

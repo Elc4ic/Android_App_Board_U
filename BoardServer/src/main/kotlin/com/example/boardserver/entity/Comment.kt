@@ -38,7 +38,11 @@ fun UserOuterClass.Comment.fromCommentGrpc(convicted: User, creator: User): Comm
     return Comment(
         text = this.text,
         rating = this.rating,
-        created = LocalDateTime.now(),
+        created = try {
+            LocalDateTime.parse(this.created)
+        } catch (e: Exception) {
+            LocalDateTime.now()
+        },
         creator = creator,
         convicted = convicted
     )

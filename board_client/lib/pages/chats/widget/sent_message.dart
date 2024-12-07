@@ -13,12 +13,11 @@ class SentMessageScreen extends StatelessWidget {
     super.key,
     required this.message,
     required this.chatService,
-    required this.token, required this.messages,
+    required this.messages,
   });
 
   final Message message;
   final ChatService chatService;
-  final String? token;
   final List<Message> messages;
 
   @override
@@ -32,39 +31,37 @@ class SentMessageScreen extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: AppCubit.get(context).scheme.primary.withAlpha(100),
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-            bottomLeft: Radius.circular(10),
-          )
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              message.message,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              width: 110,
-              child: Row(
+            color: AppCubit.get(context).scheme.primary.withAlpha(100),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+              bottomLeft: Radius.circular(16),
+            )),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.7,
+              minWidth: MediaQuery.of(context).size.width * 0.3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                message.message,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              Markup.dividerH10,
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    message.createdAt,
+                    NavItems.formatDate(message.createdAt),
                     maxLines: 2,
-                    style:
-                        const TextStyle(color: Colors.white, fontSize: 8),
+                    style: const TextStyle(color: Colors.white, fontSize: 8),
                   )
                 ],
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

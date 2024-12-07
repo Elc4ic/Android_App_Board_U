@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:board_client/data/service/cache_service.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:fixnum/fixnum.dart' as fnum;
@@ -25,9 +23,9 @@ class AdService {
     );
   }
 
-  Future<Empty> addAd(Ad ad, List<ImageProto> images) async {
-    _client.addAd(ChangeAdRequest(ad: ad, images: images));
-    return Empty();
+  Future<bool> addAd(Ad? ad, List<ImageProto> images) async {
+    var response = await _client.addAd(ChangeAdRequest(ad: ad, images: images));
+    return response.login;
   }
 
   Future<PaginatedAd> getManyAd(

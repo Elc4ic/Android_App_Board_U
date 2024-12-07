@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -12,23 +11,23 @@ class ErrorPage extends StatelessWidget {
     return Center(
         child: Container(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  color: Colors.red,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: 400,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: Text(
-                    errorMessage,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ),
-              ],
-            )));
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          color: Colors.red,
+          width: MediaQuery.of(context).size.width * 0.8,
+          height: 400,
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Text(
+            errorMessage,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        ),
+      ],
+    )));
   }
 
   @override
@@ -36,14 +35,10 @@ class ErrorPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: AnimatedTextKit(isRepeatingAnimation: false, animatedTexts: [
-          TypewriterAnimatedText(
-            curve: Curves.linear,
-            speed: const Duration(milliseconds: 100),
-            errorTitle,
-            textStyle: Theme.of(context).textTheme.titleMedium,
-          ),
-        ]),
+        title: Text(
+          errorTitle,
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
       ),
       body: mainScreen(context),
     );

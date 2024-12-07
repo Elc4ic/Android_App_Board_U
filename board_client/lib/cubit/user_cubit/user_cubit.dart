@@ -14,9 +14,10 @@ import '../../generated/user.pb.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
+  UserCubit(this.userService) : super(UserInitial());
+
   final UserService userService;
 
-  UserCubit(this.userService) : super(UserInitial());
 
   int newChat = 0;
   bool auth = false;
@@ -24,26 +25,9 @@ class UserCubit extends Cubit<UserState> {
   static UserCubit get(context) => BlocProvider.of<UserCubit>(context);
 
   int getChat(context) => newChat;
-
-  void newMessage() {
-    newChat += 1;
-  }
-
-  void resetNewMessage() {
-    newChat = 0;
-  }
-
-  Future<void> updateUser() async {
-    try {
-      if (state is! UserLoaded) {
-        emit(UserLoading());
-      }
-      final user = await userService.updateUser();
-      emit(UserUpdated());
-    } catch (e) {
-      emit(UserLoadingFailure(exception: e));
-    }
-  }
+  User getUser() => userService.getUser() ?? User.getDefault();
+  String? getToken() => userService.getToken();
+  String? getFCMToken() => userService.getFCMToken();
 
   Future<void> loadUser(String userId) async {
     try {
@@ -57,16 +41,28 @@ class UserCubit extends Cubit<UserState> {
     }
   }
 
-  User getUser() => UserService().getUser();
-
-  String? getToken() => UserService().getToken();
-
   Future<void> changeUser(User user) async {
-    await userService.changeUser(user);
+    try {
+      if (state is! UserLoaded) {
+        emit(UserLoading());
+      }
+      await userService.changeUser(user);
+      emit(UserUpdated());
+    } catch (e) {
+      emit(UserLoadingFailure(exception: e));
+    }
   }
 
   Future<void> changeAvatar(Uint8List avatar) async {
-    await userService.updateAvatar(avatar);
+    try {
+      if (state is! UserLoaded) {
+        emit(UserLoading());
+      }
+      await userService.updateAvatar(avatar);
+      emit(UserUpdated());
+    } catch (e) {
+      emit(UserLoadingFailure(exception: e));
+    }
   }
 
   Future<void> logOut() async {
@@ -86,6 +82,9 @@ class UserCubit extends Cubit<UserState> {
       emit(UserLoading());
     }
     await userService.deleteUser();
+    GetIt.I<AdService>().initClient("");
+    GetIt.I<CategoryService>().initClient("");
+    GetIt.I<ChatService>().initClient("");
     auth = false;
     emit(UserInitial());
   }

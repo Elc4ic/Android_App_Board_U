@@ -30,7 +30,7 @@ class CacheService {
     return await sharedPreferences.setDouble(key, value);
   }
 
-  static dynamic removeData({
+  static Future<bool> removeData({
     required String key,
   }) async {
     return await sharedPreferences.remove(key);

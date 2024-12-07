@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../cubit/my_cubit/my_cubit.dart';
 import '../../data/service/ad_service.dart';
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
@@ -18,14 +19,11 @@ class MyAdsPage extends StatefulWidget {
 }
 
 class _MyAdsPageState extends State<MyAdsPage> {
-  var userService = GetIt.I<UserService>();
-
-  late final _adListBloc =
-      AdListCubit(GetIt.I<AdService>(), GetIt.I<UserService>());
+  late final _myBloc = MyCubit.get(context);
 
   @override
   void initState() {
-    _adListBloc.getMyList();
+    _myBloc.getMyList();
     super.initState();
   }
 
@@ -40,13 +38,13 @@ class _MyAdsPageState extends State<MyAdsPage> {
         child: SafeArea(
           child: RefreshIndicator(
             onRefresh: () async {
-              _adListBloc.getMyList();
+              _myBloc.getMyList();
             },
-            child: BlocBuilder<AdListCubit, AdListState>(
-              bloc: _adListBloc,
+            child: BlocBuilder<MyCubit, MyState>(
+              bloc: _myBloc,
               builder: (context, state) {
-                if (state is AdListLoaded) {
-                  if (state.adList.isEmpty) {
+                if (state is MyLoaded) {
+                  if (state.myAds.isEmpty) {
                     return CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
@@ -63,24 +61,23 @@ class _MyAdsPageState extends State<MyAdsPage> {
                     );
                   }
                   return ListView.builder(
-                    itemCount: state.adList.length + 1,
+                    itemCount: state.myAds.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == state.adList.length) {
+                      if (index == state.myAds.length) {
                         return const SizedBox(height: 80);
                       }
                       return AdRow(
-                        ad: state.adList[index],
-                        token: userService.getToken(),
-                        adListBloc: _adListBloc,
+                        ad: state.myAds[index],
+                        myBloc: _myBloc,
                       );
                     },
                   );
                 }
-                if (state is AdListLoadingFailure) {
+                if (state is MyLoadingFailure) {
                   return TryAgainWidget(
                     exception: state.exception,
                     onPressed: () {
-                      _adListBloc.getMyList();
+                      _myBloc.getMyList();
                     },
                   );
                 }

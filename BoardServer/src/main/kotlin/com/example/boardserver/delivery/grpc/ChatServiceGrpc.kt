@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
-import org.springframework.transaction.annotation.Transactional
 
 
 @GrpcService(interceptors = [LogGrpcInterceptor::class])
@@ -22,43 +21,43 @@ class ChatServiceGrpc(
     private val tracer: Tracer
 ) : board.ChatAPIGrpcKt.ChatAPICoroutineImplBase() {
 
-    @Transactional
     override suspend fun startChat(request: Chat.StartRequest): Chat.StartResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, StartChat) {
-                chatService.startChat(request)
+            val span = tracer.startScopedSpan(StartChat)
+            runWithTracing(span) {
+                chatService.startChat(request).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun deleteChat(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, DeleteChat) {
-                chatService.deleteChat(request)
+            val span = tracer.startScopedSpan(DeleteChat)
+            runWithTracing(span) {
+                chatService.deleteChat(request).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun getChatsPreview(request: UserOuterClass.Empty): RepeatedChatPreview =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetChatPreview) {
-                chatService.getChatsPreview(request)
+            val span = tracer.startScopedSpan(GetChatPreview)
+            runWithTracing(span) {
+                chatService.getChatsPreview(request).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun getAllMessage(request: Chat.GetAllMessagesRequest): Chat.GetAllMessagesResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetAllMessage) {
-                chatService.getAllMessage(request)
+            val span = tracer.startScopedSpan(GetAllMessage)
+            runWithTracing(span) {
+                chatService.getAllMessage(request).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun deleteMessage(request: Chat.DeleteChatRequest): UserOuterClass.IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, DeleteMessage) {
-                chatService.deleteMessage(request)
+            val span = tracer.startScopedSpan(DeleteMessage)
+            runWithTracing(span) {
+                chatService.deleteMessage(request).also { span.tag("response", it.toString()) }
             }
         }
 

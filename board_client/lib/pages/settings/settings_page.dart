@@ -7,6 +7,7 @@ import 'package:board_client/widgets/service_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restart_app/restart_app.dart';
 
 import '../../values/values.dart';
 import '../advertisement/widget/my_dialog.dart';
@@ -27,7 +28,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return SafeArea(
       child: RefreshIndicator(
         onRefresh: () async {
-          _userBloc.updateUser();
+          _userBloc.loadUser(user.id);
           setState(() {
             user = _userBloc.getUser();
           });
@@ -59,25 +60,27 @@ class _SettingsPageState extends State<SettingsPage> {
                             style: Theme.of(context).textTheme.titleSmall),
                         ServicePanel(
                             onTap: () => context.push("/usercomments"),
-                            title: "Полученные",
+                            title: "Отправленные",
                             icon: Icons.comment),
                         ServicePanel(
                             onTap: () =>
                                 context.push("${SC.COMMENT_PAGE}/${user.id}"),
-                            title: "Отправленные",
+                            title: "Полученные",
                             icon: Icons.connect_without_contact),
                         Text("  Настройки",
                             style: Theme.of(context).textTheme.titleSmall),
                         ServicePanel(
                             onTap: () => myDialog(context, () async {
                                   await _userBloc.logOut();
-                                }, "Выход из аккаунта закроет приложение!"),
+                                  Restart.restartApp();
+                                }, "Вы уверенны что хотите выйти из аккаунта?"),
                             title: "Выйти из аккаунта",
                             icon: Icons.exit_to_app),
                         ServicePanel(
                             onTap: () => myDialog(context, () async {
                                   _userBloc.deleteUser();
-                                }, "Удаление аккаунта закроет приложение!"),
+                                  Restart.restartApp();
+                                }, "Вы уверенны что хотите удалить аккаунта?"),
                             title: "Удалить аккаунт",
                             icon: Icons.delete),
                       ],

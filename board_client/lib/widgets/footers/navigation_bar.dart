@@ -27,18 +27,16 @@ class _AppScaffoldState extends State<AppScaffold> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _calculateSelectedIndex(context),
         onTap: onTap,
-        items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: SC.MAIN_LABEL),
-          const BottomNavigationBarItem(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: SC.MAIN_LABEL),
+          BottomNavigationBarItem(
               icon: Icon(Icons.favorite), label: SC.FAVORITE_LABEL),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.view_kanban), label: SC.AD_LABEL),
           BottomNavigationBarItem(
-              icon: Badge(
-                  label: user.newChat == 0 ? null : Text("${user.newChat}"),
-                  child: const Icon(Icons.account_box)),
+              icon: Badge(child: Icon(Icons.account_box)),
               label: SC.CHATS_LABEL),
-          const BottomNavigationBarItem(
+          BottomNavigationBarItem(
               icon: Icon(Icons.settings), label: SC.SETTINGS_LABEL),
         ],
       ),

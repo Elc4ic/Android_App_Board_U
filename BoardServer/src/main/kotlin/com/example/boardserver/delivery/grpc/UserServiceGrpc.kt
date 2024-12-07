@@ -10,7 +10,6 @@ import com.example.boardserver.utils.runWithTracing
 import kotlinx.coroutines.withTimeout
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
-import org.springframework.transaction.annotation.Transactional
 
 
 @GrpcService(interceptors = [LogGrpcInterceptor::class])
@@ -19,122 +18,123 @@ class UserServiceGrpc(
     private val tracer: Tracer
 ) : board.UserAPIGrpcKt.UserAPICoroutineImplBase() {
 
-    @Transactional
     override suspend fun startSignUp(request: User): Id =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetSignUp) {
+            val span = tracer.startScopedSpan(GetSignUp)
+            runWithTracing(span) {
                 userService.startSignUp(request)
-                    .let { Id.newBuilder().setId(it.toString()).build() }
+                    .let { Id.newBuilder().setId(it.toString()).build() }.also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun endSignUp(request: Code): IsSuccess =
-        runWithTracing(tracer, GetSignUp) {
-            successGrpc(userService.endSignUp(request.id.uuid(), request.code))
+        withTimeout(timeOutMillis) {
+            val span = tracer.startScopedSpan(GetSignUp)
+            runWithTracing(span) {
+                successGrpc(userService.endSignUp(request.id.uuid(), request.code)).also {
+                    span.tag(
+                        "response",
+                        it.toString()
+                    )
+                }
+            }
         }
 
-
-    @Transactional
     override suspend fun getLogin(request: LoginRequest): LoginResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetLogin) {
-                userService.getLogin(request)
+            val span = tracer.startScopedSpan(GetLogin)
+            runWithTracing(span) {
+                userService.getLogin(request).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun getUserAndRefresh(request: Empty): UserAvatarToken =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetUserAndRefresh) {
-                userService.getUserAndRefresh()
+            val span = tracer.startScopedSpan(GetUserAndRefresh)
+            runWithTracing(span) {
+                userService.getUserAndRefresh().also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
-    override suspend fun setOffline(request: Empty): IsSuccess =
+    override suspend fun setOffline(request: IsSuccess): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, SetOffline) {
-                successGrpc(userService.setOffline())
+            val span = tracer.startScopedSpan(SetOffline)
+            runWithTracing(span) {
+                successGrpc(userService.setOffline(request.login)).also { span.tag("response", it.toString()) }
             }
         }
 
     override suspend fun getUserById(request: Id): User =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetUserById) {
-                userService.getUserById(request.id.uuid())
+            val span = tracer.startScopedSpan(GetUserById)
+            runWithTracing(span) {
+                userService.getUserById(request.id.uuid()).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun logOut(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, LogOut) {
-                successGrpc(userService.logOut())
+            val span = tracer.startScopedSpan(LogOut)
+            runWithTracing(span) {
+                successGrpc(userService.logOut()).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun changeUserData(request: User): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, ChangeUserData) {
-                successGrpc(userService.changeUserData(request))
+            val span = tracer.startScopedSpan(ChangeUserData)
+            runWithTracing(span) {
+                successGrpc(userService.changeUserData(request)).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun setAvatar(request: ImageProto): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, SetAvatar) {
-                successGrpc(userService.setAvatar(request))
+            val span = tracer.startScopedSpan(SetAvatar)
+            runWithTracing(span) {
+                successGrpc(userService.setAvatar(request)).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun deleteUser(request: Empty): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, DeleteUser) {
-                successGrpc(userService.deleteUser())
+            val span = tracer.startScopedSpan(DeleteUser)
+            runWithTracing(span) {
+                successGrpc(userService.deleteUser()).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
     override suspend fun addComment(request: Comment): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, AddComment) {
-                successGrpc(userService.addComment(request))
+            val span = tracer.startScopedSpan(AddComment)
+            runWithTracing(span) {
+                successGrpc(userService.addComment(request)).also { span.tag("response", it.toString()) }
             }
         }
 
-    @Transactional
-    override suspend fun editComment(request: Comment): IsSuccess =
-        withTimeout(timeOutMillis) {
-            runWithTracing(tracer, EditComment) {
-                successGrpc(userService.editComment(request))
-            }
-        }
-
-    @Transactional
     override suspend fun deleteComment(request: Id): IsSuccess =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, DeleteComment) {
-                successGrpc(userService.deleteComment(request.id.uuid()))
+            val span = tracer.startScopedSpan(DeleteComment)
+            runWithTracing(span) {
+                successGrpc(userService.deleteComment(request.id.uuid())).also { span.tag("response", it.toString()) }
             }
         }
 
 
     override suspend fun getComments(request: Id): CommentsResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetComments) {
-                userService.getComments(request.id.uuid())
+            val span = tracer.startScopedSpan(GetComments)
+            runWithTracing(span) {
+                userService.getComments(request.id.uuid()).also { span.tag("response", it.toString()) }
             }
         }
 
 
     override suspend fun getUserComments(request: Empty): CommentsResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetUserComments) {
-                userService.getUserComments()
+            val span = tracer.startScopedSpan(GetUserComments)
+            runWithTracing(span) {
+                userService.getUserComments().also { span.tag("response", it.toString()) }
             }
         }
 

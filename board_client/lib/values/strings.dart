@@ -51,6 +51,7 @@ class SC {
 
   //error
   static const String REQUIRED_ERROR = "Это поле обязательно для заполнения";
+  static const String RICH_ERROR = "Слишком большая цена";
   static const String PHONE_ERROR = "Введите телефонный номер";
   static const String MIN_LENGHT_8_ERROR = "Минимальная длина 8 символов";
   static const String NO_SPEC_SIMBOLS_ERROR = "Нет 2 специальных символов (#!@\$%^&*-)";

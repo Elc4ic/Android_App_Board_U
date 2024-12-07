@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package board;
+
+service SessionAPI {
+    rpc RegisterSession (stream EnterRequest) returns (stream UserStatus);
+    rpc SubscribeUserSession (stream SubscribeRequest) returns (stream UserStatus);
+}
+
+message EnterRequest {
+    string id = 1;
+}
+
+message UserStatus {
+    string id = 1;
+    string username = 2;
+    bool is_online = 3;
+}
+
+message SubscribeRequest {
+    string id = 1;
+    bool is_subscribe = 3;
+}

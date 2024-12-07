@@ -8,6 +8,7 @@ import 'package:fixnum/fixnum.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../cubit/user_ad_cubit/user_ad_cubit.dart';
 import '../../data/service/ad_service.dart';
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
@@ -26,20 +27,19 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  late final _adListBloc =
-      AdListCubit(GetIt.I<AdService>(), GetIt.I<UserService>());
+  late final _userAdBloc = UserAdCubit.get(context);
   late final _userBloc = UserCubit(GetIt.I<UserService>());
 
   @override
   void initState() {
     _userBloc.loadUser(widget.id);
-    _adListBloc.getUserList(widget.id);
+    _userAdBloc.getUserList(widget.id);
     super.initState();
   }
 
   @override
   void dispose() {
-    _adListBloc.close();
+    _userAdBloc.close();
     _userBloc.close();
     super.dispose();
   }
@@ -52,7 +52,7 @@ class _UserPageState extends State<UserPage> {
         child: RefreshIndicator(
           onRefresh: () async {
             _userBloc.loadUser(widget.id);
-            _adListBloc.getUserList(widget.id);
+            _userAdBloc.getUserList(widget.id);
           },
           child: CustomScrollView(
             slivers: [
@@ -94,11 +94,11 @@ class _UserPageState extends State<UserPage> {
                   );
                 },
               ),
-              BlocBuilder<AdListCubit, AdListState>(
-                bloc: _adListBloc,
+              BlocBuilder<UserAdCubit, UserAdState>(
+                bloc: _userAdBloc,
                 builder: (context, state) {
-                  if (state is AdListLoaded) {
-                    if (state.adList.isEmpty) {
+                  if (state is UserAdLoaded) {
+                    if (state.userAds.isEmpty) {
                       return SliverToBoxAdapter(
                         child: SizedBox(
                           height: 100,
@@ -113,18 +113,18 @@ class _UserPageState extends State<UserPage> {
                       cellWidth: Const.cellWidthInt,
                       width: widthNow,
                       items: List.generate(
-                          state.adList.length,
+                          state.userAds.length,
                           (index) => AdCard(
-                              ad: state.adList[index],
+                              ad: state.userAds[index],
                               token: _userBloc.getToken())).toList(),
                     );
                   }
-                  if (state is AdListLoadingFailure) {
+                  if (state is UserAdLoadingFailure) {
                     return SliverFillRemaining(
                       child: TryAgainWidget(
                         exception: state.exception,
                         onPressed: () {
-                          _adListBloc.getUserList(widget.id);
+                          _userAdBloc.getUserList(widget.id);
                         },
                       ),
                     );

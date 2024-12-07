@@ -24,7 +24,7 @@ class CustomGrid extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (BuildContext context, int index) {
           return Padding(
-            padding: Markup.padding_h_2,
+            padding: Markup.padding_all_2,
             child: items[index],
           );
       },

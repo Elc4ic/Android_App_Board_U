@@ -19,8 +19,9 @@ class CategoryServiceGrpc(
 
     override suspend fun getAllCategories(request: UserOuterClass.Empty): AdOuterClass.GetAllCategoriesResponse =
         withTimeout(timeOutMillis) {
-            runWithTracing(tracer, GetAllCategories) {
-                categoryService.getAllCategories().toCategoriesResponse().also { log.info(it.toString()) }
+            val span = tracer.startScopedSpan( GetAllCategories)
+            runWithTracing(span) {
+                categoryService.getAllCategories().toCategoriesResponse().also { span.tag("response", it.toString()) }
             }
         }
 

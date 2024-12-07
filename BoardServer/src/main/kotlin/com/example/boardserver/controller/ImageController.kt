@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.io.IOException
 
 @RestController
 @RequestMapping("/images")
@@ -28,7 +27,7 @@ class ImageController(
     fun getAdImage(@PathVariable("id") id: String): ResponseEntity<ByteArray?>? {
         val image = try {
             imageRepository.findFirstByAdId(id.uuidOrNull()!!).get().imageBytes
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             defaultImage
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body<ByteArray?>(image)
@@ -38,7 +37,7 @@ class ImageController(
     fun getImage(@PathVariable("id") id: String): ResponseEntity<ByteArray>? {
         val image = try {
             imageRepository.findById(id.uuidOrNull()!!).get().imageBytes
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             defaultImage
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image)

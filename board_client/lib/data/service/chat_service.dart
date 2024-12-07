@@ -1,7 +1,6 @@
 import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:grpc/grpc.dart';
-import 'package:fixnum/fixnum.dart';
 
 import '../../generated/chat.pbgrpc.dart';
 import '../../values/values.dart';

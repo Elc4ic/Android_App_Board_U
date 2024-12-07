@@ -60,7 +60,6 @@ services:
     image: openzipkin/zipkin:latest
     restart: always
     container_name: zipkin
-    command: --logging.level.zipkin2=DEBUG
     ports:
       - "9411:9411"
     networks: [ "microservices" ]

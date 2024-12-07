@@ -9,6 +9,13 @@ class NavItems {
     SC.SETTINGS_PAGE,
   ];
 
+  static String formatDate(String date){
+    var e = date.split("T");
+    var c = e[0].split("-");
+    var time = e[1].split(":");
+    return "${time[0]}:${time[1]} ${c[2]}.${c[1]}.${c[0]}";
+  }
+
   static List<ImageProto> imagesFromFiles(List<XFile> files) {
     final webs = List<ImageProto>.empty(growable: true);
     files.forEach((it) async {

@@ -1,6 +1,5 @@
 package com.example.boardserver.entity
 
-import com.example.boardserver.repository.UnreadCounterRepository
 import jakarta.persistence.*
 import java.util.*
 
@@ -19,14 +18,24 @@ class UnreadCounter(
     @JoinColumn(name = "user_id")
     var user: User? = null,
 
-    val count: Int = 0
-)
+    var count: Int = 0
+){
+    fun resetCount() {
+        count = 0
+    }
 
-fun UnreadCounterRepository.addUnreadCounter(chat: Chat, member: User?) {
+    fun incrementCount() {
+        count++
+    }
+}
+
+fun Chat.addUnreadCounter(member: User?) {
     val counter = UnreadCounter(
-        chat = chat,
+        chat = this,
         user = member
     )
-    val saved = this.save(counter)
-    chat.addUnreadCounter(saved)
+    this.addUnreadCounter(counter)
 }
+
+
+

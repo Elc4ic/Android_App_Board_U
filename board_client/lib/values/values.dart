@@ -13,8 +13,6 @@ part 'colors.dart';
 
 part 'strings.dart';
 
-part 'auth_value.dart';
-
 part 'markup.dart';
 
 part 'nav_item.dart';

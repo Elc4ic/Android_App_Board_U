@@ -10,7 +10,6 @@ service AdAPI {
     rpc SetFavoriteAd (GetByIdRequest) returns (IsSuccess);
     rpc GetFavoriteAds (Empty) returns (RepeatedAdResponse);
     rpc AddAd (ChangeAdRequest) returns (IsSuccess);
-    rpc EditAd (ChangeAdRequest) returns (IsSuccess);
     rpc DeleteAd (GetByIdRequest) returns (IsSuccess);
     rpc MuteAd (GetByIdRequest) returns (IsSuccess);
     rpc GetMyAds (Empty) returns (RepeatedAdResponse);

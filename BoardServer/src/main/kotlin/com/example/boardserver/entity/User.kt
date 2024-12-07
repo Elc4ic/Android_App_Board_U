@@ -32,7 +32,7 @@ class User(
     @OneToMany(mappedBy = "user") var counters: Set<UnreadCounter> = setOf(),
 
     @OneToMany(
-        mappedBy = "convicted", cascade = [CascadeType.ALL], orphanRemoval = true
+        mappedBy = "convicted", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER
     ) var comments: MutableSet<Comment> = mutableSetOf(),
 
     @OneToMany(
@@ -68,7 +68,6 @@ class User(
     }
 
     fun addComment(child: Comment) {
-        child.convicted = this
         comments.add(child)
     }
 
@@ -111,35 +110,41 @@ fun User.toUserGrpc(): UserOuterClass.User {
         .setPhone(this.phone)
         .setPassword(this.password)
         .setAddress(this.address)
-        .setRating(rating).build()
+        .setRating(rating)
+        .build()
 }
 
 fun User.toUserMini(): UserOuterClass.User {
+    val rating = this.comments.sumOf { it.rating }.toFloat() / this.comments.size
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
         .setAddress(this.address)
+        .setRating(rating)
         .setName(this.name).build()
-}   
+}
 
 fun User.toAnotherUser(): UserOuterClass.User {
+    val rating = this.comments.sumOf { it.rating }.toFloat() / this.comments.size
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
         .setName(this.name)
         .setEmail(this.email)
         .setPhone(this.phone)
+        .setRating(rating)
         .setAddress(this.address).build()
 }
 
 fun User.toUserPreview(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setAddress(this.address).build()
+        .setAddress(this.address)
+        .build()
 }
 
 fun User.toUserId(): UserOuterClass.User {
     return UserOuterClass.User.newBuilder()
         .setId(this.id.toString())
-        .setAddress(this.address).build()
+        .build()
 }
 
 fun User.toUserChatPreview(): UserOuterClass.User {
@@ -158,6 +163,6 @@ fun String.checkPassword(user: String): Boolean {
     ).verified
 }
 
-fun successGrpc(success:Boolean): UserOuterClass.IsSuccess {
+fun successGrpc(success: Boolean): UserOuterClass.IsSuccess {
     return UserOuterClass.IsSuccess.newBuilder().setLogin(success).build()
 }

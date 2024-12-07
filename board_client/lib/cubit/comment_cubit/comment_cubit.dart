@@ -1,10 +1,8 @@
 import 'package:bloc/bloc.dart';
-import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/generated/user.pb.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:fixnum/fixnum.dart';
 
 part 'comment_state.dart';
 

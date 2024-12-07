@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/data/service/ad_service.dart';
+import 'package:board_client/generated/ad.pb.dart';
 import 'package:board_client/pages/favorite/widget/row_card.dart';
 import 'package:board_client/widgets/try_again.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../cubit/fav_cubit/fav_cubit.dart';
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 
@@ -19,12 +23,13 @@ class FavPage extends StatefulWidget {
 
 class _FavPageState extends State<FavPage> {
   var userService = GetIt.I<UserService>();
+  final ScrollController scrollController = ScrollController();
 
-  late final _adListBloc = AdListCubit(GetIt.I<AdService>(),GetIt.I<UserService>());
+  late final _favBloc = FavCubit.get(context);
 
   @override
   void initState() {
-    _adListBloc.getFavList();
+    _favBloc.fetchFavsHistory();
     super.initState();
   }
 
@@ -37,13 +42,13 @@ class _FavPageState extends State<FavPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _adListBloc.getFavList();
+            _favBloc.fetchFavsHistory();
           },
-          child: BlocBuilder<AdListCubit, AdListState>(
-            bloc: _adListBloc,
+          child: BlocBuilder<FavCubit, FavState>(
+            bloc: _favBloc,
             builder: (context, state) {
-              if (state is AdListLoaded) {
-                if (state.adList.isEmpty) {
+              if (state is FavLoaded) {
+                if (state.favs.isEmpty) {
                   return CustomScrollView(
                     slivers: [
                       SliverToBoxAdapter(
@@ -59,21 +64,20 @@ class _FavPageState extends State<FavPage> {
                   );
                 }
                 return ListView.builder(
-                  cacheExtent: Const.cacheExtent,
-                  itemCount: state.adList.length,
+                  itemCount: state.favs.length,
                   itemBuilder: (BuildContext context, int index) {
                     return RowCard(
-                      ad: state.adList[index],
+                      ad: state.favs[index],
                       token: userService.getToken(),
                     );
                   },
                 );
               }
-              if (state is AdListLoadingFailure) {
+              if (state is FavLoadingFailure) {
                 return TryAgainWidget(
                   exception: state.exception,
                   onPressed: () {
-                    _adListBloc.getFavList();
+                    _favBloc.fetchFavsHistory();
                   },
                 );
               }

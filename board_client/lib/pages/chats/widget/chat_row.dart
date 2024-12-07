@@ -1,25 +1,17 @@
-import 'dart:typed_data';
 
 import 'package:board_client/cubit/chat_bloc/chat_cubit.dart';
 import 'package:board_client/generated/chat.pb.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../data/service/chat_service.dart';
 import '../../../values/values.dart';
 import '../../advertisement/widget/my_dialog.dart';
 
 class ChatRow extends StatefulWidget {
-  const ChatRow(
-      {super.key,
-      required this.chat,
-      required this.token,
-      required this.chatBloc});
+  const ChatRow({super.key, required this.chat, required this.chatBloc});
 
   final ChatPreview chat;
-  final String? token;
   final ChatCubit chatBloc;
 
   @override
@@ -31,8 +23,7 @@ class _ChatRowState extends State<ChatRow> {
   Widget build(BuildContext context) {
     return InkWell(
       onLongPress: () => myDialog(context, () async {
-        GetIt.I<ChatService>().deleteChat(widget.chat.id);
-        widget.chatBloc.loadChats();
+        widget.chatBloc.deleteChat(widget.chat);
         context.pop();
       }, "Вы уверенны, что хотите удалить чат?"),
       onTap: () {
@@ -95,14 +86,31 @@ class _ChatRowState extends State<ChatRow> {
                         style: Theme.of(context).textTheme.bodyMedium),
                     Text(
                       (widget.chat.lastMessage.message.length < 18)
-                          ? (widget.chat.lastMessage.message ?? "")
+                          ? (widget.chat.lastMessage.message)
                           : "${widget.chat.lastMessage.message.substring(0, 17)}...",
                       style: Theme.of(context).textTheme.bodySmall,
                     )
                   ],
                 ),
               ),
-            )
+            ),
+            widget.chat.unread > 0
+                ? Padding(
+                    padding: const EdgeInsets.only(right: 16, top: 16),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withAlpha(100),
+                          radius: 14,
+                          child: Text(widget.chat.unread.toString()),
+                        )
+                      ],
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),

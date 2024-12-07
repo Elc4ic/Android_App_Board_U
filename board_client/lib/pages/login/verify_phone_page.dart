@@ -47,6 +47,7 @@ class _CodeFormState extends State<CodeForm> {
         context.go(SC.LOGIN_PAGE);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
+            duration: Duration(seconds: 1),
             backgroundColor: Colors.green,
             content: Text("Аккаунт успешно создан"),
           ),

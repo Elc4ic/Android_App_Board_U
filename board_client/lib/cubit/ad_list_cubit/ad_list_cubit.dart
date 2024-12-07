@@ -10,7 +10,7 @@ import '../../generated/ad.pb.dart';
 part 'ad_list_state.dart';
 
 class AdListCubit extends Cubit<AdListState> {
-  AdListCubit(this.adService, this.userService) : super(AdListInitial());
+  AdListCubit(this.adService) : super(AdListInitial());
 
   static AdListCubit get(context) => BlocProvider.of<AdListCubit>(context);
 
@@ -25,12 +25,12 @@ class AdListCubit extends Cubit<AdListState> {
   Category? category;
   String query = "По умолчанию";
   bool isLoading = true;
+  bool hasMore = true;
 
   int page = 0;
   static const pageSize = 10;
 
   final AdService adService;
-  final UserService userService;
 
   Future<void> getAdList(bool clear) async {
     try {
@@ -42,48 +42,18 @@ class AdListCubit extends Cubit<AdListState> {
       if (clear) {
         adList.clear();
       }
-      adList = [...adList, ...ads.data];
-      emit(AdListLoaded(adList: adList, hasMore: ads.data.isNotEmpty));
+      adList.addAll(ads.data);
+      hasMore = ads.data.isNotEmpty;
+      emit(AdListLoaded(adList: adList, hasMore: hasMore));
     } catch (e) {
       emit(AdListLoadingFailure(exception: e));
     }
   }
 
-  Future<void> getMyList() async {
-    try {
-      if (state is! AdListLoaded) {
-        emit(AdListLoading());
-      }
-      final ads = await adService.getMyAds();
-      print(ads.data.toString());
-      emit(AdListLoaded(adList: ads.data, hasMore: false));
-    } catch (e) {
-      emit(AdListLoadingFailure(exception: e));
-    }
+  void update(Ad ad) async {
+    var index = adList.indexWhere((it) => it.id == ad.id);
+    adList[index] = ad;
+    emit(AdListLoaded(adList: adList, hasMore: hasMore));
   }
 
-  Future<void> getFavList() async {
-    try {
-      if (state is! AdListLoaded) {
-        emit(AdListLoading());
-      }
-      final ads = await adService.getFavoriteAds();
-
-      emit(AdListLoaded(adList: ads.data, hasMore: false));
-    } catch (e) {
-      emit(AdListLoadingFailure(exception: e));
-    }
-  }
-
-  Future<void> getUserList(String id) async {
-    try {
-      if (state is! AdListLoaded) {
-        emit(AdListLoading());
-      }
-      final ads = await adService.getByUserId(id);
-      emit(AdListLoaded(adList: ads.data, hasMore: false));
-    } catch (e) {
-      emit(AdListLoadingFailure(exception: e));
-    }
-  }
 }

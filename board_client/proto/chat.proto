@@ -51,6 +51,7 @@ message ChatPreview {
     User target = 2;
     Ad ad = 3;
     Message last_message = 4;
+    int32 unread = 5;
 }
 
 message SendMessageRequest {

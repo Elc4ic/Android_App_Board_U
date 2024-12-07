@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:board_client/values/values.dart';
 import 'package:flutter/material.dart';
 
 import '../../../generated/chat.pb.dart';
@@ -24,25 +25,30 @@ class ReceivedMessageScreen extends StatelessWidget {
               decoration: const BoxDecoration(
                   color: Colors.white54,
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
+                    bottomRight: Radius.circular(16),
                   )),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message.message,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    message.createdAt,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  )
-                ],
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7,
+                    minWidth: MediaQuery.of(context).size.width * 0.3),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message.message,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      NavItems.formatDate(message.createdAt),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )
+                  ],
+                ),
               )),
         ),
       ],

@@ -21,16 +21,4 @@ class AdCubit extends Cubit<AdState> {
     CacheService.putBoolean(key: ad.id, value: true);
     emit(AdLoaded(ad: ad));
   }
-
-  Future<void> setFavorite(String id) async {
-    await adService.setFavoriteAd(id);
-  }
-
-  Future<void> muteAd(String id) async {
-    await adService.muteAd(id);
-  }
-
-  Future<void> deleteAd(String id) async {
-    await adService.deleteAd(id);
-  }
 }

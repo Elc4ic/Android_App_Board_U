@@ -81,10 +81,8 @@ class MiniProfileButton extends StatelessWidget {
                 gaplessPlayback: true,
                 width: 50,
                 height: 50,
-                cacheWidth: Const.miniProfileWidth,
-                cacheHeight: Const.miniProfileHeight,
                 fit: BoxFit.cover,
-                "${Const.image_avatar_api}${user.avatar}",
+                "${Const.image_avatar_api}${user.id}",
               ),
             ),
           ),
@@ -213,14 +211,14 @@ class Profile extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.only(top: height / off - 60),
+          padding: EdgeInsets.only(top: height / off - 74),
           child: Center(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(60),
+              borderRadius: BorderRadius.circular(74),
               child: Image.network(
                   gaplessPlayback: true,
-                  width: 120,
-                  height: 120,
+                  width: 148,
+                  height: 148,
                   cacheWidth: Const.ImageWidth,
                   cacheHeight: Const.ImageHeight,
                   fit: BoxFit.cover,

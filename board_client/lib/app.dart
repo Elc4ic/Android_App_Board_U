@@ -16,13 +16,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-class MyApp extends StatelessWidget {
+import 'cubit/ad_list_cubit/ad_list_cubit.dart';
+import 'cubit/fav_cubit/fav_cubit.dart';
+import 'cubit/my_cubit/my_cubit.dart';
+import 'cubit/user_ad_cubit/user_ad_cubit.dart';
+
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  @override
+  void dispose() {
+    print("offline");
+    GetIt.I<UserService>().setOffline(false);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-
-
     FirebaseMessaging.onBackgroundMessage((RemoteMessage message) async {
       print('Handling a background message: ${message.messageId}');
     });
@@ -30,14 +46,15 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AdCubit(GetIt.I<AdService>())),
-        BlocProvider(
-            create: (context) =>
-                ChatCubit(GetIt.I<ChatService>(), GetIt.I<UserService>())),
-        BlocProvider(
-            create: (context) => CategoryCubit(GetIt.I<CategoryService>())),
+        BlocProvider(create: (context) => ChatCubit(GetIt.I<ChatService>())),
+        BlocProvider(create: (context) => CategoryCubit(GetIt.I<CategoryService>())),
         BlocProvider(create: (context) => AppCubit()),
         BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>())),
-        BlocProvider(create: (context) => CommentCubit(GetIt.I<UserService>()))
+        BlocProvider(create: (context) => AdListCubit(GetIt.I<AdService>())),
+        BlocProvider(create: (context) => MyCubit(GetIt.I<AdService>())),
+        BlocProvider(create: (context) => UserAdCubit(GetIt.I<AdService>())),
+        BlocProvider(create: (context) => CommentCubit(GetIt.I<UserService>())),
+        BlocProvider(create: (context) => FavCubit(GetIt.I<AdService>()))
       ],
       child: BlocConsumer<AppCubit, AppState>(
         listener: (context, state) {},
