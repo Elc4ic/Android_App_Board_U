@@ -10,9 +10,11 @@ class UserLoading extends UserState {}
 class UserLoaded extends UserState {
   UserLoaded({
     required this.user,
+    required this.online,
   });
 
   final User user;
+  final bool online;
 }
 
 class UserUpdated extends UserState {}

@@ -7,9 +7,12 @@ import '../../values/values.dart';
 
 class SessionService {
   late SessionAPIClient _client;
-  final StreamController<EnterRequest> streamController =
+  final StreamController<EnterRequest> myOnlineController =
       StreamController<EnterRequest>();
-  UserStatus status = UserStatus();
+  final StreamController<SubscribeRequest> subscribeController =
+      StreamController<SubscribeRequest>();
+  final List<String> _subscribeUsers = [];
+  final Map<String, bool> _onlineUsers = {};
 
   void initClient(String? token) {
     final channel = ClientChannel(
@@ -23,23 +26,54 @@ class SessionService {
       channel,
       options: CallOptions(metadata: {'token': token ?? ""}),
     );
+    if (token != null) {
+      registerSession();
+      getSessionAlive();
+      updateBySubscribe();
+      initSubscribeStream();
+    }
   }
 
   void registerSession() {
-    final request = streamController.stream;
+    final request = myOnlineController.stream;
     var stream = _client.registerSession(request);
     stream.listen((value) {
-      status = value;
+      print("${value.username} ${value.isOnline}");
     });
   }
 
   Future<void> getSessionAlive() async {
-    Timer.periodic(const Duration(seconds: 5), (timer) {
-      streamController.sink.add(EnterRequest());
+    Timer.periodic(const Duration(seconds: 30), (timer) {
+      myOnlineController.sink.add(EnterRequest());
     });
   }
 
-  Stream<UserStatus> subscribeById(Stream<SubscribeRequest> request) {
-    return _client.subscribeUserSession(request);
+  Future<void> updateBySubscribe() async {
+    Timer.periodic(const Duration(seconds: 10), (timer) {
+      for (var e in _subscribeUsers) {
+        subscribeController.sink.add(SubscribeRequest(id: e));
+      }
+    });
+  }
+
+  bool isOnline(String id) => _onlineUsers[id] ?? false;
+
+  void addSubscribeUser(String id) {
+    _subscribeUsers.add(id);
+    subscribeController.sink.add(SubscribeRequest(id: id));
+  }
+
+  void removeSubscribeUser(String id) {
+    _subscribeUsers.remove(id);
+    _onlineUsers.remove(id);
+  }
+
+  void initSubscribeStream() {
+    final request = subscribeController.stream;
+    var stream = _client.subscribeUserSession(request);
+    stream.listen((value) {
+      print("${value.id} ${value.isOnline}");
+      _onlineUsers[value.id] = value.isOnline;
+    });
   }
 }

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/data/service/category_service.dart';
 import 'package:board_client/data/service/chat_service.dart';
+import 'package:board_client/data/service/session_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:meta/meta.dart';
@@ -14,10 +15,10 @@ import '../../generated/user.pb.dart';
 part 'user_state.dart';
 
 class UserCubit extends Cubit<UserState> {
-  UserCubit(this.userService) : super(UserInitial());
+  UserCubit(this.userService, this.sessionService) : super(UserInitial());
 
   final UserService userService;
-
+  final SessionService sessionService;
 
   int newChat = 0;
   bool auth = false;
@@ -25,8 +26,11 @@ class UserCubit extends Cubit<UserState> {
   static UserCubit get(context) => BlocProvider.of<UserCubit>(context);
 
   int getChat(context) => newChat;
+
   User getUser() => userService.getUser() ?? User.getDefault();
+
   String? getToken() => userService.getToken();
+
   String? getFCMToken() => userService.getFCMToken();
 
   Future<void> loadUser(String userId) async {
@@ -35,7 +39,9 @@ class UserCubit extends Cubit<UserState> {
         emit(UserLoading());
       }
       final user = await userService.getUserById(userId);
-      emit(UserLoaded(user: user));
+      sessionService.addSubscribeUser(userId);
+      var online = sessionService.isOnline(userId);
+      emit(UserLoaded(user: user, online: online));
     } catch (e) {
       emit(UserLoadingFailure(exception: e));
     }

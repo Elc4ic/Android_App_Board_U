@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../cubit/my_cubit/my_cubit.dart';
-import '../../../data/service/ad_service.dart';
 import '../../../generated/ad.pb.dart';
 import '../../../values/values.dart';
 import 'my_dialog.dart';

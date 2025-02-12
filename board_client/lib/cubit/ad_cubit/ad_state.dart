@@ -10,8 +10,10 @@ class AdLoading extends AdState {}
 class AdLoaded extends AdState {
   AdLoaded({
     required this.ad,
+    required this.online,
   });
 
+  final bool online;
   final Ad ad;
 }
 

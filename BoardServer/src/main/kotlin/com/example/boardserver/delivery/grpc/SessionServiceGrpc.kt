@@ -6,12 +6,12 @@ import com.example.boardserver.interceptor.ContextKeys
 import com.example.boardserver.interceptor.LogGrpcInterceptor
 import com.example.boardserver.repository.UserRepository
 import io.grpc.Context
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onCompletion
 import net.devh.boot.grpc.server.service.GrpcService
 import org.slf4j.LoggerFactory
+import java.time.LocalDateTime
 
 @GrpcService(interceptors = [LogGrpcInterceptor::class])
 class SessionServiceGrpc(
@@ -35,6 +35,7 @@ class SessionServiceGrpc(
         }.onCompletion {
             log.info("Unregister completed")
             user.isOnline = false
+            user.lastSeen = LocalDateTime.now()
             userRepository.save(user)
         }
     }
@@ -43,11 +44,14 @@ class SessionServiceGrpc(
     override fun subscribeUserSession(requests: Flow<Session.SubscribeRequest>): Flow<Session.UserStatus> = flow {
         try {
             requests.collect { request ->
-                while (request.isSubscribe == true) {
-                    val user = userRepository.findById(request.id.uuid()).orElseThrow()
-                    emit(Session.UserStatus.newBuilder().setId(user.id.toString()).setIsOnline(user.isOnline).build())
-                    delay(5000)
-                }
+                val user = userRepository.findById(request.id.uuid()).orElseThrow()
+                emit(
+                    Session.UserStatus.newBuilder()
+                        .setId(user.id.toString())
+                        .setIsOnline(user.isOnline)
+                        .setLastSeen(user.lastSeen.toString())
+                        .build()
+                )
             }
         } catch (e: Exception) {
             log.info("Error occurred: ${e.message}")

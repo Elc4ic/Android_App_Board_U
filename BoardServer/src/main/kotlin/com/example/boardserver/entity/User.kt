@@ -3,6 +3,7 @@ package com.example.boardserver.entity
 import at.favre.lib.crypto.bcrypt.BCrypt
 import board.UserOuterClass
 import jakarta.persistence.*
+import java.time.LocalDateTime
 import java.util.*
 
 enum class Role { USER, MODER, ADMIN }
@@ -18,9 +19,8 @@ class User(
     var phone: String = "",
     var address: String = "",
     var notify: Boolean = true,
-
+    @Column(name = "last_seen") var lastSeen: LocalDateTime? = LocalDateTime.now(),
     @Column(name = "is_online") var isOnline: Boolean = false,
-
     @Enumerated(EnumType.STRING) @Column(name = "role") val role: Role = Role.USER,
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true) var avatar: UserImage? = null,

@@ -49,48 +49,53 @@ class _AdPageState extends State<AdPage> {
                   children: [
                     SizedBox(
                       height: 400,
-                      child: Stack(
-                        children: [
-                          Expanded(
-                            child: PageView.builder(
-                              itemCount: state.ad.images.length,
-                              pageSnapping: true,
-                              itemBuilder: (context, pagePosition) {
-                                return InkWell(
-                                  onTap: () {
-                                    zoomDialog(
-                                        state.ad.images[pagePosition]
-                                            .toString(),
-                                        context);
-                                  },
-                                  child: Image.network(
-                                    "${Const.image_api}${state.ad.images[pagePosition]}",
+                      child: state.ad.images.isEmpty
+                          ? const Center(child: Icon(Icons.image_not_supported))
+                          : Stack(
+                              children: [
+                                Expanded(
+                                  child: PageView.builder(
+                                    itemCount: state.ad.images.length,
+                                    pageSnapping: true,
+                                    itemBuilder: (context, pagePosition) {
+                                      return InkWell(
+                                        onTap: () {
+                                          zoomDialog(
+                                              state.ad.images[pagePosition]
+                                                  .toString(),
+                                              context);
+                                        },
+                                        child: Image.network(
+                                          "${Const.image_api}${state.ad.images[pagePosition]}",
+                                        ),
+                                      );
+                                    },
+                                    onPageChanged: (pagePosition) {
+                                      setState(() {
+                                        imageCount = pagePosition + 1;
+                                      });
+                                    },
                                   ),
-                                );
-                              },
-                              onPageChanged: (pagePosition) {
-                                setState(() {
-                                  imageCount = pagePosition + 1;
-                                });
-                              },
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.withAlpha(150),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    margin: Markup.padding_all_16,
+                                    padding: Markup.padding_all_8,
+                                    child: Text(
+                                      "$imageCount из ${state.ad.images.length}",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
-                          ),
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.grey.withAlpha(150),
-                                  borderRadius: BorderRadius.circular(10)),
-                              margin: Markup.padding_all_16,
-                              padding: Markup.padding_all_8,
-                              child: Text(
-                                "$imageCount из ${state.ad.images.length}",
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -138,7 +143,10 @@ class _AdPageState extends State<AdPage> {
                               style: Theme.of(context).textTheme.bodyMedium),
                         ),
                         Divider(),
-                        MiniProfile(user: state.ad.user),
+                        MiniProfile(
+                          user: state.ad.user,
+                          online: state.online,
+                        ),
                         Divider(),
                         Padding(
                           padding: Markup.padding_all_8,
@@ -204,7 +212,9 @@ Future<void> zoomDialog(String image, BuildContext context) async {
               ),
             ),
           ),
-          Expanded(
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
             child: InteractiveViewer(
               panEnabled: false,
               minScale: 1,

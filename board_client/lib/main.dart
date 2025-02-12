@@ -31,8 +31,6 @@ void main() async {
   GetIt.I<CategoryService>().initClient(token);
   GetIt.I<ChatService>().initClient(token);
 
-  GetIt.I<SessionService>().registerSession();
-  GetIt.I<SessionService>().getSessionAlive();
 
   await Firebase.initializeApp(
     options: const FirebaseOptions(

@@ -7,6 +7,7 @@ import 'package:board_client/cubit/user_cubit/user_cubit.dart';
 import 'package:board_client/data/service/ad_service.dart';
 import 'package:board_client/data/service/category_service.dart';
 import 'package:board_client/data/service/chat_service.dart';
+import 'package:board_client/data/service/session_service.dart';
 import 'package:board_client/data/service/user_service.dart';
 import 'package:board_client/routing/router.dart';
 import 'package:board_client/theme.dart';
@@ -45,11 +46,11 @@ class _MyAppState extends State<MyApp> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AdCubit(GetIt.I<AdService>())),
+        BlocProvider(create: (context) => AdCubit(GetIt.I<AdService>(),GetIt.I<SessionService>())),
         BlocProvider(create: (context) => ChatCubit(GetIt.I<ChatService>())),
         BlocProvider(create: (context) => CategoryCubit(GetIt.I<CategoryService>())),
         BlocProvider(create: (context) => AppCubit()),
-        BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>())),
+        BlocProvider(create: (context) => UserCubit(GetIt.I<UserService>(),GetIt.I<SessionService>())),
         BlocProvider(create: (context) => AdListCubit(GetIt.I<AdService>())),
         BlocProvider(create: (context) => MyCubit(GetIt.I<AdService>())),
         BlocProvider(create: (context) => UserAdCubit(GetIt.I<AdService>())),

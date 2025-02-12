@@ -1,15 +1,12 @@
-import 'package:board_client/cubit/ad_list_cubit/ad_list_cubit.dart';
 import 'package:board_client/cubit/user_cubit/user_cubit.dart';
-import 'package:board_client/data/service/chat_service.dart';
+import 'package:board_client/data/service/session_service.dart';
 import 'package:board_client/widgets/service_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../cubit/user_ad_cubit/user_ad_cubit.dart';
-import '../../data/service/ad_service.dart';
 import '../../data/service/user_service.dart';
 import '../../values/values.dart';
 import '../../widgets/custom_grid.dart';
@@ -28,7 +25,7 @@ class UserPage extends StatefulWidget {
 
 class _UserPageState extends State<UserPage> {
   late final _userAdBloc = UserAdCubit.get(context);
-  late final _userBloc = UserCubit(GetIt.I<UserService>());
+  late final _userBloc = UserCubit(GetIt.I<UserService>(),GetIt.I<SessionService>());
 
   @override
   void initState() {
@@ -62,6 +59,7 @@ class _UserPageState extends State<UserPage> {
                   if (state is UserLoaded) {
                     return SliverToBoxAdapter(
                       child: Profile(
+                        online: state.online,
                         user: state.user,
                         own: false,
                         child: Column(

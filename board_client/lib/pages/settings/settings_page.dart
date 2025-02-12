@@ -39,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Stack(
                 children: [
                   Profile(
+                    online: false,
                     own: true,
                     user: user,
                     child: Column(

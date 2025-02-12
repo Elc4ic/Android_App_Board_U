@@ -13,8 +13,8 @@ message EnterRequest {
 
 message UserStatus {
     string id = 1;
-    string username = 2;
-    bool is_online = 3;
+    bool is_online = 2;
+    string last_seen = 3;
 }
 
 message SubscribeRequest {
